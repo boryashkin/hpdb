@@ -10,6 +10,6 @@ $container = new \Slim\Container([
 ]);
 $app = new Slim\App($container);
 
-$app->get('/api/index/index', \app\actions\api\index\Index::class);
+$app->get('/', \app\actions\web\Index::class);
 
 $app->run();
