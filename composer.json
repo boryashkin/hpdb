@@ -1,0 +1,16 @@
+{
+  "require": {
+    "ext-mongo": "*",
+    "ext-json": "*",
+    "slim/slim": "^3.11",
+    "mongodb/mongodb": "^1.4"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "app\\": "src/"
+    }
+  }
+}

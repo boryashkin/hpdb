@@ -1,0 +1,38 @@
+version: '3'
+services:
+    web-api:
+        container_name: "hpdb-web-api"
+        image: nginx
+        volumes:
+        - "./docker/etc/nginx/default.conf:/etc/nginx/conf.d/default.template"
+        - "./:/var/www/html"
+        ports:
+        - "9883:80"
+        environment:
+        - NGINX_HOST=${NGINX_HOST_API}
+        command: /bin/bash -c "envsubst '$$NGINX_HOST' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+        restart: always
+        depends_on:
+        - php-api
+    php-api:
+        container_name: "hpdb-php-api"
+        build: "./docker"
+        restart: always
+        depends_on:
+            - composer
+        volumes:
+            - "./:/var/www/html"
+    composer:
+        container_name: "hpdb-composer"
+        image: composer:1.6
+        working_dir: /app
+        volumes:
+            - "./:/app"
+        command: "update -v --no-dev --ignore-platform-reqs && install --no-dev --prefer-dist"
+    mongo:
+        image: mongo:4.1.5-xenial
+        container_name: ${MONGO_HOST}
+        restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
