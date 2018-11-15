@@ -16,7 +16,15 @@ services:
         - php-api
     php-api:
         container_name: "hpdb-php-api"
-        build: "./docker"
+        build: "./docker/php-fpm"
+        restart: always
+        depends_on:
+            - composer
+        volumes:
+            - "./:/var/www/html"
+    php-cli:
+        container_name: "hpdb-php-cli"
+        build: "./docker/php-cli"
         restart: always
         depends_on:
             - composer

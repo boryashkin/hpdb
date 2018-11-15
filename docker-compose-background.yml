@@ -1,0 +1,24 @@
+version: '3'
+services:
+  php-cli:
+    container_name: "hpdb-php-cli"
+    build: "./docker/php-cli"
+    restart: always
+    depends_on:
+    - composer
+    volumes:
+    - "./:/var/www/html"
+  composer:
+    container_name: "hpdb-composer"
+    image: composer:1.6
+    working_dir: /app
+    volumes:
+    - "./:/app"
+    command: "update -v --no-dev --ignore-platform-reqs && install --no-dev --prefer-dist"
+  mongo:
+    image: mongo:4.1.5-xenial
+    container_name: ${MONGO_HOST}
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
