@@ -1,0 +1,47 @@
+body {
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+.main-container {
+    width: 100%;
+    height: 95%;
+    padding: 14px 16px;
+    background: #eeeeee;
+}
+#site-container {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    height: 95%;
+    background: gray;
+}
+
+header {
+    padding: 3px;
+    min-height: 5%;
+}
+.menu-logo {
+    font-weight: bold;
+}
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+nav li {
+    float: left;
+}
+nav li a {
+    display: block;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+nav li a:hover {
+    background-color: lightgrey;
+}
+.head-content {
+    padding: 14px 16px;
+}

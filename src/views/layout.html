@@ -1,0 +1,24 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li class="menu-logo"><a href="/">hpdb.ru</a></li>
+            <li><a href="/explore">Найти новое</a></li>
+            {% block menuItems %}
+            {% endblock %}
+        </ul>
+    </nav>
+    <div class="head-content">
+        <div class="head-title">{% block headTitle %}{% endblock %}</div>
+        <div class="head-description">
+            {% block headDescription %}{% endblock %}
+        </div>
+    </div>
+</header>
+{% block body %}{% endblock %}
+</body>
+</html>
