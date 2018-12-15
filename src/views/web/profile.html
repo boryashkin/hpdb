@@ -1,8 +1,22 @@
 {% extends "layout.html" %}
 
-{% block headTitle %}{{ title }}{% endblock %}
-{% block headDescription %}{{ description }}{% endblock %}
-
+{% block underNavHeader %}
+<div class="card text-center">
+    <div class="card-header">
+        Домашняя страница
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ title }}</h5>
+        <p class="card-text">{{ description }}</p>
+    </div>
+    <div class="card-footer text-muted">
+        Кто это?
+        <a href="#" class="btn btn-outline-info">Айтишник</a>
+        <a href="#" class="btn btn-outline-info">Дизайнер</a>
+        <a href="#" class="btn btn-outline-info">Не домашняя страница</a>
+    </div>
+</div>
+{% endblock %}
 {% block body %}
 <iframe id="site-container" src="{{ url }}"></iframe>
 {% endblock %}
