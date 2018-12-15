@@ -28,7 +28,7 @@ services:
         working_dir: /app
         volumes:
             - "./:/app"
-        command: "update -v --no-dev --ignore-platform-reqs && install --no-dev --prefer-dist"
+        command: "install --no-dev --prefer-dist"
     mongo:
         image: mongo:4.1.5-xenial
         container_name: ${MONGO_HOST}
