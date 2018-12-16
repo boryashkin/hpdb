@@ -40,4 +40,22 @@ class ProfileRepository
 
         return $domainslist;
     }
+
+    public function getOne($id)
+    {
+        $db = new \SQLite3(self::DB_NAME);
+
+        $stmt = $db->prepare(
+            'SELECT * from `' . self::DB_PREFIX . 'profiles` 
+            WHERE profile_id = :id LIMIT 1'
+        );
+        $stmt->bindValue(':id', $id);
+
+        $result = $stmt->execute();
+        $row = $result->fetchArray();
+        $stmt->close();
+        $db->close();
+
+        return $row;
+    }
 }
