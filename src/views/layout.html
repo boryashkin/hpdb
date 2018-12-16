@@ -8,9 +8,9 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="/">hpdb.ru /</a>
         <div class="navbar-nav mr-auto mt-2 mt-lg-0"></div>
-        <form class="form-inline my-2 my-lg-0 text-right">
+        <form id="main-search-form" class="form-inline my-2 my-lg-0 text-right">
             <div class="input-group">
-                <input type="text" class="form-control" id="search" placeholder="Search" aria-describedby="inputGroupAppend" required>
+                <input autocomplete="off" type="text" class="form-control" id="main-search" placeholder="Search" aria-describedby="inputGroupAppend" required>
                 <div class="input-group-append">
                     <button class="input-group-text" id="inputGroupAppend">Find</button>
                 </div>
@@ -20,7 +20,7 @@
     {% block underNavHeader %}{% endblock %}
 </header>
 {% block body %}{% endblock %}
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script type="text/javascript" src="/js/main.js"></script>
