@@ -1,13 +1,13 @@
 {
   "require": {
-    "ext-mongo": "*",
     "ext-json": "*",
     "slim/slim": "^3.11",
-    "mongodb/mongodb": "^1.4",
     "smi2/phpclickhouse": "^1.3",
     "react/event-loop": "^1.0",
     "guzzlehttp/guzzle": "^6.3",
-    "slim/twig-view": "^2.4"
+    "slim/twig-view": "^2.4",
+    "jenssegers/proxy": "^3.0",
+    "guzzle/guzzle": "^3.9"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master"

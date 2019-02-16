@@ -19,7 +19,7 @@ class Profile extends BaseAction
         }
 
         return $this->getView()->render($response, 'web/profile.html', [
-            'url' => $profile['homepage'],
+            'url' => '/proxy/' . $profile['profile_id'] . '/',
             'title' => $profile['homepage'],
             'description' => 'Нет описания',
         ]);
