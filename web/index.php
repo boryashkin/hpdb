@@ -16,6 +16,9 @@ $container = new \Slim\Container([
         $view->addExtension(new \Slim\Views\TwigExtension($router, $uri));
 
         return $view;
+    },
+    'mongodb' => function (\Slim\Container $c) {
+        return new Jenssegers\Mongodb\Eloquent\Builder();
     }
 ]);
 $app = new Slim\App($container);
