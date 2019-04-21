@@ -36,7 +36,7 @@ class MigrateSqliteToMongo extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $a = $this->sqlite->query()->select(['*'])->from('all_profiles')->limit(10)->get();
-        var_dump($a);
+        //$b = $this->mongo->query()->
         // Example code
         $output->writeLn("Data is moved.");
 

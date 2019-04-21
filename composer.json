@@ -9,7 +9,8 @@
     "jenssegers/proxy": "^3.0",
     "guzzle/guzzle": "^3.9",
     "jenssegers/mongodb": "^3.4",
-    "symfony/console": "^4.2"
+    "symfony/console": "^4.2",
+    "symfony/dotenv": "^4.2"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master"

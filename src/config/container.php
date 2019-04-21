@@ -1,12 +1,15 @@
 <?php
 
 use Jenssegers\Mongodb\Eloquent\Builder;
-
 define('ENV_PROD', false);
 
 const CONTAINER_CONFIG_SETTINGS = 'settings';
 const CONTAINER_CONFIG_VIEW = 'view';
 const CONTAINER_CONFIG_MONGO = 'mongodb';
+
+$dotenv = new \Symfony\Component\Dotenv\Dotenv();
+$dotenv->load(__DIR__.'/../../.env');
+
 
 return new \Slim\Container([
     CONTAINER_CONFIG_SETTINGS => [
