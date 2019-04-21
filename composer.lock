@@ -1,11 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "3ca538c0bb2cd19f2e5d5fd5b9e4170a",
-    "content-hash": "0cdff7637bdc034859acafbbb4460bd1",
+    "content-hash": "effe15f8101d034a1cb108962c247c9e",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -36,7 +35,7 @@
             ],
             "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
             "homepage": "https://github.com/container-interop/container-interop",
-            "time": "2017-02-14 19:40:03"
+            "time": "2017-02-14T19:40:03+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -103,7 +102,7 @@
                 "singularize",
                 "string"
             ],
-            "time": "2018-01-09 20:05:19"
+            "time": "2018-01-09T20:05:19+00:00"
         },
         {
             "name": "guzzle/guzzle",
@@ -199,7 +198,7 @@
                 "web service"
             ],
             "abandoned": "guzzlehttp/guzzle",
-            "time": "2015-03-18 18:23:50"
+            "time": "2015-03-18T18:23:50+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -264,7 +263,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2018-04-22 15:46:56"
+            "time": "2018-04-22T15:46:56+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -315,7 +314,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2016-12-20 10:07:11"
+            "time": "2016-12-20T10:07:11+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -382,7 +381,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2018-12-04 20:46:45"
+            "time": "2018-12-04T20:46:45+00:00"
         },
         {
             "name": "illuminate/container",
@@ -427,7 +426,7 @@
             ],
             "description": "The Illuminate Container package.",
             "homepage": "https://laravel.com",
-            "time": "2019-02-11 13:48:57"
+            "time": "2019-02-11T13:48:57+00:00"
         },
         {
             "name": "illuminate/contracts",
@@ -471,7 +470,7 @@
             ],
             "description": "The Illuminate Contracts package.",
             "homepage": "https://laravel.com",
-            "time": "2019-02-12 07:46:48"
+            "time": "2019-02-12T07:46:48+00:00"
         },
         {
             "name": "illuminate/database",
@@ -530,7 +529,7 @@
                 "orm",
                 "sql"
             ],
-            "time": "2019-02-11 13:48:57"
+            "time": "2019-02-11T13:48:57+00:00"
         },
         {
             "name": "illuminate/events",
@@ -575,7 +574,7 @@
             ],
             "description": "The Illuminate Events package.",
             "homepage": "https://laravel.com",
-            "time": "2019-02-11 13:48:57"
+            "time": "2019-02-11T13:48:57+00:00"
         },
         {
             "name": "illuminate/support",
@@ -634,7 +633,7 @@
             ],
             "description": "The Illuminate Support package.",
             "homepage": "https://laravel.com",
-            "time": "2019-02-12 07:57:07"
+            "time": "2019-02-12T07:57:07+00:00"
         },
         {
             "name": "jenssegers/mongodb",
@@ -703,7 +702,7 @@
                 "mongo",
                 "mongodb"
             ],
-            "time": "2018-11-29 12:08:20"
+            "time": "2018-11-29T12:08:20+00:00"
         },
         {
             "name": "jenssegers/proxy",
@@ -756,7 +755,7 @@
             "keywords": [
                 "proxy"
             ],
-            "time": "2018-05-12 21:24:32"
+            "time": "2018-05-12T21:24:32+00:00"
         },
         {
             "name": "mongodb/mongodb",
@@ -821,7 +820,7 @@
                 "mongodb",
                 "persistence"
             ],
-            "time": "2018-07-18 14:33:41"
+            "time": "2018-07-18T14:33:41+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -879,7 +878,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-12-28 10:07:33"
+            "time": "2018-12-28T10:07:33+00:00"
         },
         {
             "name": "nikic/fast-route",
@@ -925,7 +924,7 @@
                 "router",
                 "routing"
             ],
-            "time": "2018-02-13 20:26:39"
+            "time": "2018-02-13T20:26:39+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -975,7 +974,7 @@
                 "container",
                 "dependency injection"
             ],
-            "time": "2018-01-21 07:42:36"
+            "time": "2018-01-21T07:42:36+00:00"
         },
         {
             "name": "psr/container",
@@ -1024,7 +1023,7 @@
                 "container-interop",
                 "psr"
             ],
-            "time": "2017-02-14 16:28:37"
+            "time": "2017-02-14T16:28:37+00:00"
         },
         {
             "name": "psr/http-message",
@@ -1074,7 +1073,7 @@
                 "request",
                 "response"
             ],
-            "time": "2016-08-06 14:39:51"
+            "time": "2016-08-06T14:39:51+00:00"
         },
         {
             "name": "psr/simple-cache",
@@ -1122,7 +1121,7 @@
                 "psr-16",
                 "simple-cache"
             ],
-            "time": "2017-10-23 01:57:42"
+            "time": "2017-10-23T01:57:42+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -1162,7 +1161,7 @@
                 }
             ],
             "description": "A polyfill for getallheaders.",
-            "time": "2016-02-11 07:05:27"
+            "time": "2016-02-11T07:05:27+00:00"
         },
         {
             "name": "react/event-loop",
@@ -1203,7 +1202,7 @@
                 "asynchronous",
                 "event-loop"
             ],
-            "time": "2018-07-11 14:37:46"
+            "time": "2018-07-11T14:37:46+00:00"
         },
         {
             "name": "relay/relay",
@@ -1248,7 +1247,7 @@
                 "middleware",
                 "psr-7"
             ],
-            "time": "2015-12-17 18:18:30"
+            "time": "2015-12-17T18:18:30+00:00"
         },
         {
             "name": "slim/slim",
@@ -1319,7 +1318,7 @@
                 "micro",
                 "router"
             ],
-            "time": "2018-09-16 10:54:21"
+            "time": "2018-09-16T10:54:21+00:00"
         },
         {
             "name": "slim/twig-view",
@@ -1370,7 +1369,7 @@
                 "twig",
                 "view"
             ],
-            "time": "2018-05-07 10:54:29"
+            "time": "2018-05-07T10:54:29+00:00"
         },
         {
             "name": "smi2/phpclickhouse",
@@ -1424,7 +1423,79 @@
                 "http client",
                 "php"
             ],
-            "time": "2018-09-25 17:59:46"
+            "time": "2018-09-25T17:59:46+00:00"
+        },
+        {
+            "name": "symfony/console",
+            "version": "v4.2.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/console.git",
+                "reference": "e2840bb38bddad7a0feaf85931e38fdcffdb2f81"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/console/zipball/e2840bb38bddad7a0feaf85931e38fdcffdb2f81",
+                "reference": "e2840bb38bddad7a0feaf85931e38fdcffdb2f81",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1.3",
+                "symfony/contracts": "^1.0",
+                "symfony/polyfill-mbstring": "~1.0"
+            },
+            "conflict": {
+                "symfony/dependency-injection": "<3.4",
+                "symfony/process": "<3.3"
+            },
+            "provide": {
+                "psr/log-implementation": "1.0"
+            },
+            "require-dev": {
+                "psr/log": "~1.0",
+                "symfony/config": "~3.4|~4.0",
+                "symfony/dependency-injection": "~3.4|~4.0",
+                "symfony/event-dispatcher": "~3.4|~4.0",
+                "symfony/lock": "~3.4|~4.0",
+                "symfony/process": "~3.4|~4.0"
+            },
+            "suggest": {
+                "psr/log": "For using the console logger",
+                "symfony/event-dispatcher": "",
+                "symfony/lock": "",
+                "symfony/process": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Console\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Console Component",
+            "homepage": "https://symfony.com",
+            "time": "2019-04-08T14:23:48+00:00"
         },
         {
             "name": "symfony/contracts",
@@ -1492,7 +1563,7 @@
                 "interoperability",
                 "standards"
             ],
-            "time": "2018-12-05 08:06:11"
+            "time": "2018-12-05T08:06:11+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -1552,7 +1623,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2018-11-21 14:20:20"
+            "time": "2018-11-21T14:20:20+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -1610,7 +1681,7 @@
                 "polyfill",
                 "portable"
             ],
-            "time": "2018-08-06 14:22:27"
+            "time": "2018-08-06T14:22:27+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1669,7 +1740,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2018-09-21 13:07:52"
+            "time": "2018-09-21T13:07:52+00:00"
         },
         {
             "name": "symfony/translation",
@@ -1742,7 +1813,7 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "time": "2019-01-27 23:11:39"
+            "time": "2019-01-27T23:11:39+00:00"
         },
         {
             "name": "twig/twig",
@@ -1809,7 +1880,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-01-14 15:00:48"
+            "time": "2019-01-14T15:00:48+00:00"
         },
         {
             "name": "zendframework/zend-diactoros",
@@ -1873,7 +1944,7 @@
                 "psr",
                 "psr-7"
             ],
-            "time": "2018-09-05 19:29:37"
+            "time": "2018-09-05T19:29:37+00:00"
         }
     ],
     "packages-dev": [
@@ -2079,7 +2150,7 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2019-02-14 08:06:11"
+            "time": "2019-02-14T08:06:11+00:00"
         }
     ],
     "aliases": [],

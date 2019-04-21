@@ -1,26 +1,8 @@
 <?php
-define('ENV_PROD', false);
 
 require '../vendor/autoload.php';
 
-$container = new \Slim\Container([
-    'settings' => [
-        'displayErrorDetails' => !ENV_PROD,
-    ],
-    'view' => function ($c) {
-        $view = new \Slim\Views\Twig(__DIR__ . '/../src/views', []);
-
-        // Instantiate and add Slim specific extension
-        $router = $c->get('router');
-        $uri = \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER));
-        $view->addExtension(new \Slim\Views\TwigExtension($router, $uri));
-
-        return $view;
-    },
-    'mongodb' => function (\Slim\Container $c) {
-        return new Jenssegers\Mongodb\Eloquent\Builder();
-    }
-]);
+$container = require '../src/config/container.php';
 $app = new Slim\App($container);
 
 $app->get('/', \app\actions\web\Index::class);
