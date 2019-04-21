@@ -13,7 +13,7 @@ return new \Slim\Container([
         'displayErrorDetails' => !ENV_PROD,
     ],
     CONTAINER_CONFIG_VIEW => function (\Slim\Container $c) {
-        $view = new \Slim\Views\Twig(__DIR__ . '/../src/views', []);
+        $view = new \Slim\Views\Twig(__DIR__ . '/../../src/views', []);
 
         // Instantiate and add Slim specific extension
         $router = $c->get('router');

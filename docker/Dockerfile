@@ -48,5 +48,4 @@ RUN mv composer.phar /usr/local/bin/composer
 
 RUN rm -rf /var/cache/apk && mkdir -p /var/cache/apk
 
-WORKDIR /var/www
 CMD ["php-fpm"]
