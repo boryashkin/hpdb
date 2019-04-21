@@ -36,8 +36,13 @@ class MigrateSqliteToMongo extends Command
     /** @inheritDoc */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $profiles = $this->sqlite->query()->select(['*'])->from('all_profiles')->limit(10)->get();
-        $a = Website::query()->select(['*'])->get();
+        $cnt = $this->sqlite->query()->from('all_profiles')->count();
+        for ($i = 0; $i < $cnt; $i++) {
+            $profiles = $this->sqlite->query()->select(['*'])->from('all_profiles')->offset($i * 200)->limit(200)->get();
+            foreach ($profiles as $profile) {
+                Website::query()->insert((array)$profile);
+            }
+        }
         // Example code
         $output->writeLn("Data is moved.");
 

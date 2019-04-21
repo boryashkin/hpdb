@@ -9,9 +9,7 @@ const CONTAINER_CONFIG_MONGO = 'mongodb';
 $dotenv = new \Symfony\Component\Dotenv\Dotenv();
 $dotenv->load(__DIR__.'/../../.env');
 
-
 \Illuminate\Database\Eloquent\Model::setConnectionResolver(new \Illuminate\Database\ConnectionResolver());
-
 
 return new \Slim\Container([
     CONTAINER_CONFIG_SETTINGS => [

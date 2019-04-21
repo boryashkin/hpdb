@@ -5,7 +5,7 @@ require __DIR__.'/vendor/autoload.php';
 use Symfony\Component\Console\Application;
 
 
-$container = require 'src/config/container.php';
+$container = require __DIR__ . '/src/config/container.php';
 $command = new \app\commands\MigrateSqliteToMongo();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
 $command->setSqlite($container->get(SQLite3::class));
