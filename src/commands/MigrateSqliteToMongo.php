@@ -1,6 +1,7 @@
 <?php
 namespace app\commands;
 
+use app\models\Website;
 use Illuminate\Database\Connection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -35,8 +36,8 @@ class MigrateSqliteToMongo extends Command
     /** @inheritDoc */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $a = $this->sqlite->query()->select(['*'])->from('all_profiles')->limit(10)->get();
-        //$b = $this->mongo->query()->
+        $profiles = $this->sqlite->query()->select(['*'])->from('all_profiles')->limit(10)->get();
+        $a = Website::query()->select(['*'])->get();
         // Example code
         $output->writeLn("Data is moved.");
 

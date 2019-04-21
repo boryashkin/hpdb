@@ -1,6 +1,5 @@
 <?php
 
-use Jenssegers\Mongodb\Eloquent\Builder;
 define('ENV_PROD', false);
 
 const CONTAINER_CONFIG_SETTINGS = 'settings';
@@ -9,6 +8,9 @@ const CONTAINER_CONFIG_MONGO = 'mongodb';
 
 $dotenv = new \Symfony\Component\Dotenv\Dotenv();
 $dotenv->load(__DIR__.'/../../.env');
+
+
+\Illuminate\Database\Eloquent\Model::setConnectionResolver(new \Illuminate\Database\ConnectionResolver());
 
 
 return new \Slim\Container([
@@ -36,8 +38,11 @@ return new \Slim\Container([
             //'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
         ], 'sqlite');
+        $manager = $c->get(\Illuminate\Database\Capsule\Manager::class);
+        \Illuminate\Database\Eloquent\Model::getConnectionResolver()
+            ->addConnection('sqlite', $manager->getConnection('sqlite'));
 
-        return $c->get(\Illuminate\Database\Capsule\Manager::class)->getConnection('sqlite');
+        return $manager->getConnection('sqlite');
     },
     CONTAINER_CONFIG_MONGO => function (\Slim\Container $c) {
         /** @var \Illuminate\Database\Capsule\Manager $manager */
@@ -51,14 +56,18 @@ return new \Slim\Container([
             'driver'   => 'mongodb',
             'host'     => env('MONGO_HOST', 'localhost'),
             'port'     => env('MONGO_PORT', 27017),
-            'database' => env('MONGO_DATABASE', 'test'),
+            'database' => env('MONGO_DATABASE', 'hpdb'),
             'username' => env('MONGO_USERNAME', null),
             'password' => env('MONGO_PASSWORD', null),
             'options'  => [
                 'database' => 'admin' // sets the authentication database required by mongo 3
             ]
         ], 'mongodb');
+        \Illuminate\Database\Eloquent\Model::getConnectionResolver()
+            ->addConnection('mongodb', $manager->getConnection('mongodb'));
 
         return $manager->getConnection('mongodb');
-    }
+    },
 ]);
+
+
