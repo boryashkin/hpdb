@@ -1,6 +1,8 @@
 <?php
 namespace app\modules\web;
 
+use app\models\Website;
+
 class ProfileRepository
 {
     private const DB_NAME = __DIR__ . '/../../../domainslibrary.db';
@@ -8,7 +10,6 @@ class ProfileRepository
 
     public function getList($query, int $page)
     {
-        $db = new \SQLite3(self::DB_NAME);
         $q = strip_tags($query);
         if ($page <= 0) {
             $page = 1;
@@ -17,11 +18,17 @@ class ProfileRepository
         $from = ($page - 1) * $step;
         $to = ($page - 1) + $step;
 
+        $websites = Website::query()->where('homepage', 'like', $q)->offset($step * ($page - 1))->limit($step)->get();
+        print_r($websites);
+        exit;
+        return $websites;
+
         if ($query) {
             $where = 'where `homepage` LIKE :homepage';
         } else {
             $where = '';
         }
+        $db = new \SQLite3(self::DB_NAME);
         $stmt = $db->prepare(
             'SELECT * from `' . self::DB_PREFIX . 'profiles` 
             ' . $where . ' LIMIT ' . $from . ', ' . $to
