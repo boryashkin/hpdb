@@ -21,7 +21,7 @@ class Index extends BaseAction
 {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $repo = new ProfileRepository();
+        $repo = new ProfileRepository($this->getContainer()->get(CONTAINER_CONFIG_MONGO));
         if (!$profile = $repo->getOne($request->getAttribute('id'))) {
             throw new NotFoundException($request, $response);
         }

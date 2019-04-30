@@ -14,7 +14,7 @@ class Index extends BaseAction
         $query = isset($params['query']) && \is_string($params['query']) ? $params['query'] : null;
         $page = isset($params['page']) && \is_numeric($params['page']) ? (int)$params['page'] : 0;
 
-        $repo = new ProfileRepository();
+        $repo = new ProfileRepository($this->getContainer()->get(CONTAINER_CONFIG_MONGO));
         $response = $response->withAddedHeader('Content-Type', 'application/json');
         $response->getBody()->write(\json_encode($repo->getList($query, $page)));
 

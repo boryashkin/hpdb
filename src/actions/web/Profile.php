@@ -12,14 +12,14 @@ class Profile extends BaseAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $profileId = $request->getAttribute('id');
-        $repo = new ProfileRepository();
+        $repo = new ProfileRepository($this->getContainer()->get(CONTAINER_CONFIG_MONGO));
         $profile = $repo->getOne($profileId);
         if (!$profile) {
             throw new NotFoundException($request, $response);
         }
 
         return $this->getView()->render($response, 'web/profile.html', [
-            'url' => '/proxy/' . $profile['profile_id'] . '/',
+            'url' => '/proxy/' . $profile->profile_id . '/',
             'title' => $profile['homepage'],
             'description' => 'Нет описания',
         ]);

@@ -32,9 +32,9 @@ function autocomplete(inp) {
                     /*create a DIV element for each matching element:*/
                     //b = document.createElement("DIV");
                     c = document.createElement("A");
-                    c.href = "/profile/" + i;
+                    c.href = "/profile/" + response[i].profile_id;
                     /*make the matching letters bold:*/
-                    let word = response[i].substr(0, wordLenLimit);
+                    let word = response[i].homepage.substr(0, wordLenLimit);
                     let valPos = word.search(val);
                     c.innerHTML = "";
                     if (valPos !== -1) {
