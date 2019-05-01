@@ -6,7 +6,7 @@ use app\models\WebsiteIndexHistory;
 use Guzzle\Common\Exception\InvalidArgumentException;
 use Guzzle\Http\Url;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RedirectMiddleware;
@@ -84,11 +84,12 @@ class ReindexHompages extends Command
         $isHttp = $parsedUrl->getScheme() === 'http';
         try {
             $parsed = $this->parseWebsite($parsedUrl->setScheme('https'));
-        } catch (ConnectException $e) {
+        } catch (TransferException $e) {
+            echo 'https| ' . $website->homepage . ' ' . $e->getMessage() . PHP_EOL;
             try {
                 $parsed = $this->parseWebsite($parsedUrl->setScheme('http'));
-            } catch (ConnectException $e) {
-                echo $e->getMessage() . PHP_EOL;
+            } catch (TransferException $e) {
+                echo 'http| ' . $website->homepage . ' ' . $e->getMessage() . PHP_EOL;
 
                 $parsed = null;
             }
@@ -120,7 +121,7 @@ class ReindexHompages extends Command
     /**
      * @param Url $originUrl
      * @return array
-     * @throws ConnectException
+     * @throws TransferException
      */
     private function parseWebsite(Url $originUrl)
     {
@@ -144,7 +145,7 @@ class ReindexHompages extends Command
         try {
             $time = microtime(true);
             $res = $proxy->forward($clone)->to((string)$originUrl);
-        } catch (ConnectException $e) {
+        } catch (TransferException $e) {
             throw $e;
         }
         $rsp['time'] = microtime(true) - $time;
