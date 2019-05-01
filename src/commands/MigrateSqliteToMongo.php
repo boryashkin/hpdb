@@ -9,6 +9,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrateSqliteToMongo extends Command
 {
+    private const PAGINATION_CNT = 200;
+
     /** @var Connection */
     private $sqlite;
     /** @var \Jenssegers\Mongodb\Connection */
@@ -36,9 +38,12 @@ class MigrateSqliteToMongo extends Command
     /** @inheritDoc */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $cnt = $this->sqlite->query()->from('all_profiles')->count();
+        $cnt = $this->sqlite->query()->from('all_profiles')->count() / self::PAGINATION_CNT + 1;
         for ($i = 0; $i < $cnt; $i++) {
-            $profiles = $this->sqlite->query()->select(['*'])->from('all_profiles')->offset($i * 200)->limit(200)->get();
+            $profiles = $this->sqlite->query()
+                ->select(['*'])->from('all_profiles')
+                ->offset($i * self::PAGINATION_CNT)->limit(self::PAGINATION_CNT)
+                ->get();
             foreach ($profiles as $profile) {
                 Website::query()->insert((array)$profile);
             }
