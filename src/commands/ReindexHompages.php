@@ -3,7 +3,6 @@ namespace app\commands;
 
 use app\models\Website;
 use app\models\WebsiteIndexHistory;
-use Guzzle\Common\Exception\InvalidArgumentException;
 use Guzzle\Http\Url;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\TransferException;
@@ -11,7 +10,6 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RedirectMiddleware;
 use MongoDB\BSON\ObjectId;
-use MongoDB\BSON\UTCDateTime;
 use Proxy\Adapter\Guzzle\GuzzleAdapter;
 use Proxy\Filter\RemoveEncodingFilter;
 use Proxy\Proxy;
@@ -25,6 +23,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ReindexHompages extends Command
 {
     private const PAGINATION_CNT = 10;
+    private const CURL_SKIP_EXCEPTION_CODES = [
+        CURLE_COULDNT_RESOLVE_HOST,
+        CURLE_OPERATION_TIMEDOUT
+    ];
 
     /** @var \Jenssegers\Mongodb\Connection */
     private $mongo;
@@ -55,8 +57,17 @@ class ReindexHompages extends Command
                 ->take(self::PAGINATION_CNT)
                 ->get()
                 ->all();
+            /** @var Website $website */
             foreach ($websites as $website) {
-                $this->reindex($website);
+                try {
+                    $this->reindex($website);
+                } catch (\MongoDB\Driver\Exception\UnexpectedValueException $e) {
+                    echo 'mongo| UnexpectedValueException: ' . $website->homepage . ' ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
+                    unset($e);
+                } catch (\MongoDB\Driver\InvalidArgumentException $e) {
+                    echo 'mongo| InvalidArgumentException: ' . $website->homepage . ' ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
+                    unset($e);
+                }
             }
             $i++;
         }
@@ -85,11 +96,17 @@ class ReindexHompages extends Command
         try {
             $parsed = $this->parseWebsite($parsedUrl->setScheme('https'));
         } catch (TransferException $e) {
-            echo 'https| ' . $website->homepage . ' ' . $e->getMessage() . PHP_EOL;
+            if ($this->isCurlCodeNeedToLog($e)) {
+                echo 'https| ' . $website->homepage . ' ' . $e->getMessage() . PHP_EOL;
+            }
+            unset($e);
             try {
                 $parsed = $this->parseWebsite($parsedUrl->setScheme('http'));
             } catch (TransferException $e) {
-                echo 'http| ' . $website->homepage . ' ' . $e->getMessage() . PHP_EOL;
+                if ($this->isCurlCodeNeedToLog($e)) {
+                    echo 'http| ' . $website->homepage . ' ' . $e->getMessage() . PHP_EOL;
+                }
+                unset($e);
 
                 $parsed = null;
             }
@@ -158,5 +175,22 @@ class ReindexHompages extends Command
         $rsp['httpHeaders'] = $res->getHeaders();
 
         return $rsp;
+    }
+
+    /**
+     * @param $code
+     * @return bool
+     */
+    private function isCurlCodeNeedToLog(\Exception $e)
+    {
+        $toLog = true;
+        foreach (self::CURL_SKIP_EXCEPTION_CODES as $code) {
+            if (stripos($e->getMessage(), "cURL error $code:") === 0) {
+                $toLog = false;
+                break;
+            }
+        }
+
+        return $toLog;
     }
 }
