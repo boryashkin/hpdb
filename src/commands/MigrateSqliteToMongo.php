@@ -45,6 +45,7 @@ class MigrateSqliteToMongo extends Command
                 ->offset($i * self::PAGINATION_CNT)->limit(self::PAGINATION_CNT)
                 ->get();
             foreach ($profiles as $profile) {
+                $profile->profile_id = (int)$profile->profile_id;
                 Website::query()->insert((array)$profile);
             }
         }

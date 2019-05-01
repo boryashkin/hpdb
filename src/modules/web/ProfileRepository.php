@@ -37,7 +37,7 @@ class ProfileRepository
     public function getOne(int $id)
     {
         return Website::query()
-            ->where('profile_id', '=', (string)$id)
+            ->where('profile_id', '=', $id)
             ->get()->all()[0];
     }
 }
