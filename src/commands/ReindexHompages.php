@@ -73,6 +73,9 @@ class ReindexHompages extends Command
                 } catch (\MongoDB\Driver\InvalidArgumentException $e) {
                     echo 'mongo| InvalidArgumentException: ' . $website->homepage . ' ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
                     unset($e);
+                } catch (\Guzzle\Common\Exception\InvalidArgumentException $e) {
+                    echo 'URL| InvalidArgumentException: ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
+                    unset($e);
                 }
             }
             $i++;
