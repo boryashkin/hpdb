@@ -85,7 +85,7 @@ class ReindexHompages extends Command
     {
         try {
             $parsedUrl = Url::factory($website->homepage);
-        } catch (InvalidArgumentException $e) {
+        } catch (\Guzzle\Common\Exception\InvalidArgumentException $e) {
             //to know where and which exactly exceptions are
             throw $e;
         }
