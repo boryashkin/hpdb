@@ -15,6 +15,7 @@ use Proxy\Filter\RemoveEncodingFilter;
 use Proxy\Proxy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -42,13 +43,18 @@ class ReindexHompages extends Command
         $this
             ->setName('service:reindex-homepages')
             ->setDescription('Go through all of the HPs and refill the info about them.')
+            ->addOption('skip', null, InputOption::VALUE_OPTIONAL, 'skip first qty of websites')
         ;
     }
 
     /** @inheritDoc */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $i = 0;
+        if ($input->getOption('skip')) {
+            $i = (int)$input->getOption('skip');
+        } else {
+            $i = 0;
+        }
         $websites = true;
         while ($websites) {
             $this->mongo->reconnect();
