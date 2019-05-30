@@ -59,7 +59,7 @@ class ReindexHompages extends Command
         while ($websites) {
             $this->mongo->reconnect();
             $websites = Website::query()
-                ->offset(self::PAGINATION_CNT * $i)
+                ->offset($i)
                 ->take(self::PAGINATION_CNT)
                 ->get()
                 ->all();
