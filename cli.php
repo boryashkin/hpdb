@@ -19,6 +19,9 @@ $commands[] = $command;
 $command = new \app\commands\ExtractIndexedContent();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
 $commands[] = $command;
+$command = new \app\commands\AddWebsite();
+$command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
+$commands[] = $command;
 
 
 $application = new Application();

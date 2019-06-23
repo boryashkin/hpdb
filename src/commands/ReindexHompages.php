@@ -90,7 +90,7 @@ class ReindexHompages extends Command
      * @param Website $website
      * @return |null
      */
-    private function reindex(Website $website)
+    public function reindex(Website $website)
     {
         try {
             $parsedUrl = Url::factory($website->homepage);

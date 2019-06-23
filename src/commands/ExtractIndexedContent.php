@@ -2,6 +2,7 @@
 namespace app\commands;
 
 use app\models\WebsiteContent;
+use app\models\WebsiteIndexHistory;
 use MongoDB\Collection as MongoCollection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -77,25 +78,29 @@ class ExtractIndexedContent extends Command
                 break;
             }
             foreach ($c->find(['$or' => $lastWebsiteData]) as $website) {
-                if (!$website->content) {
-                    continue;
-                }
-                $crawler = new Crawler($website->content);
-                $content = new WebsiteContent();
-                $content->website_id = $website->website_id;
-                $content->title = null;
-                $content->description = null;
-                $title = $crawler->filterXPath('//title');
-                if ($title->count()) {
-                    $content->title = $title->text();
-                }
-                foreach ($crawler->filterXPath("//meta[@name='description']/@content") as $t) {
-                    $content->description = $t->textContent;
-                }
-                $content->save();
+                $this->extractAndSave($website);
             }
             $skip = $skip + $limit;
         } while ($lastWebsiteData);
     }
 
+    public function extractAndSave(WebsiteIndexHistory $website)
+    {
+        if (!$website->content) {
+            return false;
+        }
+        $crawler = new Crawler($website->content);
+        $content = new WebsiteContent();
+        $content->website_id = $website->website_id;
+        $content->title = null;
+        $content->description = null;
+        $title = $crawler->filterXPath('//title');
+        if ($title->count()) {
+            $content->title = $title->text();
+        }
+        foreach ($crawler->filterXPath("//meta[@name='description']/@content") as $t) {
+            $content->description = $t->textContent;
+        }
+        $content->save();
+    }
 }
