@@ -65,3 +65,26 @@ input[type=submit] {
     background-color: DodgerBlue !important;
     color: #ffffff;
 }
+.btn-outline-info.reacted {
+    background-color: #95dca5;
+}
+.emoji {
+    display: inline-block;
+    height: 25px;
+    width: 25px;
+    background-size: 675px 175px !important;
+    background-repeat: no-repeat;
+    background: url(/img/emoji_spritesheet_0.png);
+}
+.thumb-up {
+    background-position-x: -600px;
+    background-position-y: -75px;
+}
+.thumb-down {
+    background-position-x: -625px;
+    background-position-y: -75px;
+}
+.like {
+    background-position-x: -250px;
+    background-position-y: -150px;
+}

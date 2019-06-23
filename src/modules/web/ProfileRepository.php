@@ -34,6 +34,10 @@ class ProfileRepository
         return $websites->toArray();
     }
 
+    /**
+     * @param int $id
+     * @return Website
+     */
     public function getOne(int $id)
     {
         return Website::query()

@@ -6,6 +6,23 @@ jQuery(document).ready(function($){
         e.preventDefault();
         return false;
     });
+
+    var reactionBtns = document.getElementsByClassName("reaction");
+    var reactOnProfile = function() {
+        var element = this;
+        var reaction = this.getAttribute("data-reaction");
+        var profileId = window.location.href.match(/profile\/(\d+)/)[1];
+        var reactedClass = "reacted";
+        var arr = element.className.split(" ");
+        if (arr.indexOf(reactedClass) == -1) {
+            element.className += " " + reactedClass;
+        }
+        $.post( "/api/v1/reaction", { profile_id: profileId, reaction: reaction } );
+    };
+
+    for (var i = 0; i < reactionBtns.length; i++) {
+        reactionBtns[i].addEventListener('click', reactOnProfile, false);
+    }
 });
 
 function autocomplete(inp) {
