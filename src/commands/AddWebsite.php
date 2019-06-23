@@ -37,6 +37,9 @@ class AddWebsite extends Command
     {
         if ($input->getOption('url')) {
             $websiteUrl = (string)$input->getOption('url');
+            if (!\stripos($websiteUrl, 'http') !== 0) {
+                $websiteUrl = 'http://' . $websiteUrl;
+            }
             try {
                 $parsedUrl = Url::factory($websiteUrl);
             } catch (\Guzzle\Common\Exception\InvalidArgumentException $e) {
@@ -48,7 +51,11 @@ class AddWebsite extends Command
             return;
         }
 
-        $website = Website::query()->where('homepage', '=', $websiteUrl)->first();
+        $website = Website::query()->where('homepage', '=', $websiteUrl)
+            ->orWhere('homepage', '=', $parsedUrl->getHost())
+            ->orWhere('homepage', '=', 'http://' . $parsedUrl->getHost())
+            ->orWhere('homepage', '=', 'https://' . $parsedUrl->getHost())
+            ->first();
         $maxWebsite = Website::query()->orderBy('profile_id', 'desc')->limit(1)->first();
         if (!$website) {
             $website = new Website();
@@ -67,7 +74,8 @@ class AddWebsite extends Command
 
         /** @var WebsiteIndexHistory $hist */
         $hist = WebsiteIndexHistory::query()
-            ->where('website_id', '=', $website->_id)->orderBy('created_at', 'desc')
+            ->where('website_id', '=', $website->getAttributes()['_id'])
+            ->orderBy('created_at', 'desc')
             ->limit(1)->first();
         if ($hist) {
             $extractor = new ExtractIndexedContent();

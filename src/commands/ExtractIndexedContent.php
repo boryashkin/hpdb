@@ -78,7 +78,9 @@ class ExtractIndexedContent extends Command
                 break;
             }
             foreach ($c->find(['$or' => $lastWebsiteData]) as $website) {
-                $this->extractAndSave($website);
+                $hist = new WebsiteIndexHistory();
+                $hist->forceFill((array)$website);
+                $this->extractAndSave($hist);
             }
             $skip = $skip + $limit;
         } while ($lastWebsiteData);
@@ -101,6 +103,7 @@ class ExtractIndexedContent extends Command
         foreach ($crawler->filterXPath("//meta[@name='description']/@content") as $t) {
             $content->description = $t->textContent;
         }
-        $content->save();
+
+        return $content->save();
     }
 }

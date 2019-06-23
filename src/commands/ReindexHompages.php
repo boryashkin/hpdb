@@ -92,6 +92,10 @@ class ReindexHompages extends Command
      */
     public function reindex(Website $website)
     {
+        if (\stripos($website->homepage, 'http') !== 0) {
+            $website->homepage = 'http://' . $website->homepage;
+            $website->save();
+        }
         try {
             $parsedUrl = Url::factory($website->homepage);
         } catch (\Guzzle\Common\Exception\InvalidArgumentException $e) {
