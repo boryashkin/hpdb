@@ -37,7 +37,7 @@ class AddWebsite extends Command
     {
         if ($input->getOption('url')) {
             $websiteUrl = (string)$input->getOption('url');
-            if (!\stripos($websiteUrl, 'http') !== 0) {
+            if (\stripos($websiteUrl, 'http') !== 0) {
                 $websiteUrl = 'http://' . $websiteUrl;
             }
             try {
