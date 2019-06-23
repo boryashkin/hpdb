@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% block headTitle %}{{ title }} - интересный сайт в коллекции{% endblock %}
+{% block headDescription %}{{ metaDescription }}подробности о сайте, похожие сайты, рейтинг домашней страницы{% endblock %}
 {% block underNavHeader %}
 <div class="card text-center">
     <div class="card-header">
@@ -7,6 +9,7 @@
     </div>
     <div class="card-body">
         <h5 class="card-title">{{ title }}</h5>
+        <p class="card-domain">{{ sourceUrl }}</p>
         <p class="card-text">{{ description }}</p>
     </div>
     <div class="card-footer text-muted">

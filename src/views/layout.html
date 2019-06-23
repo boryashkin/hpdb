@@ -12,6 +12,16 @@
 
     <link rel="stylesheet" href="/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1">
+
+    {% block metaData %}
+        <title>{% block headTitle %}База данных интересных домашних страниц{% endblock %} - Home Page DataBase</title>
+        <meta name="title" content="{{ block('headTitle') }} - Home Page DataBase">
+        <meta name="description" content="{% block headDescription %}Собрание лучших самодельных сайтов в интернете. Поиск талантов, творческих работ, интересных блогов.{% endblock %}">
+        <meta property="og:title" content="{{ block('headTitle') }} - Home Page DataBase">
+        <meta property="og:description" content="{{ block('headDescription') }}">
+    {% endblock %}
 </head>
 <body>
 <header>

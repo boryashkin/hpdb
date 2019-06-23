@@ -6,8 +6,8 @@ use MongoDB\BSON\ObjectId;
 
 /**
  * @property ObjectId $website_id
- * @property string $path
- * @property string $content
+ * @property string $title
+ * @property string $description
  * @property UTCDateTime $updated_at
  */
 class WebsiteContent extends Model
