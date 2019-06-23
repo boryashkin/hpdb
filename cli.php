@@ -15,6 +15,7 @@ $command->setSqlite($container->get(SQLite3::class));
 $commands[] = $command;
 $command = new \app\commands\ReindexHompages();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
+$commands[] = $command;
 $command = new \app\commands\ExtractIndexedContent();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
 $commands[] = $command;
