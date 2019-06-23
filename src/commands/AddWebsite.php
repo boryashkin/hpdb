@@ -55,6 +55,8 @@ class AddWebsite extends Command
             ->orWhere('homepage', '=', $parsedUrl->getHost())
             ->orWhere('homepage', '=', 'http://' . $parsedUrl->getHost())
             ->orWhere('homepage', '=', 'https://' . $parsedUrl->getHost())
+            ->orWhere('homepage', '=', 'http://' . $parsedUrl->getHost() . '/')
+            ->orWhere('homepage', '=', 'https://' . $parsedUrl->getHost() . '/')
             ->first();
         $maxWebsite = Website::query()->orderBy('profile_id', 'desc')->limit(1)->first();
         if (!$website) {
