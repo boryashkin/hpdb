@@ -27,6 +27,7 @@ class Index extends BaseAction
                 'count' => ['$sum' => 1]
 
             ]],
+            ['$sort' => ['count' => -1]],
             ['$limit' => 50],
         ]);
         $result = [];
