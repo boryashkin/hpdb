@@ -16,4 +16,9 @@ class Website extends Model
 {
     protected $connection = 'mongodb';
     protected $collection = 'website';
+
+    public function content()
+    {
+        return $this->hasOne(WebsiteContent::class);
+    }
 }

@@ -76,15 +76,35 @@ input[type=submit] {
     background-repeat: no-repeat;
     background: url(/img/emoji_spritesheet_0.png);
 }
-.thumb-up {
-    background-position-x: -600px;
-    background-position-y: -75px;
+.emoji.small {
+    display: inline-block;
+    height: 15px;
+    width: 15px;
+    background-size: 405px 105px !important;
+    background-repeat: no-repeat;
+    background: url(/img/emoji_spritesheet_0.png);
 }
-.thumb-down {
+.dislike {
     background-position-x: -625px;
     background-position-y: -75px;
 }
 .like {
     background-position-x: -250px;
     background-position-y: -150px;
+}
+.nohp {
+    background-position-x: -625px;
+    background-position-y: 50px;
+}
+.dislike.small {
+    background-position-x: -375px;
+    background-position-y: -45px;
+}
+.like.small {
+    background-position-x: -150px;
+    background-position-y: -90px;
+}
+.nohp.small {
+    background-position-x: -375px;
+    background-position-y: 30px;
 }

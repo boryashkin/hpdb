@@ -25,8 +25,19 @@
             <p><em>Все сайты открываются внутри этого, а не в новом окне</em></p>
         </div>
         <div class="col">
-            <p><strong>Избранное редактора:</strong></p>
+            <p><strong>Рейтинг:</strong></p>
             <ul>
+                {% for reaction in reactions %}
+                    <li data-tags="blog phd cs">
+                        <div>
+                            <a href="/profile/{{ reaction.profile_id }}">{{ reaction.homepage }}</a> <span>{{ reaction.count }}<i class="emoji {{ reaction.reaction }} small"></i></span>
+                        </div>
+                        <div>
+                            <span class="text-muted small">{{ reaction.title }}</span>
+                        </div>
+                    </li>
+                {% endfor %}
+                <!--
                 <li data-tags="blog phd cs">
                     <a href="/profile/54182">Tom Murphy (tom7.org)</a>
                 </li>
@@ -135,6 +146,7 @@
                 <li>
                     <a href="/profile/54201">Derick Rethans</a>
                 </li>
+                -->
             </ul>
         </div>
     </div>
