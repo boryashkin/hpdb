@@ -11,19 +11,43 @@
             <p><em>Все сайты открываются внутри этого, а не в новом окне</em></p>
             </div>
         <div class="col">
-            <p><strong>Рейтинг:</strong></p>
-            <ul>
-                {% for reaction in reactions %}
-                    <li data-tags="blog phd cs">
-                        <div>
-                            <a href="/profile/{{ reaction.profile_id }}">{{ reaction.homepage }}</a> <span>{{ reaction.count }}<i class="emoji {{ reaction.reaction }} small"></i></span>
-                        </div>
-                        <div>
-                            <span class="text-muted small">{{ reaction.title }}</span>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
+            <div class="row">
+                <div class="col">
+                    <p><strong>Новое:</strong></p>
+                    <ul>
+                        {% for newWebsite in newWebsites %}
+                        <li data-tags="blog phd cs">
+                            <div>
+                                <a href="/profile/{{ newWebsite.profile_id }}">{{ newWebsite.homepage }}</a>
+                                {% for reaction in newWebsite.reactions %}
+                                    <span>{{ reaction.count }}<i class="emoji {{ reaction._id.reaction }} small"></i></span>
+                                {% endfor %}
+                            </div>
+                            <div>
+                                <span class="text-muted small">{{ newWebsite.title }}</span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p><strong>Рейтинг:</strong></p>
+                    <ul>
+                        {% for reaction in reactions %}
+                        <li data-tags="blog phd cs">
+                            <div>
+                                <a href="/profile/{{ reaction.profile_id }}">{{ reaction.homepage }}</a> <span>{{ reaction.count }}<i class="emoji {{ reaction.reaction }} small"></i></span>
+                            </div>
+                            <div>
+                                <span class="text-muted small">{{ reaction.title }}</span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
