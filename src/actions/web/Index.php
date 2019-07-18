@@ -18,9 +18,10 @@ class Index extends BaseAction
         /**
          * @var MongoCollection $c
          */
+        $wc = $mongo->getCollection('website');
         $c = $mongo->getCollection('websiteReaction');
         $reactions = $this->getTopReactions($c);
-        $newWebsites = $this->getNewWebsites($c);
+        $newWebsites = $this->getNewWebsites($wc, $c);
 
         return $this->getView()->render($response, 'web/index.html', [
             'reactions' => $reactions,
@@ -78,13 +79,27 @@ class Index extends BaseAction
         return $result;
     }
 
-    private function getNewWebsites(Collection $c)
+    private function getNewWebsites(Collection $websiteCollection, Collection $reactionCollection)
     {
-        $websites = Website::query()->with(['content'])->orderBy('created_at', 'desc')->limit(5)->get();
+        /** @var MongoCollection $websiteCollection */
+        $websites = $websiteCollection->aggregate([
+            ['$sort' => ['created_at' => -1]],
+            ['$limit' => 5],
+            [
+                '$lookup' => [
+                    'from' => 'websiteContent',
+                    'localField' => '_id',
+                    'foreignField' => 'website_id',
+                    'as' => 'content',
+                ],
+
+            ],
+            ['$unwind' => '$content'],
+        ]);
 
         $result = [];
         foreach ($websites as $website) {
-            $reactions = $c->aggregate([
+            $reactions = $reactionCollection->aggregate([
                 [
                     '$match' => ['website_id' => new ObjectId($website->_id)],
                 ],
