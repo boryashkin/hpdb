@@ -1,9 +1,8 @@
 <?php
 namespace app\commands;
 
-use app\models\Website;
-use app\models\WebsiteIndexHistory;
-use Guzzle\Http\Url;
+use app\models\GithubProfile;
+use Guzzle\Http\Client;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -27,7 +26,7 @@ class GithubUserParser extends Command
     {
         $this
             ->setName('parser:github-users')
-            ->setDescription('Find blogs in github profiles: explore all the friends of a user')
+            ->setDescription('Find blogs in github profiles: explore all the friends of a user; --startWithUser')
             ->addOption('startWithUser', null, InputOption::VALUE_REQUIRED, 'Url of website')
         ;
     }
@@ -35,12 +34,30 @@ class GithubUserParser extends Command
     /** @inheritDoc */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $username = (string)$input->getOption('startWithUser');
-        if (!\preg_match('/^[a-zA-Z0-9]{1,39}&/', $username)) {
-            $output->writeln('NOT PASS');
-        } else {
-            $output->writeln('PASS');
+        $login = (string)$input->getOption('startWithUser');
+        if (!\preg_match('/^[a-zA-Z0-9-]{1,39}$/', $login)) {
+            $output->writeln('Username is invalid');
+            exit(1);
         }
+
+        $client = new Client('https://api.github.com/');
+        $response = $client->get('/users/' . $login)->send();
+        if ($response->getStatusCode() !== 200) {
+            $output->writeln('Server returned ' . $response->getStatusCode());
+            return;
+        }
+        $data = \json_decode($response->getBody(true));
+        /** @var GithubProfile $profile */
+        $profile = GithubProfile::query()->where(['login' => $login])->first();
+        if (!$profile) {
+            $profile = new GithubProfile();
+            $profile->fill((array)$data);
+        } elseif ($data->blog) {
+            $profile->blog = $data->blog;
+        }
+        $profile->save();
+
+        $output->writeln((string)$profile->_id);
     }
 
 }
