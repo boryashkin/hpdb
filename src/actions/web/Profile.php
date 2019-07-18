@@ -24,14 +24,16 @@ class Profile extends BaseAction
         $content = WebsiteContent::query()->where('website_id', '=', new ObjectId($profile->_id))->first();
         try {
             $parsedUrl = Url::factory($profile['homepage']);
-            $parsedUrl = $parsedUrl->getHost();
+            $host = $parsedUrl->getHost();
         } catch (InvalidArgumentException $e) {
-            $parsedUrl = $profile['homepage'];
+            $parsedUrl = htmlspecialchars($profile['homepage']);
+            $host = $parsedUrl;
         }
 
         return $this->getView()->render($response, 'web/profile.html', [
             'url' => '/proxy/' . $profile->profile_id . '/',
             'sourceUrl' => $parsedUrl,
+            'host' => $host,
             'title' => $content->title ?? $parsedUrl,
             'metaDescription' => $parsedUrl . ' ',
             'description' => $content->description ?: 'Нет описания',
