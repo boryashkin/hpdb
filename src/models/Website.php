@@ -19,6 +19,6 @@ class Website extends Model
 
     public function content()
     {
-        return $this->hasOne(WebsiteContent::class);
+        return $this->hasOne(WebsiteContent::class)->orderBy('created_at', 'desc');
     }
 }

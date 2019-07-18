@@ -19,7 +19,6 @@ class Index extends BaseAction
          * @var MongoCollection $c
          */
         $c = $mongo->getCollection('websiteReaction');
-        $c = $mongo->getCollection('websiteReaction');
         $reactions = $this->getTopReactions($c);
         $newWebsites = $this->getNewWebsites($c);
 
@@ -39,26 +38,39 @@ class Index extends BaseAction
                     'count' => ['$sum' => 1]
                 ]
             ],
+            [
+                '$lookup' => [
+                    'from' => 'website',
+                    'localField' => '_id.website_id',
+                    'foreignField' => '_id',
+                    'as' => 'website',
+                ],
+
+            ],
+            ['$unwind' => '$website'],
+            [
+                '$lookup' => [
+                    'from' => 'websiteContent',
+                    'localField' => '_id.website_id',
+                    'foreignField' => 'website_id',
+                    'as' => 'websiteContent',
+                ],
+
+            ],
+            ['$sort' => ['websiteContent.created_at' => -1]],
+            ['$unwind' => '$websiteContent'],
             ['$sort' => ['count' => -1]],
             ['$limit' => 50],
         ]);
 
         $result = [];
         foreach ($reactions as $reaction) {
-            $website = Website::query()->where('_id', '=', $reaction->_id->website_id)->first();
-            if (!$website) {
-                continue;
-            }
             //damn you laravel
-            $content = WebsiteContent::query()
-                ->where('website_id', '=', new ObjectId($website->_id))
-                ->orderBy('created_at', -1)->first();
-
             $result[] = [
-                'profile_id' => $website->profile_id,
-                'homepage' => $website->homepage,
+                'profile_id' => $reaction->website->profile_id,
+                'homepage' => $reaction->website->homepage,
                 'reaction' => $reaction->_id->reaction,
-                'title' => $content->title ? \substr(trim($content->title ?? ''), 0, 50) : 'No description yet',
+                'title' => $reaction->websiteContent->title ? \substr(trim($reaction->websiteContent->title ?? ''), 0, 50) : 'No description yet',
                 'count' => $reaction->count,
             ];
         }
@@ -68,7 +80,7 @@ class Index extends BaseAction
 
     private function getNewWebsites(Collection $c)
     {
-        $websites = Website::query()->orderBy('created_at', 'desc')->limit(5)->get();
+        $websites = Website::query()->with(['content'])->orderBy('created_at', 'desc')->limit(5)->get();
 
         $result = [];
         foreach ($websites as $website) {
@@ -83,16 +95,12 @@ class Index extends BaseAction
                     ]
                 ],
             ]);
-            //damn you laravel
-            $content = WebsiteContent::query()
-                ->where('website_id', '=', new ObjectId($website->_id))
-                ->orderBy('created_at', -1)->first();
 
             $result[] = [
                 'profile_id' => $website->profile_id,
                 'homepage' => $website->homepage,
                 'reactions' => $reactions,
-                'title' => $content->title ? \substr(trim($content->title ?? ''), 0, 50) : 'No description yet',
+                'title' => $website->content->title ? \substr(trim($website->content->title ?? ''), 0, 50) : 'No description yet',
             ];
         }
 
