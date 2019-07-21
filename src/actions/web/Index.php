@@ -52,13 +52,19 @@ class Index extends BaseAction
             [
                 '$lookup' => [
                     'from' => 'websiteContent',
-                    'localField' => '_id.website_id',
-                    'foreignField' => 'website_id',
                     'as' => 'websiteContent',
+                    'let' => ['wid' => '$_id.website_id'],
+                    'pipeline' => [
+                        [
+                            '$match' => [
+                                '$expr' => ['$eq' => ['$$wid', '$website_id']],
+                            ],
+                        ],
+                        ['$sort' => ['created_at' => -1]],
+                        ['$limit' => 1],
+                    ],
                 ],
-
             ],
-            ['$sort' => ['websiteContent.created_at' => -1]],
             ['$unwind' => '$websiteContent'],
             ['$sort' => ['count' => -1]],
             ['$limit' => 50],
