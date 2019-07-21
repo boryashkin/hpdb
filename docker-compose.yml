@@ -30,6 +30,12 @@ services:
       - "./:/var/www/html"
     networks:
       - hpdb-network
+  redis:
+    image: redis:5.0.5-alpine
+    container_name: ${REDIS_HOST}
+    restart: always
+    networks:
+      - hpdb-network
   mongo:
     image: mongo:4.1.5-xenial
     container_name: ${MONGO_HOST}

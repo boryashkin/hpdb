@@ -2,25 +2,32 @@
 namespace app\actions\web;
 
 use app\abstracts\BaseAction;
-use app\models\Website;
-use app\models\WebsiteContent;
 use Jenssegers\Mongodb\Collection;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Collection as MongoCollection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class Index extends BaseAction
 {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $mongo = $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
+        /** @var RedisAdapter $redis */
+        $redis = $this->getContainer()->get(CONTAINER_CONFIG_REDIS);
         /**
          * @var MongoCollection $c
          */
         $wc = $mongo->getCollection('website');
         $c = $mongo->getCollection('websiteReaction');
-        $reactions = $this->getTopReactions($c);
+        $reactions = $redis->get('mainTopReactions', function (ItemInterface $item) use ($c) {
+            $item->expiresAfter(10);
+
+            return $this->getTopReactions($c);
+        });
+
         $newWebsites = $this->getNewWebsites($wc, $c);
 
         return $this->getView()->render($response, 'web/index.html', [

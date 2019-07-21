@@ -5,6 +5,7 @@ define('ENV_PROD', false);
 const CONTAINER_CONFIG_SETTINGS = 'settings';
 const CONTAINER_CONFIG_VIEW = 'view';
 const CONTAINER_CONFIG_MONGO = 'mongodb';
+const CONTAINER_CONFIG_REDIS = 'redis';
 
 $dotenv = new \Symfony\Component\Dotenv\Dotenv();
 $dotenv->load(__DIR__.'/../../.env');
@@ -65,6 +66,15 @@ return new \Slim\Container([
             ->addConnection('mongodb', $manager->getConnection('mongodb'));
 
         return $manager->getConnection('mongodb');
+    },
+    CONTAINER_CONFIG_REDIS => function (\Slim\Container $c) {
+        $config = [
+            'schema' => 'tcp',
+            'host' => env('REDIS_HOST', 'localhost'),
+            'port' => 6379,
+        ];
+        $connection = new Predis\Client($config);
+        return new Symfony\Component\Cache\Adapter\RedisAdapter($connection);
     },
 ]);
 
