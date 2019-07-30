@@ -21,4 +21,9 @@ class Website extends Model
     {
         return $this->hasOne(WebsiteContent::class)->orderBy('created_at', 'desc');
     }
+
+    public function isHttps()
+    {
+        return \stripos($this->homepage, 'https:') === 0;
+    }
 }

@@ -30,13 +30,13 @@ class Index extends BaseAction
         try {
             $parsedUrl = Url::factory($profile['homepage']);
         } catch (InvalidArgumentException $e) {
-            throw new InvalidMethodException($request, $request->getUri());
+            throw new InvalidMethodException($request, $profile['homepage']);
         }
         if (!$path = $request->getAttribute('path')) {
             $path = $parsedUrl->getPath() ?: '/';
         }
         //No need to proxying https
-        if (stripos($profile['homepage'], 'https:/') === 0) {
+        if ($profile->isHttps()) {
             return $response->withAddedHeader('Location', $profile['homepage'])->withStatus(301, 'Moved permanently');
         }
         // Create a guzzle client

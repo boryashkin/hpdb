@@ -62,7 +62,6 @@ class AddWebsite extends Command
         if (!$website) {
             $website = new Website();
             $website->homepage = $websiteUrl;
-            $website->is_http_only = null;
             $website->profile_id = $maxWebsite->profile_id + 1;
             $website->save();
             $output->writeln('Website saved: profile_id = ' . $website->profile_id);

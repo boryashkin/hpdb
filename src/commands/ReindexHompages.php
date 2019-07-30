@@ -56,10 +56,11 @@ class ReindexHompages extends Command
             $i = 0;
         }
         $websites = true;
-        while ($websites) {
+        $cnt = Website::query()->count() / self::PAGINATION_CNT;
+        while ($websites && $i <= $cnt) {
             $this->mongo->reconnect();
             $websites = Website::query()
-                ->offset($i)
+                ->offset($i * self::PAGINATION_CNT)
                 ->take(self::PAGINATION_CNT)
                 ->get()
                 ->all();
@@ -108,6 +109,7 @@ class ReindexHompages extends Command
         $isHttp = $parsedUrl->getScheme() === 'http';
         try {
             $parsed = $this->parseWebsite($parsedUrl->setScheme('https'));
+            $isHttp = false;
         } catch (TransferException $e) {
             if ($this->isCurlCodeNeedToLog($e)) {
                 echo 'https| ' . $website->homepage . ' ' . $e->getMessage() . PHP_EOL;
@@ -115,6 +117,7 @@ class ReindexHompages extends Command
             unset($e);
             try {
                 $parsed = $this->parseWebsite($parsedUrl->setScheme('http'));
+                $isHttp = true;
             } catch (TransferException $e) {
                 if ($this->isCurlCodeNeedToLog($e)) {
                     echo 'http| ' . $website->homepage . ' ' . $e->getMessage() . PHP_EOL;
@@ -131,11 +134,12 @@ class ReindexHompages extends Command
             return null;
         }
         $historyRow->available = true;
-        if ($isHttp && $historyRow->is_http_only !== true) {
+        if ($isHttp && $website->isHttps()) {
+            $website->setAttribute('homepage', \str_replace('https://', 'http://', $website->homepage));
+        } elseif (!$isHttp && !$website->isHttps()) {
             $website->homepage = \str_replace('http://', 'https://', $website->homepage);
-            $website->save();
         }
-        if ($website->wasChanged()) {
+        if ($website->isDirty()) {
             $website->save();
         }
         $historyRow->http_status = $parsed['httpStatus'];
