@@ -16,6 +16,8 @@ use Proxy\Adapter\Guzzle\GuzzleAdapter;
 use Proxy\Filter\RemoveEncodingFilter;
 use Slim\Exception\InvalidMethodException;
 use Slim\Exception\NotFoundException;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class Index extends BaseAction
 {
@@ -48,19 +50,25 @@ class Index extends BaseAction
         $proxy->filter(new RemoveEncodingFilter());
         $clone = clone $request;
         $clone = $clone->withUri($clone->getUri()->withPath($path));
-        try {
-            $res = $proxy->forward($clone)->to($profile['homepage']);
-        } catch (ConnectException $e) {
-            return $this->getView()->render($response, 'proxy/unable.html');
-        }
-        if ($redirects = $res->getHeaderLine('X-Guzzle-Redirect-History')) {
-            $redirects = explode(', ', $redirects);
-            if (stripos($redirects[0], 'https:/') === 0) {
-                //if there is https, we don't have to proxy it
-                return $response->withAddedHeader('Location', $redirects[0])->withStatus(301, 'Moved permanently');
-            }
-        }
 
-        return $res;
+        /** @var RedisAdapter $redis */
+        $redis = $this->getContainer()->get(CONTAINER_CONFIG_REDIS);
+        return $redis->get('proxy' . md5($clone->getUri() . $path), function (ItemInterface $item) use ($proxy, $clone, $profile, $response) {
+            $item->expiresAfter(3600);
+            try {
+                $res = $proxy->forward($clone)->to($profile['homepage']);
+            } catch (ConnectException $e) {
+                return $this->getView()->render($response, 'proxy/unable.html');
+            }
+            if ($redirects = $res->getHeaderLine('X-Guzzle-Redirect-History')) {
+                $redirects = explode(', ', $redirects);
+                if (stripos($redirects[0], 'https:/') === 0) {
+                    //if there is https, we don't have to proxy it
+                    return $response->withAddedHeader('Location', $redirects[0])->withStatus(301, 'Moved permanently');
+                }
+            }
+
+            return $res;
+        });
     }
 }
