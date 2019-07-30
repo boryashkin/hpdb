@@ -101,11 +101,18 @@ class Index extends BaseAction
             [
                 '$lookup' => [
                     'from' => 'websiteContent',
-                    'localField' => '_id',
-                    'foreignField' => 'website_id',
                     'as' => 'content',
+                    'let' => ['wid' => '$_id'],
+                    'pipeline' => [
+                        [
+                            '$match' => [
+                                '$expr' => ['$eq' => ['$$wid', '$website_id']],
+                            ],
+                        ],
+                        ['$sort' => ['created_at' => -1]],
+                        ['$limit' => 1],
+                    ],
                 ],
-
             ],
             ['$unwind' => '$content'],
         ]);
