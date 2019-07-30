@@ -51,17 +51,17 @@ class AddWebsite extends Command
             return;
         }
 
-        $q = Website::query()->where('homepage', '=', $websiteUrl)
-            ->orWhere('homepage', '=', $parsedUrl->getHost())
-            ->orWhere('homepage', '=', 'http://' . $parsedUrl->getHost())
-            ->orWhere('homepage', '=', 'https://' . $parsedUrl->getHost())
-            ->orWhere('homepage', '=', 'http://' . $parsedUrl->getHost() . '/')
-            ->orWhere('homepage', '=', 'https://' . $parsedUrl->getHost() . '/');
+        $httpUrl = \str_replace('https://', 'http://', $websiteUrl);
+        $httpsUrl = \str_replace('http://', 'https://', $websiteUrl);
+        $q = Website::query()->where('homepage', '=', $httpsUrl)
+            ->orWhere('homepage', '=', $httpUrl)
+            ->orWhere('homepage', '=', $httpsUrl . '/')
+            ->orWhere('homepage', '=', $httpUrl . '/');
         if ($q->count() > 1) {
             $output->writeln('More than 1 website found!');
+            $output->writeln('Only 1 will be updated');
         }
         $website = $q->first();
-        $output->writeln('Only 1 will be updated');
         $maxWebsite = Website::query()->orderBy('profile_id', 'desc')->limit(1)->first();
         if (!$website) {
             $website = new Website();
