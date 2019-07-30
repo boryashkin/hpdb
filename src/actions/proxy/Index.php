@@ -32,6 +32,9 @@ class Index extends BaseAction
         } catch (InvalidArgumentException $e) {
             throw new InvalidMethodException($request, $profile['homepage']);
         }
+        if (\in_array($parsedUrl->getHost(), ['hpdb.ru', 'hpdb.com'])) {
+            throw new \Exception('Proxying hpdb is not allowed');
+        }
         if (!$path = $request->getAttribute('path')) {
             $path = $parsedUrl->getPath() ?: '/';
         }
@@ -53,10 +56,10 @@ class Index extends BaseAction
 
         /** @var RedisAdapter $redis */
         $redis = $this->getContainer()->get(CONTAINER_CONFIG_REDIS);
-        return $redis->get('proxy' . md5($clone->getUri() . $path), function (ItemInterface $item) use ($proxy, $clone, $profile, $response) {
+        return $redis->get('proxy' . md5($clone->getUri() . $path), function (ItemInterface $item) use ($proxy, $clone, $parsedUrl, $response) {
             $item->expiresAfter(3600);
             try {
-                $res = $proxy->forward($clone)->to($profile['homepage']);
+                $res = $proxy->forward($clone)->to($parsedUrl->getScheme() . '://' . $parsedUrl->getHost());
             } catch (ConnectException $e) {
                 return $this->getView()->render($response, 'proxy/unable.html');
             }
