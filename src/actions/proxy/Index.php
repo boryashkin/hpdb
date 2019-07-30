@@ -18,6 +18,7 @@ use Slim\Exception\InvalidMethodException;
 use Slim\Exception\NotFoundException;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
+use function GuzzleHttp\Psr7\stream_for;
 
 class Index extends BaseAction
 {
@@ -54,23 +55,34 @@ class Index extends BaseAction
         $clone = clone $request;
         $clone = $clone->withUri($clone->getUri()->withPath($path));
 
+        /**
+         * Crazy workaround to cache uncachable PSR Responses with streams inside (for some cases)
+         */
         /** @var RedisAdapter $redis */
         $redis = $this->getContainer()->get(CONTAINER_CONFIG_REDIS);
-        return $redis->get('proxy' . md5($clone->getUri() . $path), function (ItemInterface $item) use ($proxy, $clone, $parsedUrl, $response) {
+        $cacheKeyRsp = 'proxy' . md5($clone->getUri() . $path) . 'rsp';
+        $cacheKeyBody = 'proxy' . md5($clone->getUri() . $path) . 'body';
+        if ($redis->hasItem($cacheKeyRsp) && $redis->hasItem($cacheKeyBody)) {
+            return $redis->getItem($cacheKeyRsp)->get()->withBody(stream_for($redis->getItem($cacheKeyBody)->get()));
+        }
+        try {
+            $res = $proxy->forward($clone)->to($parsedUrl->getScheme() . '://' . $parsedUrl->getHost());
+        } catch (ConnectException $e) {
+            return $this->getView()->render($response, 'proxy/unable.html');
+        }
+        if ($redirects = $res->getHeaderLine('X-Guzzle-Redirect-History')) {
+            $redirects = explode(', ', $redirects);
+            if (stripos($redirects[0], 'https:/') === 0) {
+                //if there is https, we don't have to proxy it
+                return $response->withAddedHeader('Location', $redirects[0])->withStatus(301, 'Moved permanently');
+            }
+        }
+        $redis->get($cacheKeyBody, function (ItemInterface $item) use ($res) {
             $item->expiresAfter(3600);
-            try {
-                $res = $proxy->forward($clone)->to($parsedUrl->getScheme() . '://' . $parsedUrl->getHost());
-            } catch (ConnectException $e) {
-                return $this->getView()->render($response, 'proxy/unable.html');
-            }
-            if ($redirects = $res->getHeaderLine('X-Guzzle-Redirect-History')) {
-                $redirects = explode(', ', $redirects);
-                if (stripos($redirects[0], 'https:/') === 0) {
-                    //if there is https, we don't have to proxy it
-                    return $response->withAddedHeader('Location', $redirects[0])->withStatus(301, 'Moved permanently');
-                }
-            }
-
+            return $res->getBody()->getContents();
+        });
+        return $redis->get($cacheKeyRsp, function (ItemInterface $item) use ($res) {
+            $item->expiresAfter(3600);
             return $res;
         });
     }
