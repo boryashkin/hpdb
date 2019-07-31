@@ -4,65 +4,70 @@
 <div class="main-container container-fluid">
     <h1>Поиск креативности</h1>
     <div class="row">
-        <div class="col">
-            <p>
-                Социальная сеть из малоизвестных <mark>шедевров</mark> - персональных "домашних страниц".
-            </p>
-            <p><em>Все сайты открываются внутри этого, а не в новом окне</em></p>
+        <div class="col col-lg-4 col-md-12 p-3">
+            <div class="row pl-3">
+                <p>
+                    Социальная сеть из малоизвестных <mark>шедевров</mark> - персональных "домашних страниц".
+                </p>
+                <p><em>Все сайты открываются внутри этого, а не в новом окне</em></p>
             </div>
-        <div class="col">
+        </div>
+        <div class="col col-lg-4 col-md-12">
             <div class="row">
                 <div class="col">
                     <p><strong>Новое:</strong></p>
-                    <ul>
+                    <div class="d-flex flex-column border">
                         {% for newWebsite in newWebsites %}
-                        <li data-tags="blog phd cs">
+                        <div class="p-2 border border-light bg-white">
                             <div>
                                 <a href="/profile/{{ newWebsite.profile_id }}">{{ newWebsite.homepage }}</a>
                                 {% for reaction in newWebsite.reactions %}
-                                    <span>{{ reaction.count }}<i class="emoji {{ reaction._id.reaction }} small"></i></span>
+                                <span>{{ reaction.count }}<i class="emoji {{ reaction._id.reaction }} small"></i></span>
                                 {% endfor %}
                             </div>
                             <div>
                                 <span class="text-muted small">{{ newWebsite.title }}</span>
                             </div>
-                        </li>
+                        </div>
                         {% endfor %}
-                    </ul>
+                    </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row mt-2">
                 <div class="col">
                     <p><strong>Рейтинг:</strong></p>
-                    <ul>
-                        {% for reaction in reactions %}
-                        <li data-tags="blog phd cs">
-                            <div>
-                                <a href="/profile/{{ reaction.profile_id }}">{{ reaction.homepage }}</a> <span>{{ reaction.count }}<i class="emoji {{ reaction.reaction }} small"></i></span>
-                            </div>
-                            <div>
-                                <span class="text-muted small">{{ reaction.title }}</span>
-                            </div>
-                        </li>
-                        {% endfor %}
-                    </ul>
+                    {% for reaction in reactions %}
+                    <div class="p-2 border border-light bg-white">
+                        <div>
+                            <a href="/profile/{{ reaction.profile_id }}">{{ reaction.homepage }}</a> <span>{{ reaction.count }}<i class="emoji {{ reaction.reaction }} small"></i></span>
+                        </div>
+                        <div>
+                            <span class="text-muted small">{{ reaction.title }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
+            </div>
+        </div>
+        <div class="col col-lg-4 col-md-12">
+            <div class="row p-3">
+                <p>
+                    Существует множество подобных сайтов, на которых можно увидеть вдохновляющий креатив человека, будь то
+                    дизайнерские приемы или околонаучные исследования, профессиональный опыт или просто интересный блог.
+                </p>
+                <p>
+                    Некоторые из них попадают в поле зрения широкой общественности, но многие так и остаются скрытыми
+                    от глаз. Так не может больше продолжаться.
+                </p>
+                <p>
+                    Найдем их.
+                </p>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <p>
-                Существует множество подобных сайтов, на которых можно увидеть вдохновляющий креатив человека, будь то
-                дизайнерские приемы или околонаучные исследования, профессиональный опыт или просто интересный блог.
-            </p>
-            <p>
-                Некоторые из них попадают в поле зрения широкой общественности, но многие так и остаются скрытыми
-                от глаз. Так не может больше продолжаться.
-            </p>
-            <p>
-                Найдем их.
-            </p>
+
         </div>
     </div>
 </div>
