@@ -11,13 +11,24 @@ jQuery(document).ready(function($){
     var reactOnProfile = function() {
         var element = this;
         var reaction = this.getAttribute("data-reaction");
-        var profileId = window.location.href.match(/profile\/(\d+)/)[1];
+        var profileId = this.getAttribute("data-profile");
         var reactedClass = "reacted";
         var arr = element.className.split(" ");
         if (arr.indexOf(reactedClass) == -1) {
             element.className += " " + reactedClass;
         }
-        $.post( "/api/v1/reaction", { profile_id: profileId, reaction: reaction } );
+        var cntEls = this.getElementsByClassName("count");
+        var cntEl = cntEls[0] ? cntEls[0] : null;
+        $.post(
+            "/api/v1/reaction",
+            { profile_id: profileId, reaction: reaction },
+            function () {
+                if (cntEl) {
+                    console.log(cntEl);
+                    cntEl.innerText++;
+                }
+            }
+        );
     };
 
     for (var i = 0; i < reactionBtns.length; i++) {

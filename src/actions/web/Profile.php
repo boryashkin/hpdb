@@ -31,6 +31,7 @@ class Profile extends BaseAction
         }
 
         return $this->getView()->render($response, 'web/profile.html', [
+            'profile_id' => $profileId,
             'url' => '/proxy/' . $profile->profile_id . '/',
             'sourceUrl' => $parsedUrl,
             'host' => $host,

@@ -19,14 +19,22 @@
                     <div class="d-flex flex-column border">
                         {% for newWebsite in newWebsites %}
                         <div class="p-2 border border-light bg-white">
-                            <div>
-                                <a href="/profile/{{ newWebsite.profile_id }}">{{ newWebsite.homepage }}</a>
-                                {% for reaction in newWebsite.reactions %}
-                                <span>{{ reaction.count }}<i class="emoji {{ reaction._id.reaction }} small"></i></span>
-                                {% endfor %}
-                            </div>
-                            <div>
-                                <span class="text-muted small">{{ newWebsite.title }}</span>
+                            <div class="row">
+                                <div class="col">
+                                    <div>
+                                        <a href="/profile/{{ newWebsite.profile_id }}">{{ newWebsite.homepage }}</a>
+                                    </div>
+                                    <div>
+                                        <span class="text-muted small">{{ newWebsite.title }}</span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    {% for reaction in newWebsite.reactions %}
+                                    <button type="button" class="btn btn-light reaction" data-reaction="{{ reaction._id.reaction }}" data-profile="{{ newWebsite.profile_id }}">
+                                        <span class="count">{{ reaction.count }}</span><i class="emoji {{ reaction._id.reaction }} small"></i>
+                                    </button>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                         {% endfor %}
@@ -38,11 +46,20 @@
                     <p><strong>Рейтинг:</strong></p>
                     {% for reaction in reactions %}
                     <div class="p-2 border border-light bg-white">
-                        <div>
-                            <a href="/profile/{{ reaction.profile_id }}">{{ reaction.homepage }}</a> <span>{{ reaction.count }}<i class="emoji {{ reaction.reaction }} small"></i></span>
-                        </div>
-                        <div>
-                            <span class="text-muted small">{{ reaction.title }}</span>
+                        <div class="row">
+                            <div class="col">
+                                <div>
+                                    <a href="/profile/{{ reaction.profile_id }}">{{ reaction.homepage }}</a>
+                                </div>
+                                <div>
+                                    <span class="text-muted small">{{ reaction.title }}</span>
+                                </div>
+                            </div>
+                            <div class="col text-right">
+                                <button type="button" class="btn btn-light reaction" data-reaction="{{ reaction.reaction }}" data-profile="{{ reaction.profile_id }}">
+                                    <span class="count">{{ reaction.count }}</span><i class="emoji {{ reaction.reaction }} small"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}

@@ -9,13 +9,13 @@
     </div>
     <div class="card-body">
         <h5 class="card-title">{{ title }}</h5>
-        <a class="card-domain"><a href="{{ sourceUrl }}">{{ host }}</a></p>
+        <p class="card-domain"><a href="{{ sourceUrl }}">{{ host }}</a></p>
         <p class="card-text">{{ description }}</p>
     </div>
     <div class="card-footer text-muted">
-        <a href="#" class="btn btn-outline-info reaction" data-reaction="nohp" title="Not a homepage"><i class="emoji nohp"></i></a>
-        <a href="#" class="btn btn-outline-info reaction" data-reaction="dislike"><i class="emoji dislike"></i></a>
-        <a href="#" class="btn btn-outline-info reaction" data-reaction="like"><i class="emoji like"></i></a>
+        <a href="#" class="btn btn-outline-info reaction" data-reaction="nohp" data-profile="{{ profile_id }}" title="Not a homepage"><i class="emoji nohp"></i></a>
+        <a href="#" class="btn btn-outline-info reaction" data-reaction="dislike" data-profile="{{ profile_id }}"><i class="emoji dislike"></i></a>
+        <a href="#" class="btn btn-outline-info reaction" data-reaction="like" data-profile="{{ profile_id }}"><i class="emoji like"></i></a>
     </div>
 </div>
 {% endblock %}
