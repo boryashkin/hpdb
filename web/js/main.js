@@ -16,6 +16,8 @@ jQuery(document).ready(function($){
         var arr = element.className.split(" ");
         if (arr.indexOf(reactedClass) == -1) {
             element.className += " " + reactedClass;
+        } else {
+            return;
         }
         var cntEls = this.getElementsByClassName("count");
         var cntEl = cntEls[0] ? cntEls[0] : null;
