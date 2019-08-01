@@ -65,6 +65,16 @@
                     {% endfor %}
                 </div>
             </div>
+            <div class="row mt-2">
+                <div class="col" id="all-profile-content">
+                    <p><strong>Весь список:</strong></p>
+                </div>
+                <div class="container text-center" id="page-loading">
+                    <div class="p-2 border border-light bg-white flex">
+                        Loading...
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col col-lg-4 col-md-12">
             <div class="row p-3">
@@ -88,4 +98,7 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block scriptsEnd %}
+<script src="/js/infinite-scroll.js?v=20190801_1"></script>
 {% endblock %}

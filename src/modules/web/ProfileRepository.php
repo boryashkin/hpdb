@@ -17,7 +17,7 @@ class ProfileRepository
         $this->connection = $connection;
     }
 
-    public function getList($query, int $page)
+    public function getList(int $page, $query = null)
     {
         $q = strip_tags($query);
         if ($page <= 0) {
@@ -26,11 +26,14 @@ class ProfileRepository
         $step = 30;
         $from = ($page - 1) * $step;
 
-        $websites = Website::query()
+        $req = Website::query()
             ->select(['profile_id', 'homepage'])
-            ->where('homepage', 'like', '%' . $q . '%')
-            ->offset($from)->limit($step)
-            ->get();
+            ->offset($from)->limit($step);
+        if ($query) {
+            $req->where('homepage', 'like', '%' . $q . '%');
+        }
+        $websites = $req->get();
+
         return $websites->toArray();
     }
 

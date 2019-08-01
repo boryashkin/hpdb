@@ -16,7 +16,7 @@ class Index extends BaseAction
 
         $repo = new ProfileRepository($this->getContainer()->get(CONTAINER_CONFIG_MONGO));
         $response = $response->withAddedHeader('Content-Type', 'application/json');
-        $response->getBody()->write(\json_encode($repo->getList($query, $page)));
+        $response->getBody()->write(\json_encode($repo->getList($page, $query)));
 
         return $response;
     }
