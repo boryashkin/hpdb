@@ -43,7 +43,7 @@ var endless = {
 
                         var elHp = document.createElement('div');
                         var a = document.createElement('a');
-                        var linkText = document.createTextNode(item.homepage);
+                        var linkText = document.createTextNode(item.homepage.replace('http://', '').replace('https://', ''));
                         a.appendChild(linkText);
                         a.href = "/profile/" + item.profile_id;
                         elHp.appendChild(a);
