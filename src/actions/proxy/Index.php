@@ -60,8 +60,8 @@ class Index extends BaseAction
          */
         /** @var RedisAdapter $redis */
         $redis = $this->getContainer()->get(CONTAINER_CONFIG_REDIS);
-        $cacheKeyRsp = 'proxy' . md5($clone->getUri() . $path) . 'rsp';
-        $cacheKeyBody = 'proxy' . md5($clone->getUri() . $path) . 'body';
+        $cacheKeyRsp = 'proxy' . md5($parsedUrl->getHost() . $path) . 'rsp';
+        $cacheKeyBody = 'proxy' . md5($parsedUrl->getHost() . $path) . 'body';
         if ($redis->hasItem($cacheKeyRsp) && $redis->hasItem($cacheKeyBody)) {
             return $redis->getItem($cacheKeyRsp)->get()->withBody(stream_for($redis->getItem($cacheKeyBody)->get()));
         }
