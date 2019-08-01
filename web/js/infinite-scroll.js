@@ -73,15 +73,17 @@ var endless = {
     },
 
     listen: function(){
-        // Get the height of the entire document
-        var height = document.documentElement.offsetHeight,
-            // Get the current offset - how far "scrolled down"
-            offset = document.documentElement.scrollTop + window.innerHeight;
+        // crossbrowser solution
+        var docHeight = document.body.offsetHeight;
+        docHeight = docHeight == undefined ? window.document.documentElement.scrollHeight : docHeight;
 
-        // Check if user has hit the end of page
-        // console.log('Height: ' + height);
-        // console.log('Offset: ' + offset);
-        if (offset === height) {
+        var winheight = window.innerHeight;
+        winheight = winheight == undefined ? document.documentElement.clientHeight : winheight;
+
+        var scrollpoint = window.scrollY;
+        scrollpoint = scrollpoint == undefined ? window.document.documentElement.scrollTop : scrollpoint;
+
+        if ((scrollpoint + winheight) >= docHeight) {
             endless.load(endless.page);
         }
     }
