@@ -35,6 +35,8 @@ class ProfileRepository
         /** @var MongoCollection $websiteCollection */
         $aggQuery = [
             ['$sort' => ['created_at' => -1]],
+            ['$limit' => $from + $step],
+            ['$skip' => $from],
             [
                 '$lookup' => [
                     'from' => 'websiteContent',
@@ -58,8 +60,6 @@ class ProfileRepository
                 'homepage' => '$homepage',
                 'description' => '$content.description'
             ]],
-            ['$limit' => $from + $step],
-            ['$skip' => $from],
         ];
         if (isset($query)) {
             \array_unshift($aggQuery, [
