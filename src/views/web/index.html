@@ -30,7 +30,7 @@
                                 </div>
                                 <div class="col text-right">
                                     {% for reaction in newWebsite.reactions %}
-                                    <button type="button" class="btn btn-light reaction" data-reaction="{{ reaction._id.reaction }}" data-profile="{{ newWebsite.profile_id }}">
+                                    <button type="button" class="my-1 btn btn-light reaction" data-reaction="{{ reaction._id.reaction }}" data-profile="{{ newWebsite.profile_id }}">
                                         <span class="count">{{ reaction.count }}</span><i class="emoji {{ reaction._id.reaction }} small"></i>
                                     </button>
                                     {% endfor %}
