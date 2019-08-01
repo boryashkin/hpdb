@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% block htmlAttributes %}class="h-100 mh-100"{% endblock %}
+{% block bodyAttributes %}class="h-100 mh-100"{% endblock %}
 {% block headTitle %}{{ title }} - интересный сайт в коллекции{% endblock %}
 {% block headDescription %}{{ metaDescription }}подробности о сайте, похожие сайты, рейтинг домашней страницы{% endblock %}
 {% block underNavHeader %}
@@ -9,7 +11,7 @@
     </div>
     <div class="card-body">
         <h5 class="card-title">{{ title }}</h5>
-        <p class="card-domain"><a href="{{ sourceUrl }}">{{ host }}</a></p>
+        <a class="card-domain"><a href="{{ sourceUrl }}">{{ host }}</a></a>
         <p class="card-text">{{ description }}</p>
     </div>
     <div class="card-footer text-muted">
@@ -20,5 +22,5 @@
 </div>
 {% endblock %}
 {% block body %}
-<iframe id="site-container" src="{{ url }}"></iframe>
+<iframe id="site-container" class="mh-100" src="{{ url }}"></iframe>
 {% endblock %}
