@@ -82,7 +82,7 @@ class Index extends BaseAction
             //damn you laravel
             $result[] = [
                 'profile_id' => $reaction->website->profile_id,
-                'homepage' => $reaction->website->homepage,
+                'homepage' => \str_replace(['http://', 'https://'], '', $reaction->website->homepage),
                 'reaction' => $reaction->_id->reaction,
                 'title' => $reaction->websiteContent->title ? \substr(trim($reaction->websiteContent->title ?? ''), 0, 50) : 'No description yet',
                 'count' => $reaction->count,
@@ -133,7 +133,7 @@ class Index extends BaseAction
 
             $result[] = [
                 'profile_id' => $website->profile_id,
-                'homepage' => $website->homepage,
+                'homepage' => \str_replace(['http://', 'https://'], '', $website->homepage),
                 'reactions' => $reactions,
                 'title' => $website->content->title ? \substr(trim($website->content->title ?? ''), 0, 50) : 'No description yet',
             ];
