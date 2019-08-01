@@ -3,6 +3,8 @@ namespace app\modules\web;
 
 use app\models\Website;
 use Illuminate\Database\ConnectionInterface;
+use MongoDB\BSON\Regex;
+use MongoDB\Collection as MongoCollection;
 
 class ProfileRepository
 {
@@ -19,22 +21,60 @@ class ProfileRepository
 
     public function getList(int $page, $query = null)
     {
-        $q = strip_tags($query);
+        if (isset($query)) {
+            $query = \strip_tags($query);
+            $query = \trim($query);
+        }
         if ($page <= 0) {
             $page = 1;
         }
         $step = 30;
         $from = ($page - 1) * $step;
+        $websiteCollection = $this->connection->getCollection('website');
 
-        $req = Website::query()
-            ->select(['profile_id', 'homepage'])
-            ->offset($from)->limit($step);
-        if ($query) {
-            $req->where('homepage', 'like', '%' . $q . '%');
+        /** @var MongoCollection $websiteCollection */
+        $aggQuery = [
+            ['$sort' => ['created_at' => -1]],
+            [
+                '$lookup' => [
+                    'from' => 'websiteContent',
+                    'as' => 'content',
+                    'let' => ['wid' => '$_id'],
+                    'pipeline' => [
+                        [
+                            '$match' => [
+                                '$expr' => ['$eq' => ['$$wid', '$website_id']],
+                            ],
+                        ],
+                        ['$sort' => ['created_at' => -1]],
+                        ['$limit' => 1],
+                    ],
+                ],
+            ],
+            ['$unwind' => '$content'],
+            ['$project' => [
+                '_id' => 0,
+                'profile_id' => '$profile_id',
+                'homepage' => '$homepage',
+                'description' => '$content.description'
+            ]],
+            ['$limit' => $from + $step],
+            ['$skip' => $from],
+        ];
+        if (isset($query)) {
+            \array_unshift($aggQuery, [
+                '$match' => [
+                    'homepage' => ['$regex' =>  new Regex($query, "i")]
+                ]
+            ]);
         }
-        $websites = $req->get();
+        $websites = $websiteCollection->aggregate($aggQuery);
+        $websitesArr = [];
+        foreach ($websites as $website) {
+            $websitesArr[] = (array)$website;
+        }
 
-        return $websites->toArray();
+        return $websitesArr;
     }
 
     /**
