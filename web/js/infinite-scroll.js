@@ -32,7 +32,6 @@ var endless = {
                 // Contents loaded
                 else {
                     rsp.forEach(function (item, index) {
-                        console.log(item, index);
                         // Append into container
                         var wrapper = document.createElement('div');
                         wrapper.className = "p-2 border border-light bg-white";
