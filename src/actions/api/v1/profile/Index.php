@@ -1,5 +1,5 @@
 <?php
-namespace app\actions\api\v1;
+namespace app\actions\api\v1\profile;
 
 use app\abstracts\BaseAction;
 use app\modules\web\ProfileRepository;

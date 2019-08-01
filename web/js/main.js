@@ -55,7 +55,7 @@ function autocomplete(inp) {
         /*append the DIV element as a child of the autocomplete container:*/
         this.parentNode.appendChild(a);
         jQuery.get(
-            '/api/v1/index',
+            '/api/v1/profile/index',
             {query: val},
             function (response) {
                 for (var i in response) {
