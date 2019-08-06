@@ -16,4 +16,6 @@ $app->get('/api/v1/reaction', \app\actions\api\v1\reaction\Index::class);
 $app->get('/proxy/{id}/', \app\actions\proxy\Index::class);
 $app->get('/proxy/{id}/{path:.*}', \app\actions\proxy\Index::class);
 
+$app->get('/article/create-website', \app\actions\web\Article::class);
+
 $app->run();
