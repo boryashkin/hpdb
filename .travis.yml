@@ -1,0 +1,9 @@
+language: php
+
+services:
+  - docker
+
+script:
+  - cp .env.dist .env
+  - docker-compose -d
+  - docker exec -it hpdb-php-api vendor/bin/codecept run
