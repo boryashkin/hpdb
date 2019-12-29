@@ -53,11 +53,11 @@ return new \Slim\Container([
         });
         $manager->addConnection([
             'driver'   => 'mongodb',
-            'host'     => env('MONGO_HOST', 'localhost'),
-            'port'     => env('MONGO_PORT', 27017),
-            'database' => env('MONGO_DATABASE', 'hpdb'),
-            'username' => env('MONGO_USERNAME', null),
-            'password' => env('MONGO_PASSWORD', null),
+            'host'     => \getenv('MONGO_HOST', true),
+            'port'     => \getenv('MONGO_PORT', true),
+            'database' => \getenv('MONGO_DATABASE', true),
+            'username' => \getenv('MONGO_USERNAME', true),
+            'password' => \getenv('MONGO_PASSWORD', true),
             'options'  => [
                 'database' => 'admin' // sets the authentication database required by mongo 3
             ]
@@ -70,7 +70,7 @@ return new \Slim\Container([
     CONTAINER_CONFIG_REDIS => function (\Slim\Container $c) {
         $config = [
             'schema' => 'tcp',
-            'host' => env('REDIS_HOST', 'localhost'),
+            'host' => \getenv('REDIS_HOST', true),
             'port' => 6379,
         ];
         $connection = new Predis\Client($config);

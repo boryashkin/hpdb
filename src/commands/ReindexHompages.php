@@ -2,17 +2,7 @@
 namespace app\commands;
 
 use app\models\Website;
-use app\models\WebsiteIndexHistory;
-use Guzzle\Http\Url;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\TransferException;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\RedirectMiddleware;
-use MongoDB\BSON\ObjectId;
-use Proxy\Adapter\Guzzle\GuzzleAdapter;
-use Proxy\Filter\RemoveEncodingFilter;
-use Proxy\Proxy;
+use app\services\website\WebsiteIndexer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -31,10 +21,17 @@ class ReindexHompages extends Command
 
     /** @var \Jenssegers\Mongodb\Connection */
     private $mongo;
+    /** @var WebsiteIndexer */
+    private $websiteIndexer;
 
     public function setMongo(\Jenssegers\Mongodb\Connection $mongo)
     {
         $this->mongo = $mongo;
+    }
+
+    public function setWebsiteIndexer(WebsiteIndexer $indexer)
+    {
+        $this->websiteIndexer = $indexer;
     }
 
     /** @inheritDoc */
@@ -66,18 +63,7 @@ class ReindexHompages extends Command
                 ->all();
             /** @var Website $website */
             foreach ($websites as $website) {
-                try {
-                    $this->reindex($website);
-                } catch (\MongoDB\Driver\Exception\UnexpectedValueException $e) {
-                    echo 'mongo| UnexpectedValueException: ' . $website->homepage . ' ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
-                    unset($e);
-                } catch (\MongoDB\Driver\InvalidArgumentException $e) {
-                    echo 'mongo| InvalidArgumentException: ' . $website->homepage . ' ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
-                    unset($e);
-                } catch (\Guzzle\Common\Exception\InvalidArgumentException $e) {
-                    echo 'URL| InvalidArgumentException: ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
-                    unset($e);
-                }
+                $this->reindex($website);
             }
             $i++;
         }
@@ -89,120 +75,47 @@ class ReindexHompages extends Command
     /**
      * Check availability http & https and set "check date".
      * @param Website $website
-     * @return |null
+     * @return void
      */
-    public function reindex(Website $website)
+    public function reindex(Website $website): void
     {
-        if (\stripos($website->homepage, 'http') !== 0) {
-            $website->homepage = 'http://' . $website->homepage;
-            $website->save();
-        }
         try {
-            $parsedUrl = Url::factory($website->homepage);
-        } catch (\Guzzle\Common\Exception\InvalidArgumentException $e) {
-            //to know where and which exactly exceptions are
-            throw $e;
-        }
-        $historyRow = new WebsiteIndexHistory();
-        $historyRow->website_id = new ObjectId($website->_id);
-
-        $isHttp = $parsedUrl->getScheme() === 'http';
-        try {
-            $parsed = $this->parseWebsite($parsedUrl->setScheme('https'));
-            $isHttp = false;
-        } catch (TransferException $e) {
-            if ($this->isCurlCodeNeedToLog($e)) {
-                echo 'https| ' . $website->homepage . ' ' . $e->getMessage() . PHP_EOL;
+            $result = $this->websiteIndexer->reindex($website);
+            if ($website->isDirty()) {
+                $website->save();
             }
+            if ($result->historyRow) {
+                $result->historyRow->save();
+            }
+        } catch (\MongoDB\Driver\Exception\UnexpectedValueException $e) {
+            echo 'mongo| UnexpectedValueException: ' . $website->homepage . ' ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
             unset($e);
-            try {
-                $parsed = $this->parseWebsite($parsedUrl->setScheme('http'));
-                $isHttp = true;
-            } catch (TransferException $e) {
-                if ($this->isCurlCodeNeedToLog($e)) {
-                    echo 'http| ' . $website->homepage . ' ' . $e->getMessage() . PHP_EOL;
+        } catch (\MongoDB\Driver\Exception\InvalidArgumentException $e) {
+            echo 'mongo| InvalidArgumentException: ' . $website->homepage . ' ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
+            unset($e);
+        } catch (\Guzzle\Common\Exception\InvalidArgumentException $e) {
+            echo 'URL| InvalidArgumentException: ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
+            unset($e);
+        }
+        if ($result && $result->errors) {
+            foreach ($result->errors as $arr) {
+                $msg = $arr[\key($arr)];
+                if ($this->isCurlCodeNeedToLog($msg)) {
+                    echo 'error | http' . ($website->isHttps() ? 's' : '') . ' | ' . $msg;
                 }
-                unset($e);
-
-                $parsed = null;
             }
         }
-        if (!$parsed) {
-            $historyRow->available = false;
-            $historyRow->save();
-
-            return null;
-        }
-        $historyRow->available = true;
-        if ($isHttp && $website->isHttps()) {
-            $website->setAttribute('homepage', \str_replace('https://', 'http://', $website->homepage));
-        } elseif (!$isHttp && !$website->isHttps()) {
-            $website->homepage = \str_replace('http://', 'https://', $website->homepage);
-        }
-        if ($website->isDirty()) {
-            $website->save();
-        }
-        $historyRow->http_status = $parsed['httpStatus'];
-        $historyRow->http_headers = $parsed['httpHeaders'];
-        $historyRow->content = $parsed['content'];
-        $historyRow->redirects = $parsed['redirects'];
-        $historyRow->time = $parsed['time'];
-        $historyRow->save();
-
-        return null;
     }
 
     /**
-     * @param Url $originUrl
-     * @return array
-     * @throws TransferException
-     */
-    private function parseWebsite(Url $originUrl)
-    {
-        $rsp = [
-            'redirects' => null,
-            'content' => null,
-            'httpStatus' => null,
-            'httpHeaders' => null,
-            'time' => null,
-        ];
-
-        $stack = HandlerStack::create();
-        $guzzle = new Client([
-            'handler' => $stack,
-            'allow_redirects' => \array_merge(RedirectMiddleware::$defaultSettings, ['track_redirects' => true]),
-            'connect_timeout' => 5,
-        ]);
-        $proxy = new Proxy(new GuzzleAdapter($guzzle));
-        $proxy->filter(new RemoveEncodingFilter());
-        $clone = new Request('GET', '/', ['User-Agent' => HPDB_CRAWLER_NAME]);
-        try {
-            $time = microtime(true);
-            $res = $proxy->forward($clone)->to((string)$originUrl);
-        } catch (TransferException $e) {
-            throw $e;
-        }
-        $rsp['time'] = microtime(true) - $time;
-        if ($redirects = $res->getHeaderLine('X-Guzzle-Redirect-History')) {
-            $redirects = explode(', ', $redirects);
-            $rsp['redirects'] = $redirects;
-        }
-        $rsp['httpStatus'] = $res->getStatusCode();
-        $rsp['content'] = $res->getBody()->getContents();
-        $rsp['httpHeaders'] = $res->getHeaders();
-
-        return $rsp;
-    }
-
-    /**
-     * @param $code
+     * @param string $errorMessage
      * @return bool
      */
-    private function isCurlCodeNeedToLog(\Exception $e)
+    private function isCurlCodeNeedToLog($errorMessage)
     {
         $toLog = true;
         foreach (self::CURL_SKIP_EXCEPTION_CODES as $code) {
-            if (stripos($e->getMessage(), "cURL error $code:") === 0) {
+            if (stripos($errorMessage, "cURL error $code:") === 0) {
                 $toLog = false;
                 break;
             }

@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__.'/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
 
@@ -15,12 +15,27 @@ $command->setSqlite($container->get(SQLite3::class));
 $commands[] = $command;
 $command = new \app\commands\ReindexHompages();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
+$command->setWebsiteIndexer(
+    new \app\services\website\WebsiteIndexer(
+        new \app\services\website\WebsiteExtractor(new \app\services\HttpClient(HPDB_CRAWLER_NAME))
+    )
+);
 $commands[] = $command;
 $command = new \app\commands\ExtractIndexedContent();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
 $commands[] = $command;
 $command = new \app\commands\AddWebsite();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
+/* todo: remove reindexer */
+$reindexer = new \app\commands\ReindexHompages();
+$reindexer->setMongo($container->get(CONTAINER_CONFIG_MONGO));
+$reindexer->setWebsiteIndexer(
+    new \app\services\website\WebsiteIndexer(
+        new \app\services\website\WebsiteExtractor(new \app\services\HttpClient(HPDB_CRAWLER_NAME))
+    )
+);
+$command->setReindexer($reindexer);
+/* remove reindexer */
 $commands[] = $command;
 
 

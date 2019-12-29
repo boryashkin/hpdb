@@ -6,6 +6,7 @@ use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\UTCDateTime;
 
 /**
+ * @property ObjectId $_id
  * @property ObjectId $website_id
  * @property string $content
  * @property bool $is_http_only
