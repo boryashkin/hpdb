@@ -16,10 +16,21 @@ class AddWebsite extends Command
 {
     /** @var \Jenssegers\Mongodb\Connection */
     private $mongo;
+    /**
+     * @deprecated
+     * @var ReindexHompages
+     */
+    private $reindexer;
 
     public function setMongo(\Jenssegers\Mongodb\Connection $mongo)
     {
         $this->mongo = $mongo;
+    }
+
+    /** @deprecated Добавлена как один из шагов рефакторинга */
+    public function setReindexer(ReindexHompages $reindexHompages)
+    {
+        $this->reindexer = $reindexHompages;
     }
 
     /** @inheritDoc */
@@ -72,8 +83,7 @@ class AddWebsite extends Command
         } else {
             $output->writeln('Website found: profile_id = ' . $website->profile_id);
         }
-        $indexer = new ReindexHompages();
-        $indexer->setMongo($this->mongo);
+        $indexer = $this->reindexer;
         $indexer->reindex($website);
         $output->writeln('Attemted to index the website');
 
