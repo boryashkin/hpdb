@@ -5,5 +5,7 @@ services:
 
 script:
   - cp .env.dist .env
+  - docker network create hpdb-network
   - docker-compose up -d
+  - docker exec -it hpdb-php-api composer install --dev
   - docker exec -it hpdb-php-api vendor/bin/codecept run
