@@ -23,8 +23,7 @@ services:
     networks:
       - hpdb-network
   php-api:
-    container_name: "hpdb-php-api"
-    build: "./docker"
+    image: boryashkin/hpdbru_php-api:latest
     restart: always
     volumes:
       - "./:/var/www/html"
