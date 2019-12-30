@@ -3,6 +3,7 @@ namespace app\commands;
 
 use app\models\Website;
 use app\models\WebsiteIndexHistory;
+use app\modules\web\ProfileRepository;
 use Guzzle\Http\Url;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -48,31 +49,14 @@ class AddWebsite extends Command
     {
         if ($input->getOption('url')) {
             $websiteUrl = (string)$input->getOption('url');
-            if (\stripos($websiteUrl, 'http') !== 0) {
-                $websiteUrl = 'http://' . $websiteUrl;
-            }
-            try {
-                $parsedUrl = Url::factory($websiteUrl);
-            } catch (\Guzzle\Common\Exception\InvalidArgumentException $e) {
-                //to know where and which exactly exceptions are
-                throw $e;
-            }
+            $parsedUrl = Url::factory($websiteUrl);
         } else {
             $output->writeln('No url provided');
             return;
         }
 
-        $httpUrl = \str_replace('https://', 'http://', $websiteUrl);
-        $httpsUrl = \str_replace('http://', 'https://', $websiteUrl);
-        $q = Website::query()->where('homepage', '=', $httpsUrl)
-            ->orWhere('homepage', '=', $httpUrl)
-            ->orWhere('homepage', '=', $httpsUrl . '/')
-            ->orWhere('homepage', '=', $httpUrl . '/');
-        if ($q->count() > 1) {
-            $output->writeln('More than 1 website found!');
-            $output->writeln('Only 1 will be updated');
-        }
-        $website = $q->first();
+        $repo = new ProfileRepository($this->mongo);
+        $website = $repo->getFirstOneByUrl($parsedUrl);
         $maxWebsite = Website::query()->orderBy('profile_id', 'desc')->limit(1)->first();
         if (!$website) {
             $website = new Website();
