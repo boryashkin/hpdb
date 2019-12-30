@@ -44,7 +44,7 @@ class Create extends BaseAction
             $this->setRateLimit($request, $response);
             $maxWebsite = Website::query()->max('profile_id');
             $website = new Website();
-            $website->homepage = $parsedUrl;
+            $website->homepage = Url::buildUrl($parsedUrl->getParts());
             $website->profile_id = $maxWebsite + 1;
             $website->save();
             $resultDto = $indexer->reindex($website);
