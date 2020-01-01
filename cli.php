@@ -17,7 +17,7 @@ $command = new \app\commands\ReindexHompages();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
 $command->setWebsiteIndexer(
     new \app\services\website\WebsiteIndexer(
-        new \app\services\website\WebsiteExtractor(new \app\services\HttpClient(HPDB_CRAWLER_NAME))
+        new \app\services\website\WebsiteFetcher(new \app\services\HttpClient(HPDB_CRAWLER_NAME))
     )
 );
 $commands[] = $command;
@@ -31,7 +31,7 @@ $reindexer = new \app\commands\ReindexHompages();
 $reindexer->setMongo($container->get(CONTAINER_CONFIG_MONGO));
 $reindexer->setWebsiteIndexer(
     new \app\services\website\WebsiteIndexer(
-        new \app\services\website\WebsiteExtractor(new \app\services\HttpClient(HPDB_CRAWLER_NAME))
+        new \app\services\website\WebsiteFetcher(new \app\services\HttpClient(HPDB_CRAWLER_NAME))
     )
 );
 $command->setReindexer($reindexer);

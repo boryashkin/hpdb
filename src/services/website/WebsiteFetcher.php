@@ -7,7 +7,7 @@ use app\services\HttpClient;
 use Guzzle\Http\Url;
 use GuzzleHttp\Exception\TransferException;
 
-class WebsiteExtractor
+class WebsiteFetcher
 {
     /** @var HttpClient */
     private $client;

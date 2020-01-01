@@ -4,7 +4,7 @@ namespace tests\unit\services\website;
 
 use app\dto\website\WebsiteIndexingResultDto;
 use app\models\Website;
-use app\services\website\WebsiteExtractor;
+use app\services\website\WebsiteFetcher;
 use app\services\website\WebsiteIndexer;
 use GuzzleHttp\Exception\TransferException;
 use MongoDB\BSON\ObjectId;
@@ -39,7 +39,7 @@ class WebsiteIndexerTest extends \Codeception\Test\Unit
             ->method('requestGet')
             ->willReturn($response);
 
-        $extractor = new WebsiteExtractor($httpClient);
+        $extractor = new WebsiteFetcher($httpClient);
         $indexer = new WebsiteIndexer($extractor);
         $website = new Website();
         $website->_id = new ObjectId('5cc98b3bc58e40004f051854');
@@ -60,7 +60,7 @@ class WebsiteIndexerTest extends \Codeception\Test\Unit
         $httpClient->method('requestGet')
             ->willThrowException(new TransferException('Not Found', 404));
 
-        $extractor = new WebsiteExtractor($httpClient);
+        $extractor = new WebsiteFetcher($httpClient);
         $indexer = new WebsiteIndexer($extractor);
         $website = new Website();
         $website->_id = new ObjectId('5cc98b3bc58e40004f051854');

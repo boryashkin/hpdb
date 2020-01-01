@@ -8,7 +8,7 @@ use app\dto\website\WebsiteIndexingResultDto;
 use app\models\Website;
 use app\modules\web\ProfileRepository;
 use app\services\HttpClient;
-use app\services\website\WebsiteExtractor;
+use app\services\website\WebsiteFetcher;
 use app\services\website\WebsiteIndexer;
 use Guzzle\Http\Url;
 use Jenssegers\Mongodb\Connection;
@@ -34,7 +34,7 @@ class Create extends BaseAction
         }
         $parsedUrl = Url::factory($params['website']);
         $indexer = new WebsiteIndexer(
-            new WebsiteExtractor(
+            new WebsiteFetcher(
                 new HttpClient(self::CRAWLER_USER_AGENT)
             )
         );

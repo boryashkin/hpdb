@@ -12,12 +12,12 @@ use \MongoDB\Driver\Exception\{UnexpectedValueException, InvalidArgumentExceptio
 
 class WebsiteIndexer
 {
-    /** @var WebsiteExtractor */
-    private $websiteExtractor;
+    /** @var WebsiteFetcher */
+    private $websiteFetcher;
 
-    public function __construct(WebsiteExtractor $websiteExtractor)
+    public function __construct(WebsiteFetcher $websiteFetcher)
     {
-        $this->websiteExtractor = $websiteExtractor;
+        $this->websiteFetcher = $websiteFetcher;
     }
 
     /**
@@ -44,14 +44,14 @@ class WebsiteIndexer
         $isHttp = $parsedUrl->getScheme() === 'http';
         $parsed = null;
         try {
-            $parsed = $this->websiteExtractor->parseWebsite($parsedUrl->setScheme('https'));
+            $parsed = $this->websiteFetcher->parseWebsite($parsedUrl->setScheme('https'));
             $isHttp = false;
         } catch (TransferException $e) {
             error_log($e->getMessage());
             $result->errors[] = [$e->getCode() => $e->getMessage()];
             unset($e);
             try {
-                $parsed = $this->websiteExtractor->parseWebsite($parsedUrl->setScheme('http'));
+                $parsed = $this->websiteFetcher->parseWebsite($parsedUrl->setScheme('http'));
                 $isHttp = true;
             } catch (TransferException $e) {
                 error_log($e->getMessage());
