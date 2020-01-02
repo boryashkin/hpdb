@@ -34,6 +34,8 @@ services:
     image: redis:5.0.5-alpine
     container_name: ${REDIS_HOST}
     restart: always
+    volumes:
+      - ./data/redis:/data
     networks:
       - hpdb-network
   mongo:
