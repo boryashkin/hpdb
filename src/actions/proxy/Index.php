@@ -77,6 +77,9 @@ class Index extends BaseAction
                 return $response->withAddedHeader('Location', $redirects[0])->withStatus(301, 'Moved permanently');
             }
         }
+        if ($res->getBody()->getSize() > 15000) {
+            return $res;
+        }
         $redis->get($cacheKeyBody, function (ItemInterface $item) use ($res) {
             $item->expiresAfter(3600);
             return $res->getBody()->getContents();
