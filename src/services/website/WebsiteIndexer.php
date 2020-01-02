@@ -3,9 +3,10 @@
 namespace app\services\website;
 
 use app\dto\website\WebsiteIndexingResultDto;
+use app\exceptions\InvalidUrlException;
 use app\models\Website;
 use app\models\WebsiteIndexHistory;
-use Guzzle\Http\Url;
+use app\valueObjects\Url;
 use GuzzleHttp\Exception\TransferException;
 use MongoDB\BSON\ObjectId;
 use \MongoDB\Driver\Exception\{UnexpectedValueException, InvalidArgumentException};
@@ -24,17 +25,14 @@ class WebsiteIndexer
      * Check availability http & https and set "check date".
      * @param Website $website
      * @return WebsiteIndexingResultDto
-     * @throws UnexpectedValueException|InvalidArgumentException|\Guzzle\Common\Exception\InvalidArgumentException
+     * @throws UnexpectedValueException|InvalidArgumentException|InvalidUrlException
      */
     public function reindex(Website $website): WebsiteIndexingResultDto
     {
         $result = new WebsiteIndexingResultDto();
-        if (\stripos($website->homepage, 'http') !== 0) {
-            $website->homepage = 'http://' . $website->homepage;
-        }
         try {
-            $parsedUrl = Url::factory($website->homepage);
-        } catch (\Guzzle\Common\Exception\InvalidArgumentException $e) {
+            $parsedUrl = new Url($website->homepage);
+        } catch (InvalidUrlException $e) {
             //to know where and which exactly exceptions are
             throw $e;
         }
@@ -44,16 +42,16 @@ class WebsiteIndexer
         $isHttp = $parsedUrl->getScheme() === 'http';
         $parsed = null;
         try {
-            $parsed = $this->websiteFetcher->parseWebsite($parsedUrl->setScheme('https'));
+            $parsed = $this->websiteFetcher->parseWebsite($parsedUrl->setScheme(Url::SCHEME_HTTPS));
             $isHttp = false;
-        } catch (TransferException $e) {
+        } catch (TransferException | InvalidUrlException $e) {
             error_log($e->getMessage());
             $result->errors[] = [$e->getCode() => $e->getMessage()];
             unset($e);
             try {
-                $parsed = $this->websiteFetcher->parseWebsite($parsedUrl->setScheme('http'));
+                $parsed = $this->websiteFetcher->parseWebsite($parsedUrl->setScheme(Url::SCHEME_HTTP));
                 $isHttp = true;
-            } catch (TransferException $e) {
+            } catch (TransferException | InvalidUrlException $e) {
                 error_log($e->getMessage());
                 $result->errors[] = [$e->getCode() => $e->getMessage()];
                 unset($e);

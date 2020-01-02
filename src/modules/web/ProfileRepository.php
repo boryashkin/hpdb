@@ -2,7 +2,7 @@
 namespace app\modules\web;
 
 use app\models\Website;
-use Guzzle\Http\Url;
+use app\valueObjects\Url;
 use Illuminate\Database\ConnectionInterface;
 use MongoDB\BSON\Regex;
 use MongoDB\Collection as MongoCollection;
@@ -91,12 +91,7 @@ class ProfileRepository
 
     public function getFirstOneByUrl(Url $url): ?Website
     {
-        $websiteUrl = Url::buildUrl($url->getParts());
-        if ($websiteUrl) {
-            if (\stripos($websiteUrl, 'http') !== 0) {
-                $websiteUrl = 'http://' . $websiteUrl;
-            }
-        }
+        $websiteUrl = (string)$url;
         $httpUrl = \str_replace('https://', 'http://', $websiteUrl);
         $httpsUrl = \str_replace('http://', 'https://', $websiteUrl);
         $q = Website::query()->where('homepage', '=', $httpsUrl)

@@ -3,6 +3,7 @@
 namespace tests\unit\services\website;
 
 use app\dto\website\WebsiteIndexingResultDto;
+use app\exceptions\InvalidUrlException;
 use app\models\Website;
 use app\services\website\WebsiteFetcher;
 use app\services\website\WebsiteIndexer;
@@ -13,7 +14,6 @@ use \app\services\HttpClient;
 
 class WebsiteIndexerTest extends \Codeception\Test\Unit
 {
-    private const HTTP_USER_AGENT = 'testsuite/0.1';
     /**
      * @var \UnitTester
      */
@@ -70,5 +70,19 @@ class WebsiteIndexerTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($result);
         $this->assertEquals(WebsiteIndexingResultDto::STATUS_WEBSITE_UNAVAILABLE, $result->status);
         $this->assertNotEmpty($result->errors);
+    }
+
+    public function testReindexEmptyUrlError()
+    {
+        $httpClient = $this->createMock(HttpClient::class);
+        $httpClient->expects($this->never())->method('requestGet');
+        $this->expectException(InvalidUrlException::class);
+
+        $extractor = new WebsiteFetcher($httpClient);
+        $indexer = new WebsiteIndexer($extractor);
+        $website = new Website();
+        $website->_id = new ObjectId('5cc98b3bc58e40004f051854');
+        $website->homepage = '';
+        $indexer->reindex($website);
     }
 }

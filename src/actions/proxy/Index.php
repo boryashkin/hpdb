@@ -2,9 +2,9 @@
 namespace app\actions\proxy;
 
 use app\abstracts\BaseAction;
+use app\exceptions\InvalidUrlException;
 use app\modules\web\ProfileRepository;
-use Guzzle\Common\Exception\InvalidArgumentException;
-use Guzzle\Http\Url;
+use app\valueObjects\Url;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\HandlerStack;
@@ -29,8 +29,8 @@ class Index extends BaseAction
             throw new NotFoundException($request, $response);
         }
         try {
-            $parsedUrl = Url::factory($profile['homepage']);
-        } catch (InvalidArgumentException $e) {
+            $parsedUrl = new Url($profile['homepage']);
+        } catch (InvalidUrlException $e) {
             throw new InvalidMethodException($request, $profile['homepage']);
         }
         if (\in_array($parsedUrl->getHost(), ['hpdb.ru', 'hpdb.com'])) {
@@ -59,7 +59,7 @@ class Index extends BaseAction
          * Crazy workaround to cache uncachable PSR Responses with streams inside (for some cases)
          */
         /** @var RedisAdapter $redis */
-        $redis = $this->getContainer()->get(CONTAINER_CONFIG_REDIS);
+        $redis = $this->getContainer()->get(CONTAINER_CONFIG_REDIS_CACHE);
         $cacheKeyRsp = 'proxy' . md5($parsedUrl->getHost() . $path) . 'rsp';
         $cacheKeyBody = 'proxy' . md5($parsedUrl->getHost() . $path) . 'body';
         if ($redis->hasItem($cacheKeyRsp) && $redis->hasItem($cacheKeyBody)) {

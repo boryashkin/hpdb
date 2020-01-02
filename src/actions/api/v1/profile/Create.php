@@ -5,12 +5,13 @@ namespace app\actions\api\v1\profile;
 use app\abstracts\BaseAction;
 use app\commands\ExtractIndexedContent;
 use app\dto\website\WebsiteIndexingResultDto;
+use app\exceptions\InvalidUrlException;
 use app\models\Website;
 use app\modules\web\ProfileRepository;
 use app\services\HttpClient;
 use app\services\website\WebsiteFetcher;
 use app\services\website\WebsiteIndexer;
-use Guzzle\Http\Url;
+use app\valueObjects\Url;
 use Jenssegers\Mongodb\Connection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,7 +33,14 @@ class Create extends BaseAction
 
             throw new SlimException($request, $response);
         }
-        $parsedUrl = Url::factory($params['website']);
+        try {
+            $parsedUrl = new Url($params['website']);
+        } catch (InvalidUrlException $e) {
+            $response = $response->withStatus(400, 'Bad Request');
+            $response->getBody()->write($e->getMessage());
+
+            throw new SlimException($request, $response);
+        }
         $indexer = new WebsiteIndexer(
             new WebsiteFetcher(
                 new HttpClient(self::CRAWLER_USER_AGENT)
@@ -44,7 +52,7 @@ class Create extends BaseAction
             $this->setRateLimit($request, $response);
             $maxWebsite = Website::query()->max('profile_id');
             $website = new Website();
-            $website->homepage = Url::buildUrl($parsedUrl->getParts());
+            $website->homepage = (string)$parsedUrl;
             $website->profile_id = $maxWebsite + 1;
             $website->save();
             $resultDto = $indexer->reindex($website);
@@ -81,7 +89,7 @@ class Create extends BaseAction
     /** @return RedisAdapter */
     private function getRedis()
     {
-        return $this->getContainer()->get(CONTAINER_CONFIG_REDIS);
+        return $this->getContainer()->get(CONTAINER_CONFIG_REDIS_CACHE);
     }
 
     private function setRateLimit(ServerRequestInterface $request, ResponseInterface $response): void

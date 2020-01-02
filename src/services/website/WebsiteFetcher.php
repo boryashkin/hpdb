@@ -4,7 +4,7 @@ namespace app\services\website;
 
 use app\dto\website\WebsiteIndexDto;
 use app\services\HttpClient;
-use Guzzle\Http\Url;
+use app\valueObjects\Url;
 use GuzzleHttp\Exception\TransferException;
 
 class WebsiteFetcher
@@ -27,7 +27,7 @@ class WebsiteFetcher
         $rsp = new WebsiteIndexDto();
 
         $time = microtime(true);
-        $res = $this->client->requestGet($originUrl);
+        $res = $this->client->requestGet((string)$originUrl);
         $rsp->time = microtime(true) - $time;
         if ($redirects = $res->getHeaderLine('X-Guzzle-Redirect-History')) {
             $redirects = explode(', ', $redirects);

@@ -1,6 +1,7 @@
 <?php
 namespace app\commands;
 
+use app\exceptions\InvalidUrlException;
 use app\models\Website;
 use app\services\website\WebsiteIndexer;
 use Symfony\Component\Console\Command\Command;
@@ -40,8 +41,7 @@ class ReindexHompages extends Command
         $this
             ->setName('service:reindex-homepages')
             ->setDescription('Go through all of the HPs and refill the info about them.')
-            ->addOption('skip', null, InputOption::VALUE_OPTIONAL, 'skip first qty of websites')
-        ;
+            ->addOption('skip', null, InputOption::VALUE_OPTIONAL, 'skip first qty of websites');
     }
 
     /** @inheritDoc */
@@ -93,7 +93,7 @@ class ReindexHompages extends Command
         } catch (\MongoDB\Driver\Exception\InvalidArgumentException $e) {
             echo 'mongo| InvalidArgumentException: ' . $website->homepage . ' ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
             unset($e);
-        } catch (\Guzzle\Common\Exception\InvalidArgumentException $e) {
+        } catch (InvalidUrlException $e) {
             echo 'URL| InvalidArgumentException: ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
             unset($e);
         }

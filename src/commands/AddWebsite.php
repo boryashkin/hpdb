@@ -4,7 +4,7 @@ namespace app\commands;
 use app\models\Website;
 use app\models\WebsiteIndexHistory;
 use app\modules\web\ProfileRepository;
-use Guzzle\Http\Url;
+use app\valueObjects\Url;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -49,7 +49,7 @@ class AddWebsite extends Command
     {
         if ($input->getOption('url')) {
             $websiteUrl = (string)$input->getOption('url');
-            $parsedUrl = Url::factory($websiteUrl);
+            $parsedUrl = new Url($websiteUrl);
         } else {
             $output->writeln('No url provided');
             return;

@@ -2,10 +2,10 @@
 namespace app\actions\web;
 
 use app\abstracts\BaseAction;
+use app\exceptions\InvalidUrlException;
 use app\models\WebsiteContent;
 use app\modules\web\ProfileRepository;
-use Guzzle\Common\Exception\InvalidArgumentException;
-use Guzzle\Http\Url;
+use app\valueObjects\Url;
 use MongoDB\BSON\ObjectId;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,9 +23,9 @@ class Profile extends BaseAction
         }
         $content = WebsiteContent::query()->where('website_id', '=', new ObjectId($profile->_id))->first();
         try {
-            $parsedUrl = Url::factory($profile['homepage']);
+            $parsedUrl = new Url($profile['homepage']);
             $host = $parsedUrl->getHost();
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidUrlException $e) {
             $parsedUrl = htmlspecialchars($profile['homepage']);
             $host = $parsedUrl;
         }

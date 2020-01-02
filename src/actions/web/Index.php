@@ -16,7 +16,7 @@ class Index extends BaseAction
     {
         $mongo = $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
         /** @var RedisAdapter $redis */
-        $redis = $this->getContainer()->get(CONTAINER_CONFIG_REDIS);
+        $redis = $this->getContainer()->get(CONTAINER_CONFIG_REDIS_CACHE);
         /**
          * @var MongoCollection $c
          */

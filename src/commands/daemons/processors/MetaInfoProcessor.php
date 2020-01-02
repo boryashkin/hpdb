@@ -2,12 +2,23 @@
 
 namespace app\commands\daemons\processors;
 
+use app\models\WebsiteIndexHistory;
+
 /**
  * Extracting title, description and og fields
  */
 class MetaInfoProcessor implements ProcessorInterface
 {
-    public function __construct()
+    /** @var WebsiteIndexHistory */
+    private $historyItem;
+
+    public function __construct(WebsiteIndexHistory $historyItem)
     {
+        $this->historyItem = $historyItem;
+    }
+
+    public function getParsedContent(): string
+    {
+
     }
 }
