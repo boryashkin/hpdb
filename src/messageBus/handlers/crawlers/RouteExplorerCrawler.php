@@ -1,6 +1,6 @@
 <?php
 
-namespace app\commands\daemons\crawlers;
+namespace app\messageBus\handlers\crawlers;
 
 /**
  * Downloading robots.txt and sitemap of discovered websites and building exploring routes
@@ -12,8 +12,15 @@ class RouteExplorerCrawler implements CrawlerInterface
         '/sitemap.xml',
     ];
 
-    public function __construct()
-    {
+    private $name;
 
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function __invoke()
+    {
+        echo 'ROUTE EXPLORED!' . PHP_EOL;
     }
 }

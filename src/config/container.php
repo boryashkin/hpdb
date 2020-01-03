@@ -6,13 +6,27 @@ const CONTAINER_CONFIG_SETTINGS = 'settings';
 const CONTAINER_CONFIG_VIEW = 'view';
 const CONTAINER_CONFIG_MONGO = 'mongodb';
 const CONTAINER_CONFIG_REDIS_CACHE = 'redisCache';
+const CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_CRAWLERS = 'redisStreamConnectionCrawlers';
+const CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_DISCOVERERS = 'redisStreamConnectionDiscoveres';
+const CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_PERSISTORS = 'redisStreamConnectionPersistors';
+const CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_PROCESSORS = 'redisStreamConnectionProcessor';
+const CONTAINER_CONFIG_REDIS_STREAM_SERIALIZER = 'redisStreamSerializer';
+const CONTAINER_CONFIG_REDIS_STREAM_TRANSPORT_CRAWLERS = 'redisStreamTransportCrawlers';
+const CONTAINER_CONFIG_REDIS_STREAM_TRANSPORT_DISCOVERERS = 'redisStreamTransportDiscoverers';
+const CONTAINER_CONFIG_REDIS_STREAM_TRANSPORT_PERSISTORS = 'redisStreamTransportPersistors';
+const CONTAINER_CONFIG_REDIS_STREAM_TRANSPORT_PROCESSORS = 'redisStreamTransportProcessors';
+const CONTAINER_CONFIG_REDIS_STREAM_DISCOVERERS = 'redisStreamDiscoverers';
+const CONTAINER_CONFIG_REDIS_STREAM_CRAWLERS = 'redisStreamCrawlers';
+const CONTAINER_CONFIG_REDIS_STREAM_PERSISTORS = 'redisStreamPersistors';
+const CONTAINER_CONFIG_REDIS_STREAM_PROCESSORS = 'redisStreamProcessors';
 
 $dotenv = new \Symfony\Component\Dotenv\Dotenv();
-$dotenv->load(__DIR__.'/../../.env');
+$dotenv->load(__DIR__ . '/../../.env');
 
 \Illuminate\Database\Eloquent\Model::setConnectionResolver(new \Illuminate\Database\ConnectionResolver());
 
-return new \Slim\Container([
+$messageBus = require 'message-bus.array.php';
+return new \Slim\Container(array_merge([
     CONTAINER_CONFIG_SETTINGS => [
         'displayErrorDetails' => !ENV_PROD,
     ],
@@ -75,7 +89,6 @@ return new \Slim\Container([
         ];
         $connection = new Predis\Client($config);
         return new Symfony\Component\Cache\Adapter\RedisAdapter($connection);
-    }
-]);
+    },
 
-
+], $messageBus));

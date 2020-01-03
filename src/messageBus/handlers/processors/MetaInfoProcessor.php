@@ -1,6 +1,6 @@
 <?php
 
-namespace app\commands\daemons\processors;
+namespace app\messageBus\handlers\processors;
 
 use app\models\WebsiteIndexHistory;
 
