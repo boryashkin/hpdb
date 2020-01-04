@@ -5,6 +5,7 @@ namespace app\messageBus\factories;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
+use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Worker;
 
@@ -25,6 +26,19 @@ class WorkerFactory
                 )
             );
         });
+        if (!ENV_PROD) {
+            $dispatcher->addListener(WorkerMessageHandledEvent::class, function (WorkerMessageHandledEvent $e) use ($logger) {
+                static $cnt = 1;
+                $logger->info(
+                    \implode(
+                        ', ',
+                        [
+                            $cnt++,
+                        ]
+                    )
+                );
+            });
+        }
 
         return new Worker($receivers, $bus, $dispatcher);
     }

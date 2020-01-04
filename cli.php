@@ -23,6 +23,7 @@ $command->setWebsiteIndexer(
 $commands[] = $command;
 $command = new \app\commands\ExtractIndexedContent();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
+$command->setProcessorBus($container->get(CONTAINER_CONFIG_REDIS_STREAM_PROCESSORS));
 $commands[] = $command;
 $command = new \app\commands\AddWebsite();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));

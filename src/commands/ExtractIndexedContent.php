@@ -1,13 +1,16 @@
 <?php
 namespace app\commands;
 
+use app\messageBus\messages\processors\WebsiteHistoryMessage;
 use app\models\WebsiteContent;
 use app\models\WebsiteIndexHistory;
+use MongoDB\BSON\ObjectId;
 use MongoDB\Collection as MongoCollection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  *
@@ -16,10 +19,17 @@ class ExtractIndexedContent extends Command
 {
     /** @var \Jenssegers\Mongodb\Connection */
     private $mongo;
+    /** @var MessageBusInterface */
+    private $processorBus;
 
-    public function setMongo(\Jenssegers\Mongodb\Connection $mongo)
+    public function setMongo(\Jenssegers\Mongodb\Connection $mongo): void
     {
         $this->mongo = $mongo;
+    }
+
+    public function setProcessorBus(MessageBusInterface $bus): void
+    {
+        $this->processorBus = $bus;
     }
 
     /** @inheritDoc */
@@ -27,8 +37,7 @@ class ExtractIndexedContent extends Command
     {
         $this
             ->setName('service:extract-indexed-content')
-            ->setDescription('Extracting valuable info from the indexed html list.')
-        ;
+            ->setDescription('Extracting valuable info from the indexed html list.');
     }
 
     /** @inheritDoc */
@@ -80,7 +89,8 @@ class ExtractIndexedContent extends Command
             foreach ($c->find(['$or' => $lastWebsiteData]) as $website) {
                 $hist = new WebsiteIndexHistory();
                 $hist->forceFill((array)$website);
-                $this->extractAndSave($hist);
+                $message = new WebsiteHistoryMessage(new ObjectId($hist->_id));
+                $this->processorBus->dispatch($message);
             }
             $skip = $skip + $limit;
         } while ($lastWebsiteData);

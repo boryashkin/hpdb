@@ -32,7 +32,7 @@ class WebsiteMetaInfoPersistor implements PersistorInterface
         $content->website_id = $message->getWebsiteId();
         $content->title = $message->getTitle();
         $content->description = $message->getDescription();
-        $content->fromWebsite_index_history_id = $message->getHistoryIndexId();
+        $content->from_website_index_history_id = $message->getHistoryIndexId();
 
         return $content;
     }
