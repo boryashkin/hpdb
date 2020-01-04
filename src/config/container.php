@@ -3,6 +3,7 @@
 define('ENV_PROD', false);
 
 const CONTAINER_CONFIG_SETTINGS = 'settings';
+const CONTAINER_CONFIG_LOGGER = 'logger';
 const CONTAINER_CONFIG_VIEW = 'view';
 const CONTAINER_CONFIG_MONGO = 'mongodb';
 const CONTAINER_CONFIG_REDIS_CACHE = 'redisCache';
@@ -30,6 +31,9 @@ return new \Slim\Container(array_merge([
     CONTAINER_CONFIG_SETTINGS => [
         'displayErrorDetails' => !ENV_PROD,
     ],
+    CONTAINER_CONFIG_LOGGER => function (\Slim\Container $c) {
+        return new \app\services\StdLogger();
+    },
     CONTAINER_CONFIG_VIEW => function (\Slim\Container $c) {
         $view = new \Slim\Views\Twig(__DIR__ . '/../../src/views', []);
 

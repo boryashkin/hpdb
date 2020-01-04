@@ -1,5 +1,6 @@
 <?php
 
+use app\messageBus\factories\WorkerFactory;
 use app\messageBus\handlers\crawlers\PageFetcherCrawler;
 use app\messageBus\messages\crawlers\WebsiteMessage;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
@@ -38,7 +39,6 @@ $factory->addHandler(
         ]
     )
 );
-
-$worker = new \Symfony\Component\Messenger\Worker($receivers, $factory->buildMessageBus());
+$worker = WorkerFactory::createExceptionHandlingWorker($receivers, $factory->buildMessageBus(), $container->get(CONTAINER_CONFIG_LOGGER));
 unset($factory);
 $worker->run();

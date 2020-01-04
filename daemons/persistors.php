@@ -1,5 +1,9 @@
 <?php
 
+use app\messageBus\factories\WorkerFactory;
+use app\messageBus\handlers\persistors\WebsiteMetaInfoPersistor;
+use app\messageBus\messages\persistors\WebsiteMetaInfoMessage;
+use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
 
@@ -24,9 +28,21 @@ $receivers = [
         $container->get(CONTAINER_CONFIG_REDIS_STREAM_SERIALIZER)
     )
 ];
+/** @var \Jenssegers\Mongodb\Connection $mongo */
+$mongo = $container->get(CONTAINER_CONFIG_MONGO);
+
 $factory = new \app\messageBus\factories\MessageBusFactory($container);
 // add only /persistors handlers
+$factory->addHandler(
+    WebsiteMetaInfoMessage::class,
+    new HandlerDescriptor(
+        new WebsiteMetaInfoPersistor(\getenv('REDIS_QUEUE_CONSUMER'), $mongo),
+        [
+            'from_transport' => WebsiteMetaInfoPersistor::TRANSPORT,
+        ]
+    )
 
-$worker = new \Symfony\Component\Messenger\Worker($receivers, $factory->buildMessageBus());
+);
+$worker = WorkerFactory::createExceptionHandlingWorker($receivers, $factory->buildMessageBus(), $container->get(CONTAINER_CONFIG_LOGGER));
 unset($factory);
 $worker->run();
