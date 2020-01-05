@@ -1,14 +1,14 @@
 <?php
 namespace app\commands;
 
-use app\models\Website;
-use app\models\WebsiteIndexHistory;
+use app\messageBus\messages\persistors\NewWebsiteToPersistMessage;
 use app\modules\web\ProfileRepository;
 use app\valueObjects\Url;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  *
@@ -17,21 +17,17 @@ class AddWebsite extends Command
 {
     /** @var \Jenssegers\Mongodb\Connection */
     private $mongo;
-    /**
-     * @deprecated
-     * @var ReindexHompages
-     */
-    private $reindexer;
+    /** @var MessageBusInterface */
+    private $persistorsBus;
 
     public function setMongo(\Jenssegers\Mongodb\Connection $mongo)
     {
         $this->mongo = $mongo;
     }
 
-    /** @deprecated Добавлена как один из шагов рефакторинга */
-    public function setReindexer(ReindexHompages $reindexHompages)
+    public function setPersistorsBus(MessageBusInterface $persistorsBus)
     {
-        $this->reindexer = $reindexHompages;
+        $this->persistorsBus = $persistorsBus;
     }
 
     /** @inheritDoc */
@@ -52,36 +48,18 @@ class AddWebsite extends Command
             $parsedUrl = new Url($websiteUrl);
         } else {
             $output->writeln('No url provided');
-            return;
+            return 1;
         }
 
         $repo = new ProfileRepository($this->mongo);
         $website = $repo->getFirstOneByUrl($parsedUrl);
-        if (!$website) {
-            $website = new Website();
-            $website->homepage = $websiteUrl;
-            $website->save();
-            $output->writeln('Website saved: profile_id = ' . $website->_id);
-        } else {
-            $output->writeln('Website found: profile_id = ' . $website->_id);
+        if ($website) {
+            $output->writeln('Website already exists: ' . $website->_id);
+            return 1;
         }
-        $indexer = $this->reindexer;
-        $indexer->reindex($website);
-        $output->writeln('Attemted to index the website');
-
-        /** @var WebsiteIndexHistory $hist */
-        $hist = WebsiteIndexHistory::query()
-            ->where('website_id', '=', $website->getAttributes()['_id'])
-            ->orderBy('created_at', 'desc')
-            ->limit(1)->first();
-        if ($hist) {
-            $extractor = new ExtractIndexedContent();
-            $extractor->setMongo($this->mongo);
-            $extractor->extractAndSave($hist);
-            $output->writeln('Extracted and saved info about the website');
-        } else {
-            $output->writeln('Index record is not found');
-        }
+        $message = new NewWebsiteToPersistMessage($parsedUrl, 'cli', new \DateTime());
+        $this->persistorsBus->dispatch($message);
+        $output->writeln('Website is queued to be added');
     }
 
 }

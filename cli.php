@@ -27,15 +27,7 @@ $command->setProcessorBus($container->get(CONTAINER_CONFIG_REDIS_STREAM_PROCESSO
 $commands[] = $command;
 $command = new \app\commands\AddWebsite();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
-/* todo: remove reindexer */
-$reindexer = new \app\commands\ReindexHompages();
-$reindexer->setMongo($container->get(CONTAINER_CONFIG_MONGO));
-$reindexer->setWebsiteIndexer(
-    new \app\services\website\WebsiteIndexer(
-        new \app\services\website\WebsiteFetcher(new \app\services\HttpClient(HPDB_CRAWLER_NAME))
-    )
-);
-$command->setReindexer($reindexer);
+$command->setPersistorsBus($container->get(CONTAINER_CONFIG_REDIS_STREAM_PERSISTORS));
 /* remove reindexer */
 $commands[] = $command;
 
