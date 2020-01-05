@@ -57,15 +57,13 @@ class AddWebsite extends Command
 
         $repo = new ProfileRepository($this->mongo);
         $website = $repo->getFirstOneByUrl($parsedUrl);
-        $maxWebsite = Website::query()->orderBy('profile_id', 'desc')->limit(1)->first();
         if (!$website) {
             $website = new Website();
             $website->homepage = $websiteUrl;
-            $website->profile_id = $maxWebsite->profile_id + 1;
             $website->save();
-            $output->writeln('Website saved: profile_id = ' . $website->profile_id);
+            $output->writeln('Website saved: profile_id = ' . $website->_id);
         } else {
-            $output->writeln('Website found: profile_id = ' . $website->profile_id);
+            $output->writeln('Website found: profile_id = ' . $website->_id);
         }
         $indexer = $this->reindexer;
         $indexer->reindex($website);

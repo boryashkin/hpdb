@@ -4,6 +4,8 @@ namespace app\actions\api\v1;
 use app\abstracts\BaseAction;
 use app\models\WebsiteReaction;
 use app\modules\web\ProfileRepository;
+use MongoDB\BSON\ObjectId;
+use MongoDB\Driver\Exception\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\NotFoundException;
@@ -16,11 +18,18 @@ class Reaction extends BaseAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $params = $request->getParsedBody();
-        $page = isset($params['profile_id']) && \is_numeric($params['profile_id']) ? (int)$params['profile_id'] : -1;
+        if (!isset($params['profile_id']) || !\is_string($params['profile_id'])) {
+            throw new NotFoundException($request, $response);
+        }
+        try {
+            $id = new ObjectId($params['profile_id']);
+        } catch (InvalidArgumentException $e) {
+            throw new NotFoundException($request, $response);
+        }
         $reactionTag = isset($params['reaction']) && \is_string($params['reaction']) ? (string)$params['reaction'] : null;
 
         $repo = new ProfileRepository($this->getContainer()->get(CONTAINER_CONFIG_MONGO));
-        $website = $repo->getOne($page);
+        $website = $repo->getOneById($id);
         if (!$website || !$reactionTag) {
             throw new NotFoundException($request, $response);
         }

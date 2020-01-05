@@ -7,6 +7,7 @@ use app\messageBus\messages\persistors\NewWebsiteToPersistMessage;
 use app\messageBus\repositories\WebsiteRepository;
 use app\models\Website;
 use MongoDB\BSON\ObjectId;
+use MongoDB\Driver\Query;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class NewWebsitePersistor implements PersistorInterface

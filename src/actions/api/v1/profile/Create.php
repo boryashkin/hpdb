@@ -50,10 +50,8 @@ class Create extends BaseAction
         $website = $repo->getFirstOneByUrl($parsedUrl);
         if (!$website) {
             $this->setRateLimit($request, $response);
-            $maxWebsite = Website::query()->max('profile_id');
             $website = new Website();
             $website->homepage = (string)$parsedUrl;
-            $website->profile_id = $maxWebsite + 1;
             $website->save();
             $resultDto = $indexer->reindex($website);
             if ($resultDto->status === WebsiteIndexingResultDto::STATUS_WEBSITE_UNAVAILABLE) {

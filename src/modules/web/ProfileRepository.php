@@ -4,6 +4,7 @@ namespace app\modules\web;
 use app\models\Website;
 use app\valueObjects\Url;
 use Illuminate\Database\ConnectionInterface;
+use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
 use MongoDB\Collection as MongoCollection;
 
@@ -57,7 +58,7 @@ class ProfileRepository
             ['$unwind' => '$content'],
             ['$project' => [
                 '_id' => 0,
-                'profile_id' => '$profile_id',
+                'profile_id' => '$_id',
                 'homepage' => '$homepage',
                 'description' => '$content.description'
             ]],
@@ -72,6 +73,7 @@ class ProfileRepository
         $websites = $websiteCollection->aggregate($aggQuery);
         $websitesArr = [];
         foreach ($websites as $website) {
+            $website->profile_id = (string)$website->profile_id;
             $websitesArr[] = (array)$website;
         }
 
@@ -79,13 +81,25 @@ class ProfileRepository
     }
 
     /**
-     * @param int $id
+     * @param ObjectId $id
      * @return Website
      */
-    public function getOne(int $id)
+    public function getOneById(ObjectId $id)
     {
         return Website::query()
-            ->where('profile_id', '=', $id)
+            ->where('_id', '=', $id)
+            ->get()->all()[0];
+    }
+
+
+    /**
+     * @param int $profileId
+     * @return Website
+     */
+    public function getOneByProfileId(int $profileId)
+    {
+        return Website::query()
+            ->where('profile_id', '=', $profileId)
             ->get()->all()[0];
     }
 

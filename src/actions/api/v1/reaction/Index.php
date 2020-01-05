@@ -37,7 +37,7 @@ class Index extends BaseAction
                 continue;
             }
             $result[] = [
-                'profile_id' => $website->profile_id,
+                'profile_id' => (string)$reaction->_id->website_id,
                 'homepage' => $website->homepage,
                 'reaction' => $reaction->_id->reaction,
                 'count' => $reaction->count,

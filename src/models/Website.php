@@ -7,7 +7,7 @@ use MongoDB\BSON\UTCDateTime;
 
 /**
  * @property ObjectId $_id
- * @property int $profile_id
+ * @property int $profile_id @deprecated, now profile_id on the api and web must be == _id
  * @property string $homepage
  * @property bool $is_http_only
  * @property UTCDateTime $updated_at

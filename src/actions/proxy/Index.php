@@ -9,6 +9,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RedirectMiddleware;
+use MongoDB\BSON\ObjectId;
+use MongoDB\Exception\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Proxy\Proxy;
@@ -25,7 +27,16 @@ class Index extends BaseAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $repo = new ProfileRepository($this->getContainer()->get(CONTAINER_CONFIG_MONGO));
-        if (!$profile = $repo->getOne($request->getAttribute('id'))) {
+        $profileId = $request->getAttribute('id');
+        if (!\is_string($profileId)) {
+            throw new NotFoundException($request, $response);
+        }
+        try {
+            $id = new ObjectId($profileId);
+        } catch (InvalidArgumentException $e) {
+            throw new NotFoundException($request, $response);
+        }
+        if (!$profile = $repo->getOneById($id)) {
             throw new NotFoundException($request, $response);
         }
         try {
