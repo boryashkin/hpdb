@@ -4,8 +4,6 @@ namespace app\messageBus\handlers\processors;
 
 use app\messageBus\messages\persistors\WebsiteMetaInfoMessage;
 use app\messageBus\messages\processors\WebsiteHistoryMessage;
-use app\messageBus\repositories\WebsiteIndexHistoryRepository;
-use app\models\WebsiteIndexHistory;
 use MongoDB\BSON\ObjectId;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -15,36 +13,20 @@ use Symfony\Component\Messenger\MessageBusInterface;
  */
 class MetaInfoProcessor implements ProcessorInterface
 {
-    /** @var WebsiteIndexHistoryRepository */
-    private $historyRepository;
     /** @var MessageBusInterface */
     private $persistorsBus;
     private $name;
 
-    public function __construct(
-        string $name,
-        WebsiteIndexHistoryRepository $historyRepository,
-        MessageBusInterface $persistorsBus
-    )
+    public function __construct(string $name, MessageBusInterface $persistorsBus)
     {
         $this->name = $name;
-        $this->historyRepository = $historyRepository;
         $this->persistorsBus = $persistorsBus;
     }
 
     public function __invoke(WebsiteHistoryMessage $historyMessage)
     {
-        $item = $this->getHistoryIndexItem($historyMessage->getIndexHistoryId());
-        if ($item->content === null) {
-            return;
-        }
-        $message = $this->createMetaInfoMessage(new ObjectId($item->website_id), new ObjectId($item->_id), $item->content);
+        $message = $this->createMetaInfoMessage(new ObjectId($historyMessage->getWebsiteId()), new ObjectId($historyMessage->getIndexHistoryId()), $historyMessage->getContent());
         $this->persistorsBus->dispatch($message);
-    }
-
-    public function getHistoryIndexItem(ObjectId $historyItem): ?WebsiteIndexHistory
-    {
-        return $this->historyRepository->getOne($historyItem);
     }
 
     private function createMetaInfoMessage(ObjectId $websiteId, ObjectId $historyIndexId, string $content): WebsiteMetaInfoMessage
