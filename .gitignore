@@ -2,3 +2,7 @@
 /.env
 /vendor
 /data
+/daemons/systemd/hpdb.crawlers.service
+/daemons/systemd/hpdb.discoverers.service
+/daemons/systemd/hpdb.persistors.service
+/daemons/systemd/hpdb.processors.service

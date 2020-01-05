@@ -1,0 +1,11 @@
+[Unit]
+Description="Hpdb persistors daemon"
+After=network.target
+
+[Service]
+User=user
+Group=group
+ExecStart=docker exec -it hpdb-php-api php daemons/persistors.php group1
+StandardOutput=rsyslog
+StandardError=rsyslog
+
