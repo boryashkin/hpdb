@@ -2,10 +2,13 @@
 
 namespace app\messageBus\factories;
 
+use MongoDB\Driver\Exception\InvalidArgumentException;
+use MongoDB\Driver\Exception\UnexpectedValueException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Worker;
 
@@ -15,13 +18,26 @@ class WorkerFactory
     {
         $dispatcher = new EventDispatcher();
         $dispatcher->addListener(WorkerMessageFailedEvent::class, function (WorkerMessageFailedEvent $e) use ($logger) {
+            $message = $e->getThrowable()->getMessage();
+            if ($e->getThrowable() instanceof HandlerFailedException) {
+                $exE = $e->getThrowable()->getPrevious();
+                //mongodb message about "invalid UTF-8" will unnecessary throw entire html
+                if (
+                    $exE instanceof UnexpectedValueException
+                    || $exE instanceof InvalidArgumentException
+                ) {
+                    $message = substr($message, 0, 100);
+                }
+            }
+
             $logger->error(
                 \implode(
                     ', ',
                     [
                         $e->getReceiverName(),
                         \get_class($e->getEnvelope()->getMessage()),
-                        $e->getThrowable()->getMessage()
+                        \get_class($e->getThrowable()),
+                        $message,
                     ]
                 )
             );
@@ -34,6 +50,9 @@ class WorkerFactory
                         ', ',
                         [
                             $cnt++,
+                            date(DATE_ATOM),
+                            $e->getReceiverName(),
+                            \get_class($e->getEnvelope()),
                         ]
                     )
                 );

@@ -46,8 +46,9 @@ return [
         return \Symfony\Component\Messenger\Transport\RedisExt\Connection::fromDsn($dsn, $options);
     },
     CONTAINER_CONFIG_REDIS_STREAM_SERIALIZER => function (\Slim\Container $c) {
+        $serializer = new \Symfony\Component\Messenger\Transport\Serialization\PhpSerializer();
 
-        return new \Symfony\Component\Messenger\Transport\Serialization\PhpSerializer();
+        return new \app\services\Base64SerializerDecorator($serializer);
     },
     CONTAINER_CONFIG_REDIS_STREAM_TRANSPORT_CRAWLERS => function (\Slim\Container $c) {
 

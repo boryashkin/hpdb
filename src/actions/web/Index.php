@@ -135,7 +135,7 @@ class Index extends BaseAction
                 'profile_id' => $website->profile_id,
                 'homepage' => \str_replace(['http://', 'https://'], '', $website->homepage),
                 'reactions' => $reactions,
-                'title' => $website->content->title ? \substr(trim($website->content->title ?? ''), 0, 50) : 'No description yet',
+                'title' => $website->content->title ? \mb_substr(trim($website->content->title ?? ''), 0, 50) : 'No description yet',
             ];
         }
 

@@ -4,8 +4,10 @@ namespace app\dto\website;
 
 class WebsiteIndexDto
 {
-    /** @var string */
+    /** @var string in utf-8 */
     public $content;
+    /** @var string */
+    public $initialEncoding;
     /** @var int */
     public $httpStatus;
     /** @var string[][] */

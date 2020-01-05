@@ -1,8 +1,10 @@
 <?php
 
+use app\messageBus\factories\MessageBusFactory;
 use app\messageBus\factories\WorkerFactory;
 use app\messageBus\handlers\crawlers\PageFetcherCrawler;
-use app\messageBus\messages\crawlers\WebsiteMessage;
+use app\messageBus\messages\crawlers\NewWebsiteToCrawlMessage;
+use app\services\website\WebsiteFetcher;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -28,12 +30,15 @@ $receivers = [
         $container->get(CONTAINER_CONFIG_REDIS_STREAM_SERIALIZER)
     )
 ];
-$factory = new \app\messageBus\factories\MessageBusFactory($container);
+$fetcher = new WebsiteFetcher(new \app\services\HttpClient('hpdb-bot-c/0.1'));
+/** @var \Symfony\Component\Messenger\MessageBusInterface $persistorBus */
+$persistorBus = $container->get(CONTAINER_CONFIG_REDIS_STREAM_PERSISTORS);
+$factory = new MessageBusFactory($container);
 // add only /crawlers handlers
 $factory->addHandler(
-    WebsiteMessage::class,
+    NewWebsiteToCrawlMessage::class,
     new HandlerDescriptor(
-        new PageFetcherCrawler(\getenv('REDIS_QUEUE_CONSUMER')),
+        new PageFetcherCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $fetcher, $persistorBus),
         [
             'from_transport' => PageFetcherCrawler::TRANSPORT
         ]

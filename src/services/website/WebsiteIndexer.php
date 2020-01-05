@@ -4,6 +4,7 @@ namespace app\services\website;
 
 use app\dto\website\WebsiteIndexingResultDto;
 use app\exceptions\InvalidUrlException;
+use app\exceptions\WebsiteBodyIsTooBig;
 use app\models\Website;
 use app\models\WebsiteIndexHistory;
 use app\valueObjects\Url;
@@ -42,14 +43,14 @@ class WebsiteIndexer
         $isHttp = $parsedUrl->getScheme() === 'http';
         $parsed = null;
         try {
-            $parsed = $this->websiteFetcher->parseWebsite($parsedUrl->setScheme(Url::SCHEME_HTTPS));
+            $parsed = $this->websiteFetcher->parseWebsiteInUtf8($parsedUrl->setScheme(Url::SCHEME_HTTPS));
             $isHttp = false;
-        } catch (TransferException | InvalidUrlException $e) {
+        } catch (TransferException | InvalidUrlException | WebsiteBodyIsTooBig $e) {
             error_log($e->getMessage());
             $result->errors[] = [$e->getCode() => $e->getMessage()];
             unset($e);
             try {
-                $parsed = $this->websiteFetcher->parseWebsite($parsedUrl->setScheme(Url::SCHEME_HTTP));
+                $parsed = $this->websiteFetcher->parseWebsiteInUtf8($parsedUrl->setScheme(Url::SCHEME_HTTP));
                 $isHttp = true;
             } catch (TransferException | InvalidUrlException $e) {
                 error_log($e->getMessage());

@@ -89,7 +89,7 @@ class ExtractIndexedContent extends Command
             foreach ($c->find(['$or' => $lastWebsiteData]) as $website) {
                 $hist = new WebsiteIndexHistory();
                 $hist->forceFill((array)$website);
-                $message = new WebsiteHistoryMessage(new ObjectId($hist->website_id), new ObjectId($hist->_id), $hist->content);
+                $message = new WebsiteHistoryMessage(new ObjectId($hist->website_id), new ObjectId($hist->_id), $hist->content, $hist->initial_encoding);
                 $this->processorBus->dispatch($message);
             }
             $skip = $skip + $limit;

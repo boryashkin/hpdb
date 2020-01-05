@@ -2,7 +2,6 @@
 
 namespace app\messageBus\handlers\discoverers;
 
-use app\messageBus\messages\crawlers\WebsiteMessage;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
@@ -24,8 +23,6 @@ class GithubProfileDiscoverer implements DiscovererInterface
     public function __invoke()
     {
         echo 'discovered' . PHP_EOL;
-        $message = new WebsiteMessage('borisd.ru');
-
-        $this->publishBus->dispatch($message);
+        //pass to the publi
     }
 }
