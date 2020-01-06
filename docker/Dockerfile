@@ -37,8 +37,7 @@ RUN pecl install mongodb \
 RUN pecl install apcu \
     && docker-php-ext-enable apcu
 
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug
+#RUN pecl install xdebug && docker-php-ext-enable xdebug
 
 RUN pecl install redis \
     && docker-php-ext-enable redis
