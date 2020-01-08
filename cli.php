@@ -28,6 +28,7 @@ $commands[] = $command;
 $command = new \app\commands\AddWebsite();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
 $command->setPersistorsBus($container->get(CONTAINER_CONFIG_REDIS_STREAM_PERSISTORS));
+$command->setCrawlersBus($container->get(CONTAINER_CONFIG_REDIS_STREAM_CRAWLERS));
 /* remove reindexer */
 $commands[] = $command;
 

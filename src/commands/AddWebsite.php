@@ -1,9 +1,12 @@
 <?php
 namespace app\commands;
 
+use app\messageBus\messages\crawlers\NewWebsiteToCrawlMessage;
 use app\messageBus\messages\persistors\NewWebsiteToPersistMessage;
+use app\models\WebsiteIndexHistory;
 use app\modules\web\ProfileRepository;
 use app\valueObjects\Url;
+use MongoDB\BSON\ObjectId;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,6 +22,8 @@ class AddWebsite extends Command
     private $mongo;
     /** @var MessageBusInterface */
     private $persistorsBus;
+    /** @var MessageBusInterface */
+    private $crawlersBus;
 
     public function setMongo(\Jenssegers\Mongodb\Connection $mongo)
     {
@@ -30,14 +35,18 @@ class AddWebsite extends Command
         $this->persistorsBus = $persistorsBus;
     }
 
+    public function setCrawlersBus(MessageBusInterface $crawlersBus)
+    {
+        $this->crawlersBus = $crawlersBus;
+    }
+
     /** @inheritDoc */
     protected function configure()
     {
         $this
             ->setName('service:add-website')
             ->setDescription('Add, reindex, extract data from the website. Use --url to provide an address')
-            ->addOption('url', null, InputOption::VALUE_OPTIONAL, 'Url of website')
-        ;
+            ->addOption('url', null, InputOption::VALUE_OPTIONAL, 'Url of website');
     }
 
     /** @inheritDoc */
@@ -54,7 +63,13 @@ class AddWebsite extends Command
         $repo = new ProfileRepository($this->mongo);
         $website = $repo->getFirstOneByUrl($parsedUrl);
         if ($website) {
-            $output->writeln('Website already exists: ' . $website->_id);
+            $hist = WebsiteIndexHistory::query()->where('website_id', $website->_id)->first();
+            if ($hist) {
+                $output->writeln('Website already exists: ' . $website->_id);
+                return 1;
+            }
+            $message = new NewWebsiteToCrawlMessage(new ObjectId($website->_id), $parsedUrl);
+            $this->crawlersBus->dispatch($message);
             return 1;
         }
         $message = new NewWebsiteToPersistMessage($parsedUrl, 'cli', new \DateTime());
