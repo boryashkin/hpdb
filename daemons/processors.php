@@ -3,7 +3,10 @@
 use app\messageBus\factories\MessageBusFactory;
 use app\messageBus\factories\WorkerFactory;
 use app\messageBus\handlers\processors\MetaInfoProcessor;
+use app\messageBus\handlers\processors\RssFeedProcessor;
+use app\messageBus\handlers\processors\RssFeedSeekerProcessor;
 use app\messageBus\messages\processors\WebsiteHistoryMessage;
+use app\messageBus\messages\processors\XmlRssContentToProcessMessage;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -31,6 +34,8 @@ $receivers = [
 ];
 /** @var \Symfony\Component\Messenger\MessageBusInterface $persistorBus */
 $persistorBus = $container->get(CONTAINER_CONFIG_REDIS_STREAM_PERSISTORS);
+/** @var \Symfony\Component\Messenger\MessageBusInterface $crawlersBus */
+$crawlersBus = $container->get(CONTAINER_CONFIG_REDIS_STREAM_CRAWLERS);
 
 $factory = new MessageBusFactory($container);
 // add only /processors handlers
@@ -38,6 +43,22 @@ $factory->addHandler(
     WebsiteHistoryMessage::class,
     new HandlerDescriptor(
         new MetaInfoProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $persistorBus),
+        [
+            'from_transport' => MetaInfoProcessor::TRANSPORT,
+        ]
+    )
+)->addHandler(
+    WebsiteHistoryMessage::class,
+    new HandlerDescriptor(
+        new RssFeedSeekerProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $crawlersBus),
+        [
+            'from_transport' => MetaInfoProcessor::TRANSPORT,
+        ]
+    )
+)->addHandler(
+    XmlRssContentToProcessMessage::class,
+    new HandlerDescriptor(
+        new RssFeedProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $persistorBus),
         [
             'from_transport' => MetaInfoProcessor::TRANSPORT,
         ]

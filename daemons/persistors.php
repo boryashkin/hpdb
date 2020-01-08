@@ -2,12 +2,15 @@
 
 use app\messageBus\factories\WorkerFactory;
 use app\messageBus\handlers\persistors\NewWebsitePersistor;
+use app\messageBus\handlers\persistors\RssItemElasticPersistor;
 use app\messageBus\handlers\persistors\WebsiteIndexHistoryPersistor;
 use app\messageBus\handlers\persistors\WebsiteMetaInfoPersistor;
 use app\messageBus\messages\persistors\NewWebsiteToPersistMessage;
+use app\messageBus\messages\persistors\RssItemToPersist;
 use app\messageBus\messages\persistors\WebsiteFetchedPageToPersistMessage;
 use app\messageBus\messages\persistors\WebsiteMetaInfoMessage;
 use app\messageBus\repositories\WebsiteIndexHistoryRepository;
+use app\messageBus\repositories\WebsiteRepository;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -35,6 +38,9 @@ $receivers = [
 ];
 /** @var \Jenssegers\Mongodb\Connection $mongo */
 $mongo = $container->get(CONTAINER_CONFIG_MONGO);
+/** @var \Elasticsearch\Client $elastic */
+$elastic = $container->get(CONTAINER_CONFIG_ELASTIC);
+//$elastic->create(['index' => 'website_rss_item']);//todo: remove from here when architecture is established
 /** @var \Symfony\Component\Messenger\MessageBusInterface $processorsBus */
 $processorsBus = $container->get(CONTAINER_CONFIG_REDIS_STREAM_PROCESSORS);
 /** @var \Symfony\Component\Messenger\MessageBusInterface $persistorsBus */
@@ -61,9 +67,17 @@ $factory->addHandler(
 )->addHandler(
     NewWebsiteToPersistMessage::class,
     new HandlerDescriptor(
-        new NewWebsitePersistor(\getenv('REDIS_QUEUE_CONSUMER'), new \app\messageBus\repositories\WebsiteRepository($mongo), $crawlersBus),
+        new NewWebsitePersistor(\getenv('REDIS_QUEUE_CONSUMER'), new WebsiteRepository($mongo), $crawlersBus),
         [
             'from_transport' => WebsiteMetaInfoPersistor::TRANSPORT,
+        ]
+    )
+)->addHandler(
+    RssItemToPersist::class,
+    new HandlerDescriptor(
+        new RssItemElasticPersistor(\getenv('REDIS_QUEUE_CONSUMER'), $elastic),
+        [
+            'from_transport' => RssItemElasticPersistor::TRANSPORT,
         ]
     )
 );

@@ -6,6 +6,7 @@ const CONTAINER_CONFIG_SETTINGS = 'settings';
 const CONTAINER_CONFIG_LOGGER = 'logger';
 const CONTAINER_CONFIG_VIEW = 'view';
 const CONTAINER_CONFIG_MONGO = 'mongodb';
+const CONTAINER_CONFIG_ELASTIC = 'elastic';
 const CONTAINER_CONFIG_REDIS_CACHE = 'redisCache';
 const CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_CRAWLERS = 'redisStreamConnectionCrawlers';
 const CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_DISCOVERERS = 'redisStreamConnectionDiscoveres';
@@ -94,5 +95,7 @@ return new \Slim\Container(array_merge([
         $connection = new Predis\Client($config);
         return new Symfony\Component\Cache\Adapter\RedisAdapter($connection);
     },
-
+    CONTAINER_CONFIG_ELASTIC => function (\Slim\Container $c) {
+        return \Elasticsearch\ClientBuilder::create()->setHosts([\getenv('ELASTIC_HOST')])->build();
+    },
 ], $messageBus));

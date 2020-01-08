@@ -4,6 +4,7 @@ namespace app\commands;
 use app\messageBus\messages\processors\WebsiteHistoryMessage;
 use app\models\WebsiteContent;
 use app\models\WebsiteIndexHistory;
+use app\valueObjects\Url;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Collection as MongoCollection;
 use Symfony\Component\Console\Command\Command;
@@ -89,7 +90,7 @@ class ExtractIndexedContent extends Command
             foreach ($c->find(['$or' => $lastWebsiteData]) as $website) {
                 $hist = new WebsiteIndexHistory();
                 $hist->forceFill((array)$website);
-                $message = new WebsiteHistoryMessage(new ObjectId($hist->website_id), new ObjectId($hist->_id), $hist->content, $hist->initial_encoding);
+                $message = new WebsiteHistoryMessage(new ObjectId($hist->website_id), new ObjectId($hist->_id), new Url($website->homepage), $hist->content, $hist->initial_encoding);
                 $this->processorBus->dispatch($message);
             }
             $skip = $skip + $limit;

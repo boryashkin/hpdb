@@ -41,7 +41,6 @@ class WebsiteIndexHistoryPersistor implements PersistorInterface
         $websiteIndex->redirects = $message->getData()->redirects;
         $websiteIndex->time = $message->getData()->time;
 
-
         if (!$this->websiteIndexRepository->save($websiteIndex)) {
             throw new \Exception('Failed to save a website: ' . $message->getUrl());
         }
@@ -49,6 +48,7 @@ class WebsiteIndexHistoryPersistor implements PersistorInterface
         $processMessage = new WebsiteHistoryMessage(
             $message->getWebsiteId(),
             new ObjectId($websiteIndex->_id),
+            $message->getUrl(),
             $message->getData()->content,
             $message->getData()->initialEncoding
         );

@@ -52,6 +52,15 @@ class Url
         return $this;
     }
 
+    public function addPath(string $path): self
+    {
+        $path = $this->getPath() . $path;
+        $path = str_replace('//', '/', $path);
+        $this->parts['path'] = $path;
+
+        return $this;
+    }
+
     public function getHost(): string
     {
         return $this->parts['host'];

@@ -51,7 +51,9 @@ class WebsiteFetcher
             $contentType = \end($rsp->httpHeaders['Content-Type']);
             if ($contentType && preg_match('#charset=([^()<>@,;:\"/[\]?.=\s]*)#i', $contentType, $match)) {
                 $rsp->initialEncoding = trim($match[1], '"\'');
-                $rsp->content = \iconv($rsp->initialEncoding, 'UTF-8', $rsp->content);
+                if (strcasecmp('UTF-8', $rsp->initialEncoding) !== 0) {
+                    $rsp->content = \iconv($rsp->initialEncoding, 'UTF-8', $rsp->content);
+                }
             }
         }
 
