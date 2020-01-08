@@ -7,9 +7,6 @@ use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RedirectMiddleware;
-use Proxy\Adapter\Guzzle\GuzzleAdapter;
-use Proxy\Filter\RemoveEncodingFilter;
-use Proxy\Proxy;
 use Psr\Http\Message\ResponseInterface;
 
 class HttpClient
@@ -21,6 +18,7 @@ class HttpClient
 
     public function __construct(string $userAgent)
     {
+        $this->userAgent = $userAgent;
         $stack = HandlerStack::create();
         $guzzle = new Client([
             'handler' => $stack,
@@ -32,11 +30,9 @@ class HttpClient
 
     public function requestGet(string $url): ResponseInterface
     {
-        $proxy = new Proxy(new GuzzleAdapter($this->client));
-        $proxy->filter(new RemoveEncodingFilter());
-        $clone = new Request('GET', '/', ['User-Agent' => $this->userAgent]);
+        $request = new Request('GET', $url, ['User-Agent' => $this->userAgent]);
         try {
-            $res = $proxy->forward($clone)->to($url);
+            $res = $this->client->send($request);
         } catch (TransferException $e) {
             throw $e;
         }
