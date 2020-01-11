@@ -23,7 +23,7 @@ class Index extends BaseAction
         $wc = $mongo->getCollection('website');
         $c = $mongo->getCollection('websiteReaction');
         $reactions = $redis->get('mainTopReactions', function (ItemInterface $item) use ($c) {
-            $item->expiresAfter(10);
+            $item->expiresAfter(30);
 
             return $this->getTopReactions($c);
         });

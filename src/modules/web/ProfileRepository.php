@@ -21,6 +21,26 @@ class ProfileRepository
         $this->connection = $connection;
     }
 
+    public function getListLightweight(int $page, $query = null)
+    {
+        $q = strip_tags($query);
+        if ($page <= 0) {
+            $page = 1;
+        }
+        $step = 10;
+        $from = ($page - 1) * $step;
+
+        $req = Website::query()
+            ->select(['profile_id', 'homepage'])
+            ->offset($from)->limit($step);
+        if ($query) {
+            $req->where('homepage', 'like', '%' . $q . '%');
+        }
+        $websites = $req->get();
+
+        return $websites->toArray();
+    }
+
     public function getList(int $page, $query = null)
     {
         if (isset($query)) {
