@@ -14,21 +14,33 @@ class Index extends BaseAction
 {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $mongo = $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
         /** @var RedisAdapter $redis */
         $redis = $this->getContainer()->get(CONTAINER_CONFIG_REDIS_CACHE);
-        /**
-         * @var MongoCollection $c
-         */
-        $wc = $mongo->getCollection('website');
-        $c = $mongo->getCollection('websiteReaction');
-        $reactions = $redis->get('mainTopReactions', function (ItemInterface $item) use ($c) {
-            $item->expiresAfter(30);
+        $container = $this->getContainer();
 
+        $reactions = $redis->get('mainTopReactions', function (ItemInterface $item) use ($container) {
+            $item->expiresAfter(60);
+
+            /**
+             * @var MongoCollection $c
+             */
+            $mongo = $container->get(CONTAINER_CONFIG_MONGO);
+            $c = $mongo->getCollection('websiteReaction');
             return $this->getTopReactions($c);
         });
 
-        $newWebsites = $this->getNewWebsites($wc, $c);
+
+        $newWebsites = $redis->get('mainNewWebsites', function (ItemInterface $item) use ($container) {
+            $item->expiresAfter(60);
+
+            /**
+             * @var MongoCollection $c
+             */
+            $mongo = $container->get(CONTAINER_CONFIG_MONGO);
+            $wc = $mongo->getCollection('website');
+            $c = $mongo->getCollection('websiteReaction');
+            return $this->getNewWebsites($wc, $c);
+        });
 
         return $this->getView()->render($response, 'web/index.html', [
             'reactions' => $reactions,
@@ -74,7 +86,7 @@ class Index extends BaseAction
             ],
             ['$unwind' => '$websiteContent'],
             ['$sort' => ['count' => -1]],
-            ['$limit' => 50],
+            ['$limit' => 10],
         ]);
 
         $result = [];

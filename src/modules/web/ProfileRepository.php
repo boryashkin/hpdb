@@ -100,6 +100,22 @@ class ProfileRepository
         return $websitesArr;
     }
 
+    public function getListByGroup(int $page, ObjectId $groupId)
+    {
+        if ($page <= 0) {
+            $page = 1;
+        }
+        $step = 10;
+        $from = ($page - 1) * $step;
+
+        $req = Website::query()
+            ->where('groups', 'in', $groupId)
+            ->offset($from)->limit($step);
+        $websites = $req->get();
+
+        return $websites->toArray();
+    }
+
     /**
      * @param ObjectId $id
      * @return Website

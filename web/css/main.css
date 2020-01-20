@@ -100,11 +100,22 @@ input[type=submit] {
     background-position-x: -375px;
     background-position-y: -45px;
 }
+
 .like.small {
     background-position-x: -150px;
     background-position-y: -90px;
 }
+
 .nohp.small {
     background-position-x: -375px;
     background-position-y: 30px;
+}
+
+.website-group-link-li img {
+    height: 20px;
+}
+
+.website-group-link-li {
+    display: inline-block;
+    margin: 4px 2px;
 }
