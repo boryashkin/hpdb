@@ -21,7 +21,8 @@
       "ext-libxml": "^7.3",
       "dg/rss-php": "^1.4",
       "ext-SimpleXML": "^7.3",
-      "elasticsearch/elasticsearch": "^7.5"
+      "elasticsearch/elasticsearch": "^7.5",
+      "php-pm/php-pm": "^2.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
