@@ -62,3 +62,28 @@ services:
       - ./data/elastic:/usr/share/elasticsearch/data
     networks:
       - hpdb-network
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: "hpdb-prometheus"
+    volumes:
+      - ./docker/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - hpdb-network
+  mongoexporter:
+    image: boryashkin/percona_mongo_exporter:master
+    container_name: "hpdb-mongo_exporter"
+    depends_on:
+      - mongo
+    environment:
+      - MONGODB_URI=mongodb://${MONGO_HOST}:${MONGO_PORT}
+    networks:
+      - hpdb-network
+  grafana:
+    image: grafana/grafana:latest
+    container_name: "hpdb-grafana"
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    networks:
+      - hpdb-network
