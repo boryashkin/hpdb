@@ -12,5 +12,5 @@ class MetricsCollector extends CollectorRegistry
 
     public const TICK_APP_START = 'app_start_tick';
 
-    public const TIME_APP_LATENCY = 'app_start_time';
+    public const TIME_APP_LATENCY = 'app_latency_time';
 }
