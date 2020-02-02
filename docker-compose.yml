@@ -67,6 +67,7 @@ services:
     container_name: "hpdb-prometheus"
     volumes:
       - ./docker/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./data/prometheus:/prometheus
     networks:
       - hpdb-network
   mongoexporter:
