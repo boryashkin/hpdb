@@ -78,9 +78,20 @@ services:
       - MONGODB_URI=mongodb://${MONGO_HOST}:${MONGO_PORT}
     networks:
       - hpdb-network
+  redisexporter:
+    image: oliver006/redis_exporter:latest
+    container_name: "hpdb-redis_exporter"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_ADDR=redis://${REDIS_HOST}:6379
+    networks:
+      - hpdb-network
   grafana:
     image: grafana/grafana:latest
     container_name: "hpdb-grafana"
+    volumes:
+      - ./data/grafana:/var/lib/grafana
     depends_on:
       - prometheus
     ports:
