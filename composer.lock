@@ -4,7 +4,7 @@
     "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
     "This file is @generated automatically"
   ],
-  "content-hash": "8934ffca9944314fe06a1b5537609f96",
+  "content-hash": "71e026be3bc66db9c49c6fb93f66860c",
   "packages": [
     {
       "name": "dg/rss-php",
@@ -60,16 +60,16 @@
       "dist": {
         "type": "zip",
         "url": "https://api.github.com/repos/doctrine/inflector/zipball/ec3a55242203ffa6a4b27c58176da97ff0a7aec1",
-                "reference": "ec3a55242203ffa6a4b27c58176da97ff0a7aec1",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.2"
-            },
-            "type": "library",
+        "reference": "ec3a55242203ffa6a4b27c58176da97ff0a7aec1",
+        "shasum": ""
+      },
+      "require": {
+        "php": "^7.1"
+      },
+      "require-dev": {
+        "phpunit/phpunit": "^6.2"
+      },
+      "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "1.3.x-dev"
@@ -97,16 +97,16 @@
                     "name": "Benjamin Eberlei",
                     "email": "kontakt@beberlei.de"
                 },
-                {
-                    "name": "Jonathan Wage",
-                    "email": "jonwage@gmail.com"
-                },
-                {
-                    "name": "Johannes Schmitt",
-                    "email": "schmittjoh@gmail.com"
-                }
+              {
+                "name": "Jonathan Wage",
+                "email": "jonwage@gmail.com"
+              },
+              {
+                "name": "Johannes Schmitt",
+                "email": "schmittjoh@gmail.com"
+              }
             ],
-            "description": "Common String Manipulations with regard to casing and singular/plural rules.",
+      "description": "Common String Manipulations with regard to casing and singular/plural rules.",
       "homepage": "http://www.doctrine-project.org",
       "keywords": [
         "inflection",
@@ -180,6 +180,51 @@
       "time": "2019-12-19T15:48:35+00:00"
     },
     {
+      "name": "endclothing/prometheus_client_php",
+      "version": "1.0.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/endclothing/prometheus_client_php.git",
+        "reference": "ae61369d8667343cfff70fec648b3448a2076778"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/endclothing/prometheus_client_php/zipball/ae61369d8667343cfff70fec648b3448a2076778",
+        "reference": "ae61369d8667343cfff70fec648b3448a2076778",
+        "shasum": ""
+      },
+      "require": {
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^6.2",
+        "php": "^7.1",
+        "symfony/polyfill-apcu": "^1.6"
+      },
+      "require-dev": {
+        "phpunit/phpunit": "^7.5"
+      },
+      "suggest": {
+        "ext-apc": "Required if using APCu.",
+        "ext-redis": "Required if using Redis."
+      },
+      "type": "library",
+      "autoload": {
+        "psr-4": {
+          "Prometheus\\": "src/Prometheus/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "Apache-2.0"
+      ],
+      "authors": [
+        {
+          "name": "Daniel Noel-Davies",
+          "email": "Daniel.Noel-Davies@endclothing.com"
+        }
+      ],
+      "time": "2019-10-04T10:46:29+00:00"
+    },
+    {
       "name": "guzzlehttp/guzzle",
       "version": "6.5.2",
       "source": {
@@ -190,16 +235,16 @@
       "dist": {
         "type": "zip",
         "url": "https://api.github.com/repos/guzzle/guzzle/zipball/43ece0e75098b7ecd8d13918293029e555a50f82",
-                "reference": "43ece0e75098b7ecd8d13918293029e555a50f82",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "guzzlehttp/promises": "^1.0",
-                "guzzlehttp/psr7": "^1.6.1",
-                "php": ">=5.5"
-            },
-            "require-dev": {
+        "reference": "43ece0e75098b7ecd8d13918293029e555a50f82",
+        "shasum": ""
+      },
+      "require": {
+        "ext-json": "*",
+        "guzzlehttp/promises": "^1.0",
+        "guzzlehttp/psr7": "^1.6.1",
+        "php": ">=5.5"
+      },
+      "require-dev": {
                 "ext-curl": "*",
                 "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4 || ^7.0",
                 "psr/log": "^1.1"
@@ -357,8 +402,8 @@
             ],
             "description": "PSR-7 message implementation that also provides common utility methods",
             "keywords": [
-                "http",
-                "message",
+              "http",
+              "message",
               "psr-7",
               "request",
               "response",
@@ -417,6 +462,7 @@
         }
       ],
       "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
+      "abandoned": true,
       "time": "2018-07-31T13:22:33+00:00"
     },
     {
@@ -467,6 +513,7 @@
         "Guzzle",
         "stream"
       ],
+      "abandoned": true,
       "time": "2014-10-12T19:18:40+00:00"
     },
     {
@@ -480,16 +527,16 @@
       "dist": {
         "type": "zip",
         "url": "https://api.github.com/repos/illuminate/container/zipball/ec885f4b9ae5be2341a4bf714c96ce2b10c886c5",
-                "reference": "ec885f4b9ae5be2341a4bf714c96ce2b10c886c5",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/contracts": "^6.0",
-                "php": "^7.2",
-                "psr/container": "^1.0"
-            },
-            "type": "library",
-            "extra": {
+        "reference": "ec885f4b9ae5be2341a4bf714c96ce2b10c886c5",
+        "shasum": ""
+      },
+      "require": {
+        "illuminate/contracts": "^6.0",
+        "php": "^7.2",
+        "psr/container": "^1.0"
+      },
+      "type": "library",
+      "extra": {
                 "branch-alias": {
                     "dev-master": "6.0-dev"
                 }
@@ -1542,16 +1589,16 @@
                 "ext-pcntl": "For signal handling support when using the StreamSelectLoop",
                 "ext-uv": "* for ExtUvLoop"
             },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "React\\EventLoop\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-              "MIT"
-            ],
+          "type": "library",
+          "autoload": {
+            "psr-4": {
+              "React\\EventLoop\\": "src"
+            }
+          },
+          "notification-url": "https://packagist.org/downloads/",
+          "license": [
+            "MIT"
+          ],
           "description": "ReactPHP's core reactor event loop that libraries can use for evented I/O.",
           "keywords": [
             "asynchronous",
@@ -1616,16 +1663,16 @@
       "dist": {
         "type": "zip",
         "url": "https://api.github.com/repos/relayphp/Relay.Relay/zipball/e835fc45351b7a92a6fdf2a36be7bd59ef56c8ae",
-                "reference": "e835fc45351b7a92a6fdf2a36be7bd59ef56c8ae",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5.0",
-                "psr/http-message": "~1.0"
-            },
-            "require-dev": {
-                "zendframework/zend-diactoros": "~1.0"
-            },
+        "reference": "e835fc45351b7a92a6fdf2a36be7bd59ef56c8ae",
+        "shasum": ""
+      },
+      "require": {
+        "php": ">=5.5.0",
+        "psr/http-message": "~1.0"
+      },
+      "require-dev": {
+        "zendframework/zend-diactoros": "~1.0"
+      },
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -2239,26 +2286,82 @@
                     "name": "Samuel Roze",
                     "email": "samuel.roze@gmail.com"
                 },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
+              {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+              }
             ],
-            "description": "Symfony Messenger Component",
-            "homepage": "https://symfony.com",
-            "time": "2019-12-16T14:48:47+00:00"
+          "description": "Symfony Messenger Component",
+          "homepage": "https://symfony.com",
+          "time": "2019-12-16T14:48:47+00:00"
+        },
+    {
+      "name": "symfony/polyfill-apcu",
+      "version": "v1.13.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/symfony/polyfill-apcu.git",
+        "reference": "a8e961c841b9ec52927a87914f8820a1ad8f8116"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/symfony/polyfill-apcu/zipball/a8e961c841b9ec52927a87914f8820a1ad8f8116",
+        "reference": "a8e961c841b9ec52927a87914f8820a1ad8f8116",
+        "shasum": ""
+      },
+      "require": {
+        "php": ">=5.3.3"
+      },
+      "type": "library",
+      "extra": {
+        "branch-alias": {
+          "dev-master": "1.13-dev"
+        }
+      },
+      "autoload": {
+        "psr-4": {
+          "Symfony\\Polyfill\\Apcu\\": ""
+        },
+        "files": [
+          "bootstrap.php"
+        ]
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Nicolas Grekas",
+          "email": "p@tchwork.com"
         },
         {
-            "name": "symfony/polyfill-ctype",
-            "version": "v1.13.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "f8f0b461be3385e56d6de3dbb5a0df24c0c275e3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/f8f0b461be3385e56d6de3dbb5a0df24c0c275e3",
+          "name": "Symfony Community",
+          "homepage": "https://symfony.com/contributors"
+        }
+      ],
+      "description": "Symfony polyfill backporting apcu_* functions to lower PHP versions",
+      "homepage": "https://symfony.com",
+      "keywords": [
+        "apcu",
+        "compatibility",
+        "polyfill",
+        "portable",
+        "shim"
+      ],
+      "time": "2019-11-27T13:56:44+00:00"
+    },
+    {
+      "name": "symfony/polyfill-ctype",
+      "version": "v1.13.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/symfony/polyfill-ctype.git",
+        "reference": "f8f0b461be3385e56d6de3dbb5a0df24c0c275e3"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/f8f0b461be3385e56d6de3dbb5a0df24c0c275e3",
                 "reference": "f8f0b461be3385e56d6de3dbb5a0df24c0c275e3",
                 "shasum": ""
             },

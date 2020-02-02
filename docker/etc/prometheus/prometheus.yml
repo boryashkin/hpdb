@@ -23,3 +23,9 @@ scrape_configs:
 
     static_configs:
       - targets: ['hpdb-redis_exporter:9121']
+
+  - job_name: 'php_app_exporter'
+
+    metrics_path: '/service/metrics'
+    static_configs:
+      - targets: ['hpdb-web-api:80']

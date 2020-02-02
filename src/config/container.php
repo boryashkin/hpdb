@@ -7,6 +7,7 @@ const CONTAINER_CONFIG_LOGGER = 'logger';
 const CONTAINER_CONFIG_VIEW = 'view';
 const CONTAINER_CONFIG_MONGO = 'mongodb';
 const CONTAINER_CONFIG_ELASTIC = 'elastic';
+const CONTAINER_CONFIG_METRICS = 'metrics';
 const CONTAINER_CONFIG_REDIS_CACHE = 'redisCache';
 const CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_CRAWLERS = 'redisStreamConnectionCrawlers';
 const CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_DISCOVERERS = 'redisStreamConnectionDiscoveres';
@@ -97,5 +98,13 @@ return new \Slim\Container(array_merge([
     },
     CONTAINER_CONFIG_ELASTIC => function (\Slim\Container $c) {
         return \Elasticsearch\ClientBuilder::create()->setHosts([\getenv('ELASTIC_HOST')])->build();
+    },
+    CONTAINER_CONFIG_METRICS => function (\Slim\Container $c) {
+        return new \Prometheus\CollectorRegistry(
+            new \Prometheus\Storage\Redis([
+                'host' => \getenv('REDIS_HOST', true),
+                'port' => 6379,
+            ])
+        );
     },
 ], $messageBus));

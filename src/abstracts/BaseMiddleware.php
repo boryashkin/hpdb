@@ -1,20 +1,16 @@
 <?php
+
 namespace app\abstracts;
 
-
-use app\interfaces\Action;
+use app\interfaces\Middleware;
 use app\services\MetricsCollector;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Slim\Views\Twig;
 
-class BaseAction implements Action
+class BaseMiddleware implements Middleware
 {
     private $container;
-    /** @var Twig */
-    private $view;
-    /** @var MetricsCollector */
     private $metrics;
 
     /**
@@ -24,13 +20,12 @@ class BaseAction implements Action
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->view = $this->container->view;
         $this->metrics = $container->get(CONTAINER_CONFIG_METRICS);
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function __invoke(RequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
     {
-        return $response;
+        return $next($request, $response);
     }
 
     /**
@@ -42,14 +37,8 @@ class BaseAction implements Action
     }
 
     /**
-     * @return Twig
+     * @return MetricsCollector
      */
-    public function getView()
-    {
-        return $this->view;
-    }
-
-    /** @return MetricsCollector */
     public function getMetrics()
     {
         return $this->metrics;
