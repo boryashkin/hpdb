@@ -1,12 +1,17 @@
 <?php
 namespace app\commands;
 
+use app\messageBus\messages\crawlers\NewGithubProfileToCrawlMessage;
+use app\messageBus\messages\persistors\NewGithubProfileToPersistMessage;
+use app\messageBus\repositories\GithubProfileRepository;
 use app\models\GithubProfile;
-use Guzzle\Http\Client;
+use app\valueObjects\Url;
+use MongoDB\BSON\ObjectId;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  *
@@ -15,10 +20,17 @@ class GithubUserParser extends Command
 {
     /** @var \Jenssegers\Mongodb\Connection */
     private $mongo;
+    /** @var MessageBusInterface */
+    private $persistorsBus;
 
     public function setMongo(\Jenssegers\Mongodb\Connection $mongo)
     {
         $this->mongo = $mongo;
+    }
+
+    public function setPersistorsBus(MessageBusInterface $persistorsBus)
+    {
+        $this->persistorsBus = $persistorsBus;
     }
 
     /** @inheritDoc */
@@ -26,38 +38,33 @@ class GithubUserParser extends Command
     {
         $this
             ->setName('parser:github-users')
-            ->setDescription('Find blogs in github profiles: explore all the friends of a user; --startWithUser')
-            ->addOption('startWithUser', null, InputOption::VALUE_REQUIRED, 'Url of website')
-        ;
+            ->setDescription('Find blogs in github profiles: explore all the friends of a user; --login')
+            ->addOption('login', null, InputOption::VALUE_REQUIRED, 'login of a profile');
     }
 
     /** @inheritDoc */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $login = (string)$input->getOption('startWithUser');
+        $login = (string)$input->getOption('login');
         if (!\preg_match('/^[a-zA-Z0-9-]{1,39}$/', $login)) {
             $output->writeln('Username is invalid');
             exit(1);
         }
+        $login = (string)$input->getOption('login');
 
-        $client = new Client('https://api.github.com/');
-        $response = $client->get('/users/' . $login)->send();
-        if ($response->getStatusCode() !== 200) {
-            $output->writeln('Server returned ' . $response->getStatusCode());
-            return;
-        }
-        $data = \json_decode($response->getBody(true));
-        /** @var GithubProfile $profile */
-        $profile = GithubProfile::query()->where(['login' => $login])->first();
-        if (!$profile) {
-            $profile = new GithubProfile();
-            $profile->fill((array)$data);
-        } elseif ($data->blog) {
-            $profile->blog = $data->blog;
-        }
-        $profile->save();
+        $repo = new GithubProfileRepository($this->mongo);
+        if ($profile = $repo->getOneByLogin($login)) {
+            $output->writeln('Profile already exists');
 
-        $output->writeln((string)$profile->_id);
+            return 1;
+        }
+
+        $message = new NewGithubProfileToPersistMessage($login, new \DateTime());
+        $this->persistorsBus->dispatch($message);
+
+        $output->writeln("Queued $login");
+
+        return 0;
     }
 
 }

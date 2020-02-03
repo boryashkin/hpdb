@@ -2,9 +2,11 @@
 
 use app\messageBus\factories\MessageBusFactory;
 use app\messageBus\factories\WorkerFactory;
+use app\messageBus\handlers\processors\GithubProfileParsedProcessor;
 use app\messageBus\handlers\processors\MetaInfoProcessor;
 use app\messageBus\handlers\processors\RssFeedProcessor;
 use app\messageBus\handlers\processors\RssFeedSeekerProcessor;
+use app\messageBus\messages\processors\GithubProfileParsedToProcessMessage;
 use app\messageBus\messages\processors\WebsiteHistoryMessage;
 use app\messageBus\messages\processors\XmlRssContentToProcessMessage;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
@@ -59,6 +61,14 @@ $factory->addHandler(
     XmlRssContentToProcessMessage::class,
     new HandlerDescriptor(
         new RssFeedProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $persistorBus),
+        [
+            'from_transport' => MetaInfoProcessor::TRANSPORT,
+        ]
+    )
+)->addHandler(
+    GithubProfileParsedToProcessMessage::class,
+    new HandlerDescriptor(
+        new GithubProfileParsedProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $persistorBus),
         [
             'from_transport' => MetaInfoProcessor::TRANSPORT,
         ]
