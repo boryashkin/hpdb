@@ -4,7 +4,6 @@ namespace app\messageBus\handlers\persistors;
 
 use app\messageBus\messages\persistors\GithubProfileParsedToPersistMessage;
 use app\messageBus\repositories\GithubProfileRepository;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 class GithubProfileParsedPersistor implements PersistorInterface
 {

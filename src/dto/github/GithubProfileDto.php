@@ -38,8 +38,6 @@ class GithubProfileDto
     public $public_gists;
     public $followers;
     public $following;
-    public $created_at;
-    public $updated_at;
     public $login;
     public $blog;
     public $followers_url;

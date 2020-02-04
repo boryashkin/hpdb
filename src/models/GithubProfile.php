@@ -33,12 +33,10 @@ use MongoDB\BSON\UTCDateTime;
  * @property int $public_gists
  * @property int $followers
  * @property int $following
- * @property string $created_at
  * @property string $login
  * @property string $blog
  * @property string $followers_url
  * @property string $following_url
- * @property
  * @property UTCDateTime $updated_at
  */
 class GithubProfile extends Model
@@ -72,7 +70,6 @@ class GithubProfile extends Model
         'public_gists',
         'followers',
         'following',
-        'created_at',
         'login',
         'blog',
         'followers_url',
