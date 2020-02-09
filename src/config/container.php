@@ -100,7 +100,7 @@ return new \Slim\Container(array_merge([
         return \Elasticsearch\ClientBuilder::create()->setHosts([\getenv('ELASTIC_HOST')])->build();
     },
     CONTAINER_CONFIG_METRICS => function (\Slim\Container $c) {
-        return new \Prometheus\CollectorRegistry(
+        return new \app\services\MetricsCollector(
             new \Prometheus\Storage\Redis([
                 'host' => \getenv('REDIS_HOST', true),
                 'port' => 6379,
