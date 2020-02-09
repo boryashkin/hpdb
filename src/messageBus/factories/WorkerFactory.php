@@ -35,7 +35,7 @@ class WorkerFactory
                     ', ',
                     [
                         $e->getReceiverName(),
-                        \get_class($e->getEnvelope()->getMessage()),
+                        \get_class($e->getEnvelope() ? $e->getEnvelope()->getMessage() : $e->getEnvelope()),
                         \get_class($e->getThrowable()),
                         $message,
                     ]
@@ -52,7 +52,7 @@ class WorkerFactory
                             $cnt++,
                             date(DATE_ATOM),
                             $e->getReceiverName(),
-                            \get_class($e->getEnvelope()),
+                            \get_class($e->getEnvelope() ? $e->getEnvelope()->getMessage() : $e->getEnvelope()),
                         ]
                     )
                 );
