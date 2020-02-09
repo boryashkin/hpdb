@@ -1,14 +1,21 @@
 <?php
 
 use app\messageBus\factories\WorkerFactory;
+use app\messageBus\handlers\persistors\GithubFollowerParsedPersistor;
+use app\messageBus\handlers\persistors\GithubProfileParsedPersistor;
+use app\messageBus\handlers\persistors\NewGithubProfilePersistor;
 use app\messageBus\handlers\persistors\NewWebsitePersistor;
 use app\messageBus\handlers\persistors\RssItemElasticPersistor;
 use app\messageBus\handlers\persistors\WebsiteIndexHistoryPersistor;
 use app\messageBus\handlers\persistors\WebsiteMetaInfoPersistor;
+use app\messageBus\messages\persistors\GithubFollowerParsedToPersistMessage;
+use app\messageBus\messages\persistors\GithubProfileParsedToPersistMessage;
+use app\messageBus\messages\persistors\NewGithubProfileToPersistMessage;
 use app\messageBus\messages\persistors\NewWebsiteToPersistMessage;
 use app\messageBus\messages\persistors\RssItemToPersist;
 use app\messageBus\messages\persistors\WebsiteFetchedPageToPersistMessage;
 use app\messageBus\messages\persistors\WebsiteMetaInfoMessage;
+use app\messageBus\repositories\GithubProfileRepository;
 use app\messageBus\repositories\WebsiteIndexHistoryRepository;
 use app\messageBus\repositories\WebsiteRepository;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
@@ -78,6 +85,30 @@ $factory->addHandler(
         new RssItemElasticPersistor(\getenv('REDIS_QUEUE_CONSUMER'), $elastic),
         [
             'from_transport' => RssItemElasticPersistor::TRANSPORT,
+        ]
+    )
+)->addHandler(
+    NewGithubProfileToPersistMessage::class,
+    new HandlerDescriptor(
+        new NewGithubProfilePersistor(\getenv('REDIS_QUEUE_CONSUMER'), new GithubProfileRepository($mongo), $crawlersBus),
+        [
+            'from_transport' => NewGithubProfilePersistor::TRANSPORT,
+        ]
+    )
+)->addHandler(
+    GithubProfileParsedToPersistMessage::class,
+    new HandlerDescriptor(
+        new GithubProfileParsedPersistor(\getenv('REDIS_QUEUE_CONSUMER'), new GithubProfileRepository($mongo)),
+        [
+            'from_transport' => GithubProfileParsedPersistor::TRANSPORT,
+        ]
+    )
+)->addHandler(
+    GithubFollowerParsedToPersistMessage::class,
+    new HandlerDescriptor(
+        new GithubFollowerParsedPersistor(\getenv('REDIS_QUEUE_CONSUMER'), new GithubProfileRepository($mongo)),
+        [
+            'from_transport' => GithubFollowerParsedPersistor::TRANSPORT,
         ]
     )
 );

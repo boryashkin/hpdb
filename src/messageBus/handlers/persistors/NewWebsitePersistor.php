@@ -2,6 +2,7 @@
 
 namespace app\messageBus\handlers\persistors;
 
+use app\exceptions\WebsiteAlreadyExists;
 use app\messageBus\messages\crawlers\NewWebsiteToCrawlMessage;
 use app\messageBus\messages\persistors\NewWebsiteToPersistMessage;
 use app\messageBus\repositories\WebsiteRepository;
@@ -30,6 +31,9 @@ class NewWebsitePersistor implements PersistorInterface
     {
         $website = new Website();
         $website->homepage = (string)$message->getUrl();
+        if ($this->websiteRepository->getOneByHomepage($website->homepage)) {
+            throw new WebsiteAlreadyExists($website->homepage);
+        }
 
         if (!$this->websiteRepository->save($website)) {
             throw new \Exception('Failed to save a website: ' . $message->getUrl());
