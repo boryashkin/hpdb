@@ -4,6 +4,7 @@ namespace app\messageBus\handlers\processors;
 
 use app\dto\github\GithubProfileDto;
 use app\exceptions\InvalidUrlException;
+use app\messageBus\messages\crawlers\GithubFollowersToCrawlMessage;
 use app\messageBus\messages\persistors\GithubProfileParsedToPersistMessage;
 use app\messageBus\messages\persistors\NewWebsiteToPersistMessage;
 use app\messageBus\messages\processors\GithubProfileParsedToProcessMessage;
@@ -14,12 +15,15 @@ class GithubProfileParsedProcessor implements ProcessorInterface
 {
     /** @var MessageBusInterface */
     private $persistorsBus;
+    /** @var MessageBusInterface */
+    private $crawlersBus;
     private $name;
 
-    public function __construct(string $name, MessageBusInterface $persistorsBus)
+    public function __construct(string $name, MessageBusInterface $persistorsBus, MessageBusInterface $crawlersBus)
     {
         $this->name = $name;
         $this->persistorsBus = $persistorsBus;
+        $this->crawlersBus = $crawlersBus;
     }
 
     public function __invoke(GithubProfileParsedToProcessMessage $message)
@@ -35,6 +39,13 @@ class GithubProfileParsedProcessor implements ProcessorInterface
             } catch (InvalidUrlException $e) {
 
             }
+        }
+        if ($dto->followers_url) {
+            $followMessage = new GithubFollowersToCrawlMessage(
+                $message->getGithubProfileId(),
+                new Url($dto->followers_url)
+            );
+            $this->crawlersBus->dispatch($followMessage);
         }
 
         $newMessage = new GithubProfileParsedToPersistMessage($message->getGithubProfileId(), $dto);

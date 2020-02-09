@@ -2,9 +2,11 @@
 
 use app\messageBus\factories\MessageBusFactory;
 use app\messageBus\factories\WorkerFactory;
+use app\messageBus\handlers\crawlers\GithubFollowersCrawler;
 use app\messageBus\handlers\crawlers\GithubProfileCrawler;
 use app\messageBus\handlers\crawlers\PageFetcherCrawler;
 use app\messageBus\handlers\crawlers\RssFeedFetcherCrawler;
+use app\messageBus\messages\crawlers\GithubFollowersToCrawlMessage;
 use app\messageBus\messages\crawlers\NewGithubProfileToCrawlMessage;
 use app\messageBus\messages\crawlers\NewWebsiteToCrawlMessage;
 use app\messageBus\messages\crawlers\RssFeedToCrawlMessage;
@@ -63,6 +65,14 @@ $factory->addHandler(
         new GithubProfileCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $fetcher, $processorsBus),
         [
             'from_transport' => GithubProfileCrawler::TRANSPORT
+        ]
+    )
+)->addHandler(
+    GithubFollowersToCrawlMessage::class,
+    new HandlerDescriptor(
+        new GithubFollowersCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $fetcher, $processorsBus),
+        [
+            'from_transport' => GithubFollowersCrawler::TRANSPORT
         ]
     )
 );

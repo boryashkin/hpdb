@@ -2,10 +2,12 @@
 
 use app\messageBus\factories\MessageBusFactory;
 use app\messageBus\factories\WorkerFactory;
+use app\messageBus\handlers\processors\GithubFollowersParsedProcessor;
 use app\messageBus\handlers\processors\GithubProfileParsedProcessor;
 use app\messageBus\handlers\processors\MetaInfoProcessor;
 use app\messageBus\handlers\processors\RssFeedProcessor;
 use app\messageBus\handlers\processors\RssFeedSeekerProcessor;
+use app\messageBus\messages\processors\GithubFollowersToProcessMessage;
 use app\messageBus\messages\processors\GithubProfileParsedToProcessMessage;
 use app\messageBus\messages\processors\WebsiteHistoryMessage;
 use app\messageBus\messages\processors\XmlRssContentToProcessMessage;
@@ -54,7 +56,7 @@ $factory->addHandler(
     new HandlerDescriptor(
         new RssFeedSeekerProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $crawlersBus),
         [
-            'from_transport' => MetaInfoProcessor::TRANSPORT,
+            'from_transport' => RssFeedSeekerProcessor::TRANSPORT,
         ]
     )
 )->addHandler(
@@ -62,15 +64,23 @@ $factory->addHandler(
     new HandlerDescriptor(
         new RssFeedProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $persistorBus),
         [
-            'from_transport' => MetaInfoProcessor::TRANSPORT,
+            'from_transport' => RssFeedProcessor::TRANSPORT,
         ]
     )
 )->addHandler(
     GithubProfileParsedToProcessMessage::class,
     new HandlerDescriptor(
-        new GithubProfileParsedProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $persistorBus),
+        new GithubProfileParsedProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $persistorBus, $crawlersBus),
         [
-            'from_transport' => MetaInfoProcessor::TRANSPORT,
+            'from_transport' => GithubProfileParsedProcessor::TRANSPORT,
+        ]
+    )
+)->addHandler(
+    GithubFollowersToProcessMessage::class,
+    new HandlerDescriptor(
+        new GithubFollowersParsedProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $persistorBus),
+        [
+            'from_transport' => GithubFollowersParsedProcessor::TRANSPORT,
         ]
     )
 );

@@ -38,9 +38,14 @@ use MongoDB\BSON\UTCDateTime;
  * @property string $followers_url
  * @property string $following_url
  * @property UTCDateTime $updated_at
+ *
+ * @property int $parsing_status
  */
 class GithubProfile extends Model
 {
+    public const PARSING_STATUS_NEW = 0;
+    public const PARSING_STATUS_EXTRACTED = 1;
+
     protected $connection = 'mongodb';
     protected $collection = 'githubProfile';
     /** @var array */

@@ -1,12 +1,14 @@
 <?php
 
 use app\messageBus\factories\WorkerFactory;
+use app\messageBus\handlers\persistors\GithubFollowerParsedPersistor;
 use app\messageBus\handlers\persistors\GithubProfileParsedPersistor;
 use app\messageBus\handlers\persistors\NewGithubProfilePersistor;
 use app\messageBus\handlers\persistors\NewWebsitePersistor;
 use app\messageBus\handlers\persistors\RssItemElasticPersistor;
 use app\messageBus\handlers\persistors\WebsiteIndexHistoryPersistor;
 use app\messageBus\handlers\persistors\WebsiteMetaInfoPersistor;
+use app\messageBus\messages\persistors\GithubFollowerParsedToPersistMessage;
 use app\messageBus\messages\persistors\GithubProfileParsedToPersistMessage;
 use app\messageBus\messages\persistors\NewGithubProfileToPersistMessage;
 use app\messageBus\messages\persistors\NewWebsiteToPersistMessage;
@@ -99,6 +101,14 @@ $factory->addHandler(
         new GithubProfileParsedPersistor(\getenv('REDIS_QUEUE_CONSUMER'), new GithubProfileRepository($mongo)),
         [
             'from_transport' => GithubProfileParsedPersistor::TRANSPORT,
+        ]
+    )
+)->addHandler(
+    GithubFollowerParsedToPersistMessage::class,
+    new HandlerDescriptor(
+        new GithubFollowerParsedPersistor(\getenv('REDIS_QUEUE_CONSUMER'), new GithubProfileRepository($mongo)),
+        [
+            'from_transport' => GithubFollowerParsedPersistor::TRANSPORT,
         ]
     )
 );
