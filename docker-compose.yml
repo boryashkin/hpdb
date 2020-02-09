@@ -100,6 +100,7 @@ services:
     container_name: "hpdb-grafana"
     volumes:
       - ./data/grafana:/var/lib/grafana
+      - ./data/grafana-dashboards:/etc/grafana
     depends_on:
       - prometheus
     ports:
