@@ -21,7 +21,7 @@ class ProfileRepository
         $this->connection = $connection;
     }
 
-    public function getListLightweight(int $page, $query = null)
+    public function getListLightweight(int $page, $query = null, ObjectId $groupId = null)
     {
         $q = strip_tags($query);
         if ($page <= 0) {
@@ -36,12 +36,15 @@ class ProfileRepository
         if ($query) {
             $req->where('homepage', 'like', '%' . $q . '%');
         }
+        if ($groupId) {
+            $req->where('groups', '=', $groupId);
+        }
         $websites = $req->get();
 
         return $websites->toArray();
     }
 
-    public function getList(int $page, $query = null)
+    public function getList(int $page, $query = null, ObjectId $groupId = null)
     {
         if (isset($query)) {
             $query = \strip_tags($query);
@@ -86,7 +89,14 @@ class ProfileRepository
         if (isset($query)) {
             \array_unshift($aggQuery, [
                 '$match' => [
-                    'homepage' => ['$regex' =>  new Regex($query, "i")]
+                    'homepage' => ['$regex' => new Regex($query, "i")]
+                ]
+            ]);
+        }
+        if ($groupId) {
+            \array_unshift($aggQuery, [
+                '$match' => [
+                    'groups' => $groupId
                 ]
             ]);
         }
@@ -98,6 +108,22 @@ class ProfileRepository
         }
 
         return $websitesArr;
+    }
+
+    public function getListByGroup(int $page, ObjectId $groupId)
+    {
+        if ($page <= 0) {
+            $page = 1;
+        }
+        $step = 10;
+        $from = ($page - 1) * $step;
+
+        $req = Website::query()
+            ->where('groups', 'in', $groupId)
+            ->offset($from)->limit($step);
+        $websites = $req->get();
+
+        return $websites->toArray();
     }
 
     /**

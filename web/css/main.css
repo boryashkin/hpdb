@@ -96,15 +96,37 @@ input[type=submit] {
     background-position-x: -625px;
     background-position-y: 50px;
 }
+
+.fire {
+    background-position-x: -225px;
+    background-position-y: 100px;
+}
+
 .dislike.small {
     background-position-x: -375px;
     background-position-y: -45px;
 }
+
 .like.small {
     background-position-x: -150px;
     background-position-y: -90px;
 }
+
 .nohp.small {
     background-position-x: -375px;
     background-position-y: 30px;
+}
+
+.fire.small {
+    background-position-x: 270px;
+    background-position-y: 60px;
+}
+
+.website-group-link-li img {
+    height: 20px;
+}
+
+.website-group-link-li {
+    display: inline-block;
+    margin: 4px 2px;
 }
