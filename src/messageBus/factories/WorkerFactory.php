@@ -2,6 +2,7 @@
 
 namespace app\messageBus\factories;
 
+use app\services\MetricsCollector;
 use MongoDB\Driver\Exception\InvalidArgumentException;
 use MongoDB\Driver\Exception\UnexpectedValueException;
 use Psr\Log\LoggerInterface;
@@ -14,9 +15,22 @@ use Symfony\Component\Messenger\Worker;
 
 class WorkerFactory
 {
-    public static function createExceptionHandlingWorker(array $receivers, MessageBusInterface $bus, LoggerInterface $logger)
+    public static function createExceptionHandlingWorker(
+        array $receivers,
+        MessageBusInterface $bus,
+        LoggerInterface $logger,
+        MetricsCollector $metrics
+    ): Worker
     {
         $dispatcher = new EventDispatcher();
+        $dispatcher->addListener(WorkerMessageFailedEvent::class, function (WorkerMessageFailedEvent $e) use ($metrics) {
+            $className = \get_class($e->getEnvelope() ? $e->getEnvelope()->getMessage() : $e->getEnvelope());
+            $metrics->getOrRegisterCounter(
+                MetricsCollector::NS_CLI_BUS,
+                MetricsCollector::getNamespaceFromClassName($className) . MetricsCollector::SUFFIX_ERROR,
+                ''
+            )->inc();
+        });
         $dispatcher->addListener(WorkerMessageFailedEvent::class, function (WorkerMessageFailedEvent $e) use ($logger) {
             $message = $e->getThrowable()->getMessage();
             if ($e->getThrowable() instanceof HandlerFailedException) {
@@ -35,12 +49,20 @@ class WorkerFactory
                     ', ',
                     [
                         $e->getReceiverName(),
-                        \get_class($e->getEnvelope()->getMessage()),
+                        \get_class($e->getEnvelope() ? $e->getEnvelope()->getMessage() : $e->getEnvelope()),
                         \get_class($e->getThrowable()),
                         $message,
                     ]
                 )
             );
+        });
+        $dispatcher->addListener(WorkerMessageHandledEvent::class, function (WorkerMessageHandledEvent $e) use ($metrics) {
+            $className = \get_class($e->getEnvelope() ? $e->getEnvelope()->getMessage() : $e->getEnvelope());
+            $metrics->getOrRegisterCounter(
+                MetricsCollector::NS_CLI_BUS,
+                MetricsCollector::getNamespaceFromClassName($className) . MetricsCollector::SUFFIX_TICK,
+                ''
+            )->inc();
         });
         if (!ENV_PROD) {
             $dispatcher->addListener(WorkerMessageHandledEvent::class, function (WorkerMessageHandledEvent $e) use ($logger) {
@@ -52,7 +74,7 @@ class WorkerFactory
                             $cnt++,
                             date(DATE_ATOM),
                             $e->getReceiverName(),
-                            \get_class($e->getEnvelope()),
+                            \get_class($e->getEnvelope() ? $e->getEnvelope()->getMessage() : $e->getEnvelope()),
                         ]
                     )
                 );

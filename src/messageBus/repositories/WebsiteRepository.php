@@ -19,6 +19,14 @@ class WebsiteRepository extends AbstractMongoRepository
             ->first();
     }
 
+    public function getOneByHomepage(string $url)
+    {
+        return Website::query()
+            ->where('_id', '=', $url)
+            ->limit(1)
+            ->first();
+    }
+
     public function save(Website $website): bool
     {
         return $website->save();

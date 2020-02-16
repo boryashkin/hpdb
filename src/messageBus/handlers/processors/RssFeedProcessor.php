@@ -2,12 +2,11 @@
 
 namespace app\messageBus\handlers\processors;
 
-use app\messageBus\handlers\HandlerInterface;
 use app\messageBus\messages\persistors\RssItemToPersist;
 use app\messageBus\messages\processors\XmlRssContentToProcessMessage;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class RssFeedProcessor implements HandlerInterface
+class RssFeedProcessor implements ProcessorInterface
 {
     private $name;
     /** @var MessageBusInterface */
