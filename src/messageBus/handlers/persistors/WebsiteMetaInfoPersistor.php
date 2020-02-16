@@ -28,8 +28,12 @@ class WebsiteMetaInfoPersistor implements PersistorInterface
 
     public function createWebsiteContent(WebsiteMetaInfoMessage $message): WebsiteContent
     {
-        $content = new WebsiteContent();
-        $content->website_id = $message->getWebsiteId();
+        /** @var WebsiteContent $existed */
+        $content = WebsiteContent::query()->where('website_id', '=', $message->getWebsiteId())->first();
+        if (!$content) {
+            $content = new WebsiteContent();
+            $content->website_id = $message->getWebsiteId();
+        }
         $content->title = $message->getTitle();
         $content->description = $message->getDescription();
         $content->from_website_index_history_id = $message->getHistoryIndexId();

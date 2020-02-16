@@ -15,6 +15,7 @@ $command->setSqlite($container->get(SQLite3::class));
 $commands[] = $command;
 $command = new \app\commands\ReindexHompages();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
+$command->setCrawlersBus($container->get(CONTAINER_CONFIG_REDIS_STREAM_CRAWLERS));
 $command->setWebsiteIndexer(
     new \app\services\website\WebsiteIndexer(
         new \app\services\website\WebsiteFetcher(new \app\services\HttpClient(HPDB_CRAWLER_NAME))

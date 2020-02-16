@@ -2,19 +2,23 @@
 namespace app\commands;
 
 use app\exceptions\InvalidUrlException;
+use app\messageBus\messages\crawlers\NewWebsiteToCrawlMessage;
 use app\models\Website;
 use app\services\website\WebsiteIndexer;
+use app\valueObjects\Url;
+use MongoDB\BSON\ObjectId;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  * @todo: make sure that Illuminate can handle long run connections
  */
 class ReindexHompages extends Command
 {
-    private const PAGINATION_CNT = 10;
+    private const PAGINATION_CNT = 1000;
     private const CURL_SKIP_EXCEPTION_CODES = [
         CURLE_COULDNT_RESOLVE_HOST,
         CURLE_OPERATION_TIMEDOUT
@@ -24,6 +28,8 @@ class ReindexHompages extends Command
     private $mongo;
     /** @var WebsiteIndexer */
     private $websiteIndexer;
+    /** @var MessageBusInterface */
+    private $crawlersBus;
 
     public function setMongo(\Jenssegers\Mongodb\Connection $mongo)
     {
@@ -33,6 +39,16 @@ class ReindexHompages extends Command
     public function setWebsiteIndexer(WebsiteIndexer $indexer)
     {
         $this->websiteIndexer = $indexer;
+    }
+
+    public function setCrawlersBus(MessageBusInterface $bus): void
+    {
+        $this->crawlersBus = $bus;
+    }
+
+    public function getCrawlersBus(): MessageBusInterface
+    {
+        return $this->crawlersBus;
     }
 
     /** @inheritDoc */
@@ -54,6 +70,7 @@ class ReindexHompages extends Command
         }
         $websites = true;
         $cnt = Website::query()->count() / self::PAGINATION_CNT;
+        $queued = 0;
         while ($websites && $i <= $cnt) {
             $this->mongo->reconnect();
             $websites = Website::query()
@@ -64,11 +81,11 @@ class ReindexHompages extends Command
             /** @var Website $website */
             foreach ($websites as $website) {
                 $this->reindex($website);
+                $queued++;
             }
             $i++;
         }
-        // Example code
-        $output->writeLn("Information is up to date.");
+        $output->writeln("$queued websites queued to crawl");
 
     }
 
@@ -80,47 +97,11 @@ class ReindexHompages extends Command
     public function reindex(Website $website): void
     {
         try {
-            $result = $this->websiteIndexer->reindex($website);
-            if ($website->isDirty()) {
-                $website->save();
-            }
-            if ($result->historyRow) {
-                $result->historyRow->save();
-            }
-        } catch (\MongoDB\Driver\Exception\UnexpectedValueException $e) {
-            echo 'mongo| UnexpectedValueException: ' . $website->homepage . ' ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
-            unset($e);
-        } catch (\MongoDB\Driver\Exception\InvalidArgumentException $e) {
-            echo 'mongo| InvalidArgumentException: ' . $website->homepage . ' ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
-            unset($e);
-        } catch (InvalidUrlException $e) {
-            echo 'URL| InvalidArgumentException: ' . substr($e->getMessage(), 0, 100) . PHP_EOL;
-            unset($e);
+            $url = new Url($website->homepage);
+        } catch (InvalidUrlException | \TypeError $e) {
+            return;
         }
-        if ($result && $result->errors) {
-            foreach ($result->errors as $arr) {
-                $msg = $arr[\key($arr)];
-                if ($this->isCurlCodeNeedToLog($msg)) {
-                    echo 'error | http' . ($website->isHttps() ? 's' : '') . ' | ' . $msg;
-                }
-            }
-        }
-    }
-
-    /**
-     * @param string $errorMessage
-     * @return bool
-     */
-    private function isCurlCodeNeedToLog($errorMessage)
-    {
-        $toLog = true;
-        foreach (self::CURL_SKIP_EXCEPTION_CODES as $code) {
-            if (stripos($errorMessage, "cURL error $code:") === 0) {
-                $toLog = false;
-                break;
-            }
-        }
-
-        return $toLog;
+        $message = new NewWebsiteToCrawlMessage(new ObjectId($website->_id), $url);
+        $this->getCrawlersBus()->dispatch($message);
     }
 }
