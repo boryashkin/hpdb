@@ -16,11 +16,13 @@ class Index extends BaseAction
         $page = isset($params['page']) && \is_numeric($params['page']) ? (int)$params['page'] : 0;
 
         $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
-        $groups = WebsiteGroup::query()
-            ->where('name', 'like', "%$name%")
-            ->where('is_deleted', false)
+        $groups = WebsiteGroup::query();
+        if ($name) {
+            $groups = $groups->where('name', 'like', "%$name%");
+        }
+        $groups = $groups->where('is_deleted', '=', false)
             ->limit(10)
-            ->offset($page < 0 ? 0 : $page);
+            ->offset($page < 0 ? 0 : $page)->get();
 
         $response = $response->withAddedHeader('Content-Type', 'application/json');
         $response->getBody()->write(\json_encode($groups));
