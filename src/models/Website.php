@@ -29,4 +29,16 @@ class Website extends Model
     {
         return \stripos($this->homepage, 'https:') === 0;
     }
+
+    public function getFillable()
+    {
+        return [
+            'homepage',
+            'is_http_only',
+            'groups',
+            'profile_id',
+            'title',
+            'description',
+        ];
+    }
 }

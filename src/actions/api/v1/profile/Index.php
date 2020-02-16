@@ -19,6 +19,8 @@ class Index extends BaseAction
         try {
             if ($group) {
                 $group = new ObjectId($group);
+            } else {
+                $group = null;
             }
         } catch (InvalidArgumentException | \Exception $e) {
             $group = null;

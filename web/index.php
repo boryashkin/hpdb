@@ -19,6 +19,8 @@ $app->group('', function () use ($app) {
     $app->get('/api/v1/group', \app\actions\api\v1\group\Index::class);
     $app->post('/api/v1/group', \app\actions\api\v1\group\Create::class);
     $app->delete('/api/v1/group/{id}', \app\actions\api\v1\group\Delete::class);
+
+    $app->put('/api/v1/rpc/add-website-to-group', \app\actions\api\v1\rpc\AddWebsiteToGroup::class);
 })->add(\app\middlewares\ApiMetricsMiddleware::class);
 $app->group('', function () use ($app) {
     $app->get('/proxy/{id}/', \app\actions\proxy\Index::class);

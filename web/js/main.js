@@ -64,7 +64,7 @@ jQuery(document).ready(function($){
                             "                            <div class=\"row\">\n" +
                             "                                <div class=\"col\">\n" +
                             "                                    <div>\n" +
-                            "                                        <a href=\"/profile/" + website.profile_id + "\">" + website.homepage + "</a>\n" +
+                            "                                        <a href=\"/profile/" + website.profile_id + "\">" + website.homepage.replace('http://', '').replace('https://', '') + "</a>\n" +
                             "                                    </div>\n" +
                             "                                    <div>\n" +
                             "                                        <span class=\"text-muted small\">" + websiteDescription + "</span>\n" +
