@@ -8,7 +8,10 @@ jQuery(document).ready(function($){
     });
 
     var reactionBtns = document.getElementsByClassName("reaction");
-    var reactOnProfile = function() {
+    var groupBtns = document.getElementsByClassName('link-group');
+    var groupContainerWrapper = document.getElementById('top-group-container-wrapper');
+    var groupContainer = document.getElementsByClassName('group-container').item(0);
+    var reactOnProfile = function () {
         var element = this;
         var reaction = this.getAttribute("data-reaction");
         var profileId = this.getAttribute("data-profile");
@@ -23,7 +26,7 @@ jQuery(document).ready(function($){
         var cntEl = cntEls[0] ? cntEls[0] : null;
         $.post(
             "/api/v1/reaction",
-            { profile_id: profileId, reaction: reaction },
+            {profile_id: profileId, reaction: reaction},
             function () {
                 if (cntEl) {
                     console.log(cntEl);
@@ -32,9 +35,59 @@ jQuery(document).ready(function($){
             }
         );
     };
+    var reactOnGroup = function () {
+        var element = this;
+        if (this.classList.contains('active')) {
+            return;
+        }
+        var groupId = this.getAttribute("data-slug");
+        var groupName = this.textContent.trim();
+        for (i = 0; i < groupBtns.length; i++) {
+            groupBtns.item(i).classList.remove('active');
+        }
+        this.classList.add('active');
+        groupContainerWrapper.getElementsByClassName('website-group-title').item(0).textContent = groupName + ':';
+
+        $.get(
+            "/api/v1/profile/index",
+            {group: groupId, limit: 5},
+            function (content) {
+                if (content) {
+                    Array.from(groupContainer.getElementsByClassName('top-group-website')).forEach(function (item) {
+                        item.remove();
+                    });
+                    for (var i = 0; i < content.length; i++) {
+                        let website = content[i];
+                        let websiteDescription = website.description ? website.description.substr(0, 80) : 'No description yet';
+                        console.log(website);
+                        var websiteEl = "<div class=\"p-2 border border-light bg-white top-group-website\">\n" +
+                            "                            <div class=\"row\">\n" +
+                            "                                <div class=\"col\">\n" +
+                            "                                    <div>\n" +
+                            "                                        <a href=\"/profile/" + website.profile_id + "\">" + website.homepage + "</a>\n" +
+                            "                                    </div>\n" +
+                            "                                    <div>\n" +
+                            "                                        <span class=\"text-muted small\">" + websiteDescription + "</span>\n" +
+                            "                                    </div>\n" +
+                            "                                </div>\n" +
+                            "                            </div>\n" +
+                            "                        </div>";
+                        groupContainer.insertAdjacentHTML("beforeEnd", websiteEl);
+                        if (i >= 5) {
+                            console.log("todo: add \"limit\" param to api");
+                            return;
+                        }
+                    }
+                }
+            }
+        );
+    };
 
     for (var i = 0; i < reactionBtns.length; i++) {
         reactionBtns[i].addEventListener('click', reactOnProfile, false);
+    }
+    for (i = 0; i < groupBtns.length; i++) {
+        groupBtns[i].addEventListener('click', reactOnGroup, false);
     }
 });
 

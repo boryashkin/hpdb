@@ -41,10 +41,21 @@ class Index extends BaseAction
             $c = $mongo->getCollection('websiteReaction');
             return $this->getNewWebsites($wc, $c);
         });
+        $websiteGroups = $redis->get('mainWebsiteGroups', function (ItemInterface $item) use ($container) {
+            $item->expiresAfter(60);
+
+            /**
+             * @var MongoCollection $c
+             */
+            $mongo = $container->get(CONTAINER_CONFIG_MONGO);
+            $gc = $mongo->getCollection('websiteGroup');
+            return $this->getWebsiteGroups($gc);
+        });
 
         return $this->getView()->render($response, 'web/index.html', [
             'reactions' => $reactions,
             'newWebsites' => $newWebsites,
+            'websiteGroups' => $websiteGroups,
         ]);
     }
 
@@ -152,5 +163,19 @@ class Index extends BaseAction
         }
 
         return $result;
+    }
+
+    private function getWebsiteGroups(Collection $websiteGroupCollection): array
+    {
+        /** @var MongoCollection $websiteGroupCollection */
+        return $websiteGroupCollection->find(
+            [
+                'is_deleted' => false,
+                'show_on_main' => true,
+            ],
+            [
+                'limit' => 5
+            ]
+        )->toArray();
     }
 }
