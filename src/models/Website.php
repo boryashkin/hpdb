@@ -11,8 +11,7 @@ use MongoDB\BSON\UTCDateTime;
  * @property string $homepage
  * @property bool $is_http_only
  * @property UTCDateTime $updated_at
- * @property string $title
- * @property string $description
+ * @property WebsiteContent $content
  * @property ObjectId[] $groups
  */
 class Website extends Model
@@ -34,6 +33,7 @@ class Website extends Model
     {
         return [
             'homepage',
+            'content',
             'is_http_only',
             'groups',
             'profile_id',
