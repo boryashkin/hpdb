@@ -41,7 +41,7 @@ services:
   mongo:
     image: mongo:4.1.5-xenial
     container_name: ${MONGO_HOST}
-    restart: always
+    restart: on-failure
     volumes:
       - ./data/mongo:/data/db
     networks:
@@ -49,6 +49,7 @@ services:
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
     container_name: "hpdb-elastic"
+    restart: on-failure
     environment:
       - node.name=es01
       - discovery.type=single-node
@@ -64,6 +65,7 @@ services:
       - hpdb-network
   prometheus:
     image: prom/prometheus:latest
+    restart: always
     container_name: "hpdb-prometheus"
     volumes:
       - ./docker/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -73,6 +75,7 @@ services:
   mongoexporter:
     image: boryashkin/percona_mongo_exporter:master
     container_name: "hpdb-mongo_exporter"
+    restart: always
     depends_on:
       - mongo
     environment:
@@ -82,6 +85,7 @@ services:
   redisexporter:
     image: oliver006/redis_exporter:latest
     container_name: "hpdb-redis_exporter"
+    restart: always
     depends_on:
       - redis
     environment:
@@ -91,6 +95,7 @@ services:
   elasticsearch_exporter:
     image: justwatch/elasticsearch_exporter:1.1.0
     container_name: "hpdb-elastic_exporter"
+    restart: always
     command:
       - '--es.uri=http://hpdb-elastic:9200'
     networks:
@@ -98,6 +103,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: "hpdb-grafana"
+    restart: always
     volumes:
       - ./data/grafana:/var/lib/grafana
       - ./data/grafana-provisioning:/etc/grafana/provisioning
