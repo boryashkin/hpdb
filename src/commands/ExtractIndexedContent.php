@@ -2,8 +2,8 @@
 namespace app\commands;
 
 use app\messageBus\messages\processors\WebsiteHistoryMessage;
-use app\models\WebsiteContent;
 use app\models\WebsiteIndexHistory;
+use app\modules\web\ProfileRepository;
 use app\valueObjects\Url;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Collection as MongoCollection;
@@ -97,24 +97,24 @@ class ExtractIndexedContent extends Command
         } while ($lastWebsiteData);
     }
 
-    public function extractAndSave(WebsiteIndexHistory $website)
+    public function extractAndSave(WebsiteIndexHistory $websiteHistory): bool
     {
-        if (!$website->content) {
+        if (!$websiteHistory->content) {
             return false;
         }
-        $crawler = new Crawler($website->content);
-        $content = new WebsiteContent();
-        $content->website_id = $website->website_id;
-        $content->title = null;
-        $content->description = null;
+        $crawler = new Crawler($websiteHistory->content);
+        $repo = new ProfileRepository($this->mongo);
+        $website = $repo->getOneById($websiteHistory->website_id);
+        $website->content->title = null;
+        $website->content->description = null;
         $title = $crawler->filterXPath('//title');
         if ($title->count()) {
-            $content->title = $title->text();
+            $website->content->title = $title->text();
         }
         foreach ($crawler->filterXPath("//meta[@name='description']/@content") as $t) {
-            $content->description = $t->textContent;
+            $website->content->description = $t->textContent;
         }
 
-        return $content->save();
+        return $website->save();
     }
 }

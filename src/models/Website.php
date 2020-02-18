@@ -19,11 +19,6 @@ class Website extends Model
     protected $connection = 'mongodb';
     protected $collection = 'website';
 
-    public function content()
-    {
-        return $this->hasOne(WebsiteContent::class)->orderBy('created_at', 'desc');
-    }
-
     public function isHttps()
     {
         return \stripos($this->homepage, 'https:') === 0;

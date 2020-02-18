@@ -3,7 +3,6 @@ namespace app\actions\web;
 
 use app\abstracts\BaseAction;
 use app\exceptions\InvalidUrlException;
-use app\models\WebsiteContent;
 use app\modules\web\ProfileRepository;
 use app\valueObjects\Url;
 use MongoDB\BSON\ObjectId;
@@ -33,7 +32,6 @@ class Profile extends BaseAction
         if (!$profile) {
             throw new NotFoundException($request, $response);
         }
-        $content = WebsiteContent::query()->where('website_id', '=', new ObjectId($profile->_id))->first();
         try {
             $parsedUrl = new Url($profile['homepage']);
             $host = $parsedUrl->getHost();
@@ -47,9 +45,9 @@ class Profile extends BaseAction
             'url' => "/proxy/$profile->_id/",
             'sourceUrl' => $parsedUrl,
             'host' => $host,
-            'title' => $content->title ?? $parsedUrl,
+            'title' => $profile->content['title'] ?? $parsedUrl,
             'metaDescription' => $parsedUrl . ' ',
-            'description' => $content->description ?: 'Нет описания',
+            'description' => $profile->content['description'] ?: 'Нет описания',
         ]);
     }
 

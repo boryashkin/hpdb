@@ -62,23 +62,6 @@ class ProfileRepository
             ['$sort' => ['created_at' => -1]],
             ['$limit' => $from + $step],
             ['$skip' => $from],
-            [
-                '$lookup' => [
-                    'from' => 'websiteContent',
-                    'as' => 'content',
-                    'let' => ['wid' => '$_id'],
-                    'pipeline' => [
-                        [
-                            '$match' => [
-                                '$expr' => ['$eq' => ['$$wid', '$website_id']],
-                            ],
-                        ],
-                        ['$sort' => ['created_at' => -1]],
-                        ['$limit' => 1],
-                    ],
-                ],
-            ],
-            ['$unwind' => '$content'],
             ['$project' => [
                 '_id' => 0,
                 'profile_id' => '$_id',

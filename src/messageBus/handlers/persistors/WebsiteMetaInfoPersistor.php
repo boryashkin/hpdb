@@ -3,7 +3,8 @@
 namespace app\messageBus\handlers\persistors;
 
 use app\messageBus\messages\persistors\WebsiteMetaInfoMessage;
-use app\models\WebsiteContent;
+use app\models\Website;
+use app\modules\web\ProfileRepository;
 use Jenssegers\Mongodb\Connection;
 
 class WebsiteMetaInfoPersistor implements PersistorInterface
@@ -26,22 +27,20 @@ class WebsiteMetaInfoPersistor implements PersistorInterface
         }
     }
 
-    public function createWebsiteContent(WebsiteMetaInfoMessage $message): WebsiteContent
+    public function createWebsiteContent(WebsiteMetaInfoMessage $message): Website
     {
-        /** @var WebsiteContent $existed */
-        $content = WebsiteContent::query()->where('website_id', '=', $message->getWebsiteId())->first();
-        if (!$content) {
-            $content = new WebsiteContent();
-            $content->website_id = $message->getWebsiteId();
+        $repo = new ProfileRepository($this->mongo);
+        $profile = $repo->getOneById($message->getWebsiteId());
+        if (!$profile->content) {
+            $profile->content->title = $message->getTitle();
+            $profile->content->description = $message->getDescription();
+            $profile->content->from_website_index_history_id = $message->getHistoryIndexId();
         }
-        $content->title = $message->getTitle();
-        $content->description = $message->getDescription();
-        $content->from_website_index_history_id = $message->getHistoryIndexId();
 
-        return $content;
+        return $profile;
     }
 
-    public function saveWebsiteContent(WebsiteContent $content): bool
+    public function saveWebsiteContent(Website $content): bool
     {
         return $content->save();
     }
