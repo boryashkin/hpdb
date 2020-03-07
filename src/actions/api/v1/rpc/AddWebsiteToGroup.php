@@ -3,6 +3,7 @@
 namespace app\actions\api\v1\rpc;
 
 use app\abstracts\BaseAction;
+use app\messageBus\repositories\WebsiteRepository;
 use app\models\WebsiteGroup;
 use app\modules\web\ProfileRepository;
 use MongoDB\BSON\ObjectId;
@@ -39,12 +40,9 @@ class AddWebsiteToGroup extends BaseAction
             $response->getBody()->write(json_encode(['errors' => ['No website or group found']]));
             throw new SlimException($request, $response);
         }
-        $saved = false;
+
         try {
-            if (!$profile->groups || (\is_array($profile->groups) && !\in_array($groupId, $profile->groups))) {
-                $profile->groups = \array_merge($profile->groups ?? [], [$groupId]);
-                $saved = $profile->update(['groups' => $profile->groups]);
-            }
+            $saved = WebsiteRepository::addGroupIdAndSave($profile, $groupId);
         } catch (ServerException $e) {
             $response->getBody()->write('{"errors": ["failed to save"]}');
             $response = $response->withStatus(400);

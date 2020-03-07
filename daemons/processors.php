@@ -2,11 +2,13 @@
 
 use app\messageBus\factories\MessageBusFactory;
 use app\messageBus\factories\WorkerFactory;
+use app\messageBus\handlers\processors\GithubContributorsProcessor;
 use app\messageBus\handlers\processors\GithubFollowersParsedProcessor;
 use app\messageBus\handlers\processors\GithubProfileParsedProcessor;
 use app\messageBus\handlers\processors\MetaInfoProcessor;
 use app\messageBus\handlers\processors\RssFeedProcessor;
 use app\messageBus\handlers\processors\RssFeedSeekerProcessor;
+use app\messageBus\messages\processors\GithubContributorsToProcessMessage;
 use app\messageBus\messages\processors\GithubFollowersToProcessMessage;
 use app\messageBus\messages\processors\GithubProfileParsedToProcessMessage;
 use app\messageBus\messages\processors\WebsiteHistoryMessage;
@@ -81,6 +83,14 @@ $factory->addHandler(
         new GithubFollowersParsedProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $persistorBus),
         [
             'from_transport' => GithubFollowersParsedProcessor::TRANSPORT,
+        ]
+    )
+)->addHandler(
+    GithubContributorsToProcessMessage::class,
+    new HandlerDescriptor(
+        new GithubContributorsProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $persistorBus),
+        [
+            'from_transport' => GithubContributorsProcessor::TRANSPORT,
         ]
     )
 );

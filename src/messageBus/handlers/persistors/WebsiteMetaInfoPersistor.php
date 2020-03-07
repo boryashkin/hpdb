@@ -32,9 +32,11 @@ class WebsiteMetaInfoPersistor implements PersistorInterface
         $repo = new ProfileRepository($this->mongo);
         $profile = $repo->getOneById($message->getWebsiteId());
         if (!$profile->content) {
-            $profile->content->title = $message->getTitle();
-            $profile->content->description = $message->getDescription();
-            $profile->content->from_website_index_history_id = $message->getHistoryIndexId();
+            $content = new \stdClass();
+            $content->title = $message->getTitle();
+            $content->description = $message->getDescription();
+            $content->from_website_index_history_id = $message->getHistoryIndexId();
+            $profile->content = $content;
         }
 
         return $profile;

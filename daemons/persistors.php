@@ -16,8 +16,11 @@ use app\messageBus\messages\persistors\RssItemToPersist;
 use app\messageBus\messages\persistors\WebsiteFetchedPageToPersistMessage;
 use app\messageBus\messages\persistors\WebsiteMetaInfoMessage;
 use app\messageBus\repositories\GithubProfileRepository;
+use app\messageBus\repositories\WebsiteGroupRepository;
 use app\messageBus\repositories\WebsiteIndexHistoryRepository;
 use app\messageBus\repositories\WebsiteRepository;
+use app\services\github\GithubProfileService;
+use app\services\website\WebsiteGroupService;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -48,6 +51,9 @@ $mongo = $container->get(CONTAINER_CONFIG_MONGO);
 /** @var \Elasticsearch\Client $elastic */
 $elastic = $container->get(CONTAINER_CONFIG_ELASTIC);
 //$elastic->create(['index' => 'website_rss_item']);//todo: remove from here when architecture is established
+$cache = $container->get(CONTAINER_CONFIG_REDIS_CACHE);
+$logger = $container->get(CONTAINER_CONFIG_LOGGER);
+$githubProfileService = new GithubProfileService(new GithubProfileRepository($mongo), $logger, $cache);
 /** @var \Symfony\Component\Messenger\MessageBusInterface $processorsBus */
 $processorsBus = $container->get(CONTAINER_CONFIG_REDIS_STREAM_PROCESSORS);
 /** @var \Symfony\Component\Messenger\MessageBusInterface $persistorsBus */
@@ -74,7 +80,13 @@ $factory->addHandler(
 )->addHandler(
     NewWebsiteToPersistMessage::class,
     new HandlerDescriptor(
-        new NewWebsitePersistor(\getenv('REDIS_QUEUE_CONSUMER'), new WebsiteRepository($mongo), $crawlersBus),
+        new NewWebsitePersistor(
+            \getenv('REDIS_QUEUE_CONSUMER'),
+            new WebsiteRepository($mongo),
+            $crawlersBus,
+            $githubProfileService,
+            new WebsiteGroupService(new WebsiteGroupRepository($mongo), $cache)
+        ),
         [
             'from_transport' => WebsiteMetaInfoPersistor::TRANSPORT,
         ]
@@ -90,7 +102,7 @@ $factory->addHandler(
 )->addHandler(
     NewGithubProfileToPersistMessage::class,
     new HandlerDescriptor(
-        new NewGithubProfilePersistor(\getenv('REDIS_QUEUE_CONSUMER'), new GithubProfileRepository($mongo), $crawlersBus),
+        new NewGithubProfilePersistor(\getenv('REDIS_QUEUE_CONSUMER'), $githubProfileService, $crawlersBus),
         [
             'from_transport' => NewGithubProfilePersistor::TRANSPORT,
         ]
@@ -112,6 +124,6 @@ $factory->addHandler(
         ]
     )
 );
-$worker = WorkerFactory::createExceptionHandlingWorker($receivers, $factory->buildMessageBus(), $container->get(CONTAINER_CONFIG_LOGGER), $container->get(CONTAINER_CONFIG_METRICS));
+$worker = WorkerFactory::createExceptionHandlingWorker($receivers, $factory->buildMessageBus(), $logger, $container->get(CONTAINER_CONFIG_METRICS));
 unset($factory);
 $worker->run();

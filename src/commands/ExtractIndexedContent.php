@@ -105,15 +105,17 @@ class ExtractIndexedContent extends Command
         $crawler = new Crawler($websiteHistory->content);
         $repo = new ProfileRepository($this->mongo);
         $website = $repo->getOneById($websiteHistory->website_id);
-        $website->content->title = null;
-        $website->content->description = null;
+        $content = new \stdClass();
+        $content->title = null;
+        $content->description = null;
         $title = $crawler->filterXPath('//title');
         if ($title->count()) {
-            $website->content->title = $title->text();
+            $content->title = $title->text();
         }
         foreach ($crawler->filterXPath("//meta[@name='description']/@content") as $t) {
-            $website->content->description = $t->textContent;
+            $content->description = $t->textContent;
         }
+        $website->content = $content;
 
         return $website->save();
     }

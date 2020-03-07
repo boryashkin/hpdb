@@ -34,7 +34,12 @@ class GithubProfileParsedProcessor implements ProcessorInterface
         if ($dto->blog) {
             try {
                 $url = new Url($dto->blog);
-                $newWebsiteMessage = new NewWebsiteToPersistMessage($url, 'github.profile', new \DateTime());
+                $newWebsiteMessage = new NewWebsiteToPersistMessage(
+                    $url,
+                    'github.profile',
+                    new \DateTime(),
+                    $message->getGithubProfileId()
+                );
                 $this->persistorsBus->dispatch($newWebsiteMessage);
             } catch (InvalidUrlException $e) {
 

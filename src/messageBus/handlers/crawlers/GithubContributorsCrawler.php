@@ -2,14 +2,14 @@
 
 namespace app\messageBus\handlers\crawlers;
 
-use app\messageBus\messages\crawlers\NewGithubProfileToCrawlMessage;
-use app\messageBus\messages\processors\GithubProfileParsedToProcessMessage;
+use app\messageBus\messages\crawlers\GithubContributorsToCrawlMessage;
+use app\messageBus\messages\processors\GithubContributorsToProcessMessage;
 use app\services\website\WebsiteFetcher;
 use app\valueObjects\Url;
 use Symfony\Component\Messenger\MessageBusInterface;
 use DateTime;
 
-class GithubProfileCrawler implements CrawlerInterface
+class GithubContributorsCrawler implements CrawlerInterface
 {
     /** @var string */
     private $name;
@@ -25,17 +25,16 @@ class GithubProfileCrawler implements CrawlerInterface
         $this->processorsBus = $processorsBus;
     }
 
-    public function __invoke(NewGithubProfileToCrawlMessage $message)
+    public function __invoke(GithubContributorsToCrawlMessage $message)
     {
-        $login = $message->getLogin();
-        $parsedUrl = new Url("https://api.github.com/users/$login");
-        $result = $this->fetcher->parseWebsiteInUtf8($parsedUrl);
+        //todo: X-GitHub-Request-Id
+        $url = new Url($message->getContributorsUrl());
+        $result = $this->fetcher->parseWebsiteAsAjax($url);
 
-        $message = new GithubProfileParsedToProcessMessage(
-            $message->getGithubProfileId(),
+        $message = new GithubContributorsToProcessMessage(
+            $message->getRepo(),
             $result,
-            new DateTime(),
-            $message->getContributedTo()
+            new DateTime()
         );
         $this->processorsBus->dispatch($message);
     }

@@ -1,12 +1,8 @@
 <?php
 namespace app\commands;
 
-use app\messageBus\messages\crawlers\NewGithubProfileToCrawlMessage;
 use app\messageBus\messages\persistors\NewGithubProfileToPersistMessage;
 use app\messageBus\repositories\GithubProfileRepository;
-use app\models\GithubProfile;
-use app\valueObjects\Url;
-use MongoDB\BSON\ObjectId;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -59,7 +55,7 @@ class GithubUserParser extends Command
             return 1;
         }
 
-        $message = new NewGithubProfileToPersistMessage($login, new \DateTime());
+        $message = new NewGithubProfileToPersistMessage($login, new \DateTime(), null);
         $this->persistorsBus->dispatch($message);
 
         $output->writeln("Queued $login");
