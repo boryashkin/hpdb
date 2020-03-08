@@ -12,6 +12,8 @@ use app\messageBus\messages\crawlers\GithubFollowersToCrawlMessage;
 use app\messageBus\messages\crawlers\NewGithubProfileToCrawlMessage;
 use app\messageBus\messages\crawlers\NewWebsiteToCrawlMessage;
 use app\messageBus\messages\crawlers\RssFeedToCrawlMessage;
+use app\services\HttpClient;
+use app\services\github\GithubApiFetcher;
 use app\services\website\WebsiteFetcher;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
@@ -38,8 +40,8 @@ $receivers = [
         $container->get(CONTAINER_CONFIG_REDIS_STREAM_SERIALIZER)
     )
 ];
-$websiteFetcher = new WebsiteFetcher(new \app\services\HttpClient('hpdb-bot-c/0.1'), \getenv('DAEMONS_WEBSITE_FETCHER_MAX_SIZE_BYTES'));
-$apiFetcher = new WebsiteFetcher(new \app\services\HttpClient('hpdb-bot-c/0.1'), 1000000000);
+$websiteFetcher = new WebsiteFetcher(new HttpClient('hpdb-bot-c/0.1'), \getenv('DAEMONS_WEBSITE_FETCHER_MAX_SIZE_BYTES'));
+$apiFetcher = new GithubApiFetcher(new HttpClient('hpdb-bot-a/0.1'), \getenv('GITHUB_API_AUTH'));
 /** @var \Symfony\Component\Messenger\MessageBusInterface $persistorBus */
 $persistorBus = $container->get(CONTAINER_CONFIG_REDIS_STREAM_PERSISTORS);
 /** @var \Symfony\Component\Messenger\MessageBusInterface $processorsBus */

@@ -4,7 +4,7 @@ namespace app\messageBus\handlers\crawlers;
 
 use app\messageBus\messages\crawlers\GithubFollowersToCrawlMessage;
 use app\messageBus\messages\processors\GithubFollowersToProcessMessage;
-use app\services\website\WebsiteFetcher;
+use app\services\github\GithubApiFetcher;
 use Symfony\Component\Messenger\MessageBusInterface;
 use DateTime;
 
@@ -12,12 +12,12 @@ class GithubFollowersCrawler implements CrawlerInterface
 {
     /** @var string */
     private $name;
-    /** @var WebsiteFetcher */
+    /** @var GithubApiFetcher */
     private $fetcher;
     /** @var MessageBusInterface */
     private $processorsBus;
 
-    public function __construct(string $name, WebsiteFetcher $fetcher, MessageBusInterface $processorsBus)
+    public function __construct(string $name, GithubApiFetcher $fetcher, MessageBusInterface $processorsBus)
     {
         $this->name = $name;
         $this->fetcher = $fetcher;
@@ -27,7 +27,7 @@ class GithubFollowersCrawler implements CrawlerInterface
     public function __invoke(GithubFollowersToCrawlMessage $message)
     {
         $url = $message->getUrl();
-        $result = $this->fetcher->parseWebsiteInUtf8($url);
+        $result = $this->fetcher->parseApi($url);
 
         $message = new GithubFollowersToProcessMessage(
             $result,
