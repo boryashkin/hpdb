@@ -50,7 +50,7 @@ jQuery(document).ready(function($){
 
         $.get(
             "/api/v1/profile/index",
-            {group: groupId, limit: 5},
+            {group: groupId, limit: 100},
             function (content) {
                 if (content) {
                     Array.from(groupContainer.getElementsByClassName('top-group-website')).forEach(function (item) {
