@@ -13,6 +13,7 @@ use MongoDB\BSON\UTCDateTime;
  * @property UTCDateTime $updated_at
  * @property WebsiteContent $content
  * @property ObjectId[] $groups
+ * @property ObjectId $github_profile_id
  */
 class Website extends Model
 {
@@ -34,6 +35,7 @@ class Website extends Model
             'profile_id',
             'title',
             'description',
+            'github_profile_id',
         ];
     }
 }

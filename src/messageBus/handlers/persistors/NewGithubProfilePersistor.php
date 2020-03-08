@@ -2,10 +2,10 @@
 
 namespace app\messageBus\handlers\persistors;
 
+use app\exceptions\UnableToSaveGithubProfile;
 use app\messageBus\messages\crawlers\NewGithubProfileToCrawlMessage;
 use app\messageBus\messages\persistors\NewGithubProfileToPersistMessage;
-use app\messageBus\repositories\GithubProfileRepository;
-use app\models\GithubProfile;
+use app\services\github\GithubProfileService;
 use MongoDB\BSON\ObjectId;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -13,28 +13,31 @@ class NewGithubProfilePersistor implements PersistorInterface
 {
     /** @var string */
     private $name;
-    /** @var GithubProfileRepository */
-    private $githubProfileRepository;
+    /** @var GithubProfileService */
+    private $githubService;
     /** @var MessageBusInterface */
     private $crawlerBus;
 
-    public function __construct(string $name, GithubProfileRepository $websiteRepository, MessageBusInterface $crawlerBus)
+    public function __construct(string $name, GithubProfileService $githubService, MessageBusInterface $crawlerBus)
     {
         $this->name = $name;
-        $this->githubProfileRepository = $websiteRepository;
+        $this->githubService = $githubService;
         $this->crawlerBus = $crawlerBus;
     }
 
     public function __invoke(NewGithubProfileToPersistMessage $message)
     {
-        $profile = new GithubProfile();
-        $profile->login = (string)$message->getLogin();
-
-        if (!$this->githubProfileRepository->save($profile)) {
+        try {
+            $profile = $this->githubService->upsertByLogin($message->getLogin(), $message->getContributorTo());
+        } catch (UnableToSaveGithubProfile | \Exception $e) {
             throw new \Exception('Failed to save a github profile: ' . $message->getLogin());
         }
 
-        $message = new NewGithubProfileToCrawlMessage(new ObjectId($profile->_id), $message->getLogin());
+        $message = new NewGithubProfileToCrawlMessage(
+            new ObjectId($profile->_id),
+            $message->getLogin(),
+            $message->getContributorTo()
+        );
         $this->crawlerBus->dispatch($message);
     }
 }

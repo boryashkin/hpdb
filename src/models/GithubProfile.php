@@ -40,11 +40,14 @@ use MongoDB\BSON\UTCDateTime;
  * @property UTCDateTime $updated_at
  *
  * @property int $parsing_status
+ * @property ObjectId[] $contributor_to
+ * @property string[] $repos
  */
 class GithubProfile extends Model
 {
     public const PARSING_STATUS_NEW = 0;
-    public const PARSING_STATUS_EXTRACTED = 1;
+    //@todo: save this status if blog wasn't found, to periodically recheck an existence
+    public const PARSING_STATUS_NO_BLOG_FOUND = 1;
 
     protected $connection = 'mongodb';
     protected $collection = 'githubProfile';
@@ -79,5 +82,7 @@ class GithubProfile extends Model
         'blog',
         'followers_url',
         'following_url',
+        'contributor_to',
+        'repos',
     ];
 }

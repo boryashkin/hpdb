@@ -2,10 +2,12 @@
 
 use app\messageBus\factories\MessageBusFactory;
 use app\messageBus\factories\WorkerFactory;
+use app\messageBus\handlers\crawlers\GithubContributorsCrawler;
 use app\messageBus\handlers\crawlers\GithubFollowersCrawler;
 use app\messageBus\handlers\crawlers\GithubProfileCrawler;
 use app\messageBus\handlers\crawlers\PageFetcherCrawler;
 use app\messageBus\handlers\crawlers\RssFeedFetcherCrawler;
+use app\messageBus\messages\crawlers\GithubContributorsToCrawlMessage;
 use app\messageBus\messages\crawlers\GithubFollowersToCrawlMessage;
 use app\messageBus\messages\crawlers\NewGithubProfileToCrawlMessage;
 use app\messageBus\messages\crawlers\NewWebsiteToCrawlMessage;
@@ -36,7 +38,8 @@ $receivers = [
         $container->get(CONTAINER_CONFIG_REDIS_STREAM_SERIALIZER)
     )
 ];
-$fetcher = new WebsiteFetcher(new \app\services\HttpClient('hpdb-bot-c/0.1'), \getenv('DAEMONS_WEBSITE_FETCHER_MAX_SIZE_BYTES'));
+$websiteFetcher = new WebsiteFetcher(new \app\services\HttpClient('hpdb-bot-c/0.1'), \getenv('DAEMONS_WEBSITE_FETCHER_MAX_SIZE_BYTES'));
+$apiFetcher = new WebsiteFetcher(new \app\services\HttpClient('hpdb-bot-c/0.1'), 1000000000);
 /** @var \Symfony\Component\Messenger\MessageBusInterface $persistorBus */
 $persistorBus = $container->get(CONTAINER_CONFIG_REDIS_STREAM_PERSISTORS);
 /** @var \Symfony\Component\Messenger\MessageBusInterface $processorsBus */
@@ -46,7 +49,7 @@ $factory = new MessageBusFactory($container);
 $factory->addHandler(
     NewWebsiteToCrawlMessage::class,
     new HandlerDescriptor(
-        new PageFetcherCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $fetcher, $persistorBus),
+        new PageFetcherCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $websiteFetcher, $persistorBus),
         [
             'from_transport' => PageFetcherCrawler::TRANSPORT
         ]
@@ -54,7 +57,7 @@ $factory->addHandler(
 )->addHandler(
     RssFeedToCrawlMessage::class,
     new HandlerDescriptor(
-        new RssFeedFetcherCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $fetcher, $processorsBus),
+        new RssFeedFetcherCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $websiteFetcher, $processorsBus),
         [
             'from_transport' => PageFetcherCrawler::TRANSPORT
         ]
@@ -62,7 +65,7 @@ $factory->addHandler(
 )->addHandler(
     NewGithubProfileToCrawlMessage::class,
     new HandlerDescriptor(
-        new GithubProfileCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $fetcher, $processorsBus),
+        new GithubProfileCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $apiFetcher, $processorsBus),
         [
             'from_transport' => GithubProfileCrawler::TRANSPORT
         ]
@@ -70,9 +73,17 @@ $factory->addHandler(
 )->addHandler(
     GithubFollowersToCrawlMessage::class,
     new HandlerDescriptor(
-        new GithubFollowersCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $fetcher, $processorsBus),
+        new GithubFollowersCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $apiFetcher, $processorsBus),
         [
             'from_transport' => GithubFollowersCrawler::TRANSPORT
+        ]
+    )
+)->addHandler(
+    GithubContributorsToCrawlMessage::class,
+    new HandlerDescriptor(
+        new GithubContributorsCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $apiFetcher, $processorsBus),
+        [
+            'from_transport' => GithubContributorsCrawler::TRANSPORT
         ]
     )
 );
