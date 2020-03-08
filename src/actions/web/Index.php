@@ -79,23 +79,6 @@ class Index extends BaseAction
 
             ],
             ['$unwind' => '$website'],
-            [
-                '$lookup' => [
-                    'from' => 'websiteContent',
-                    'as' => 'websiteContent',
-                    'let' => ['wid' => '$_id.website_id'],
-                    'pipeline' => [
-                        [
-                            '$match' => [
-                                '$expr' => ['$eq' => ['$$wid', '$website_id']],
-                            ],
-                        ],
-                        ['$sort' => ['created_at' => -1]],
-                        ['$limit' => 1],
-                    ],
-                ],
-            ],
-            ['$unwind' => '$websiteContent'],
             ['$sort' => ['count' => -1]],
             ['$limit' => 10],
         ]);
@@ -107,7 +90,7 @@ class Index extends BaseAction
                 'profile_id' => (string)$reaction->website->_id,
                 'homepage' => \str_replace(['http://', 'https://'], '', $reaction->website->homepage),
                 'reaction' => $reaction->_id->reaction,
-                'title' => $reaction->websiteContent->title ? \substr(trim($reaction->websiteContent->title ?? ''), 0, 50) : 'No description yet',
+                'title' => $reaction->website->content->title ? \substr(trim($reaction->website->content->title ?? ''), 0, 50) : 'No description yet',
                 'count' => $reaction->count,
             ];
         }
@@ -121,23 +104,6 @@ class Index extends BaseAction
         $websites = $websiteCollection->aggregate([
             ['$sort' => ['created_at' => -1]],
             ['$limit' => 5],
-            [
-                '$lookup' => [
-                    'from' => 'websiteContent',
-                    'as' => 'content',
-                    'let' => ['wid' => '$_id'],
-                    'pipeline' => [
-                        [
-                            '$match' => [
-                                '$expr' => ['$eq' => ['$$wid', '$website_id']],
-                            ],
-                        ],
-                        ['$sort' => ['created_at' => -1]],
-                        ['$limit' => 1],
-                    ],
-                ],
-            ],
-            ['$unwind' => '$content'],
         ]);
 
         $result = [];

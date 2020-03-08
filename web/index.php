@@ -12,7 +12,7 @@ $app->group('', function () use ($app) {
 })->add(\app\middlewares\WebMetricsMiddleware::class);
 $app->group('', function () use ($app) {
     $app->get('/api/v1/profile/index', \app\actions\api\v1\profile\Index::class);
-    $app->get('/api/v1/profile/index-light', \app\actions\api\v1\profile\LightIndex::class);
+    $app->get('/api/v1/profile/index-light', \app\actions\api\v1\profile\Index::class);
     $app->post('/api/v1/profile/create', \app\actions\api\v1\profile\Create::class);
     $app->post('/api/v1/reaction', \app\actions\api\v1\Reaction::class);
     $app->get('/api/v1/reaction', \app\actions\api\v1\reaction\Index::class);
