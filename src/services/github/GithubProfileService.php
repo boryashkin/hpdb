@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\services\github;
 
 
-use app\exceptions\UnableToSaveGithubProfile;
+use app\exceptions\github\UnableToSaveGithubProfile;
 use app\messageBus\repositories\GithubProfileRepository;
 use app\models\GithubProfile;
 use app\valueObjects\GithubRepo;
@@ -80,7 +80,7 @@ class GithubProfileService
                 throw new UnableToSaveGithubProfile();
             }
         } elseif ($contributorTo) {
-            if ($this->githubRepository->addContributorTo($github, $contributorTo)) {
+            if (!$this->githubRepository->addContributorTo($github, $contributorTo)) {
                 throw new UnableToSaveGithubProfile();
             }
         }

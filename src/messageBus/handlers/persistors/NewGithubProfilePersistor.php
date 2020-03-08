@@ -2,7 +2,7 @@
 
 namespace app\messageBus\handlers\persistors;
 
-use app\exceptions\UnableToSaveGithubProfile;
+use app\exceptions\github\UnableToSaveGithubProfile;
 use app\messageBus\messages\crawlers\NewGithubProfileToCrawlMessage;
 use app\messageBus\messages\persistors\NewGithubProfileToPersistMessage;
 use app\services\github\GithubProfileService;

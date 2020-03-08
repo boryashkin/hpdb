@@ -3,7 +3,7 @@
 namespace app\actions\api\v1\rpc;
 
 use app\abstracts\BaseAction;
-use app\exceptions\UnableToSaveGithubProfile;
+use app\exceptions\github\UnableToSaveGithubProfile;
 use app\messageBus\messages\crawlers\GithubContributorsToCrawlMessage;
 use app\messageBus\messages\persistors\NewGithubProfileToPersistMessage;
 use app\messageBus\repositories\GithubProfileRepository;
