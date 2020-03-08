@@ -1,4 +1,5 @@
 <?php
+
 namespace app\modules\web;
 
 use app\models\Website;
@@ -19,29 +20,6 @@ class ProfileRepository
     public function __construct(ConnectionInterface $connection)
     {
         $this->connection = $connection;
-    }
-
-    public function getListLightweight(int $page, $query = null, ObjectId $groupId = null)
-    {
-        $q = strip_tags($query);
-        if ($page <= 0) {
-            $page = 1;
-        }
-        $step = 10;
-        $from = ($page - 1) * $step;
-
-        $req = Website::query()
-            ->select(['profile_id', 'homepage'])
-            ->offset($from)->limit($step);
-        if ($query) {
-            $req->where('homepage', 'like', '%' . $q . '%');
-        }
-        if ($groupId) {
-            $req->where('groups', '=', $groupId);
-        }
-        $websites = $req->get();
-
-        return $websites->toArray();
     }
 
     public function getList(int $page, $query = null, ObjectId $groupId = null)
