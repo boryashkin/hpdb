@@ -20,7 +20,7 @@ use app\messageBus\messages\persistors\WebsiteMetaInfoMessage;
 use app\messageBus\repositories\GithubProfileRepository;
 use app\messageBus\repositories\WebsiteGroupRepository;
 use app\messageBus\repositories\WebsiteIndexHistoryRepository;
-use app\messageBus\repositories\WebsiteRepository;
+use app\modules\web\ProfileRepository;
 use app\services\github\GithubProfileService;
 use app\services\website\WebsiteGroupService;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
@@ -85,7 +85,7 @@ $factory->addHandler(
     new HandlerDescriptor(
         new NewWebsitePersistor(
             \getenv('REDIS_QUEUE_CONSUMER'),
-            new WebsiteRepository($mongo),
+            new ProfileRepository($mongo),
             $crawlersBus,
             $githubProfileService,
             $groupService
