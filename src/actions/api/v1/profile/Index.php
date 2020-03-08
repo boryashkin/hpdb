@@ -16,6 +16,7 @@ class Index extends BaseAction
         $query = isset($params['query']) && \is_string($params['query']) ? $params['query'] : null;
         $page = isset($params['page']) && \is_numeric($params['page']) ? (int)$params['page'] : 0;
         $group = isset($params['group']) && \is_string($params['group']) ? $params['group'] : null;
+        $limit = isset($params['limit']) && \is_numeric($params['limit']) ? $params['limit'] : 30;
         try {
             if ($group) {
                 $group = new ObjectId($group);
@@ -28,7 +29,7 @@ class Index extends BaseAction
 
         $repo = new ProfileRepository($this->getContainer()->get(CONTAINER_CONFIG_MONGO));
         $response = $response->withAddedHeader('Content-Type', 'application/json');
-        $response->getBody()->write(\json_encode($repo->getList($page, $query, $group)));
+        $response->getBody()->write(\json_encode($repo->getList($page, $query, $group, $limit)));
 
         return $response;
     }

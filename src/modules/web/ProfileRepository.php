@@ -22,7 +22,7 @@ class ProfileRepository
         $this->connection = $connection;
     }
 
-    public function getList(int $page, $query = null, ObjectId $groupId = null)
+    public function getList(int $page, $query = null, ObjectId $groupId = null, int $limit = 30)
     {
         if (isset($query)) {
             $query = \strip_tags($query);
@@ -31,14 +31,14 @@ class ProfileRepository
         if ($page <= 0) {
             $page = 1;
         }
-        $step = 30;
-        $from = ($page - 1) * $step;
+
+        $from = ($page - 1) * $limit;
         $websiteCollection = $this->connection->getCollection('website');
 
         /** @var MongoCollection $websiteCollection */
         $aggQuery = [
             ['$sort' => ['created_at' => -1]],
-            ['$limit' => $from + $step],
+            ['$limit' => $from + $limit],
             ['$skip' => $from],
             ['$project' => [
                 '_id' => 0,

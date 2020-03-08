@@ -41,6 +41,7 @@ jQuery(document).ready(function($){
             return;
         }
         var groupId = this.getAttribute("data-slug");
+        var limit = this.getAttribute("data-limit");
         var groupName = this.textContent.trim();
         for (i = 0; i < groupBtns.length; i++) {
             groupBtns.item(i).classList.remove('active');
@@ -50,7 +51,7 @@ jQuery(document).ready(function($){
 
         $.get(
             "/api/v1/profile/index",
-            {group: groupId, limit: 100},
+            {group: groupId, limit: limit ? limit : 100},
             function (content) {
                 if (content) {
                     Array.from(groupContainer.getElementsByClassName('top-group-website')).forEach(function (item) {
@@ -73,10 +74,6 @@ jQuery(document).ready(function($){
                             "                            </div>\n" +
                             "                        </div>";
                         groupContainer.insertAdjacentHTML("beforeEnd", websiteEl);
-                        if (i >= 5) {
-                            console.log("todo: add \"limit\" param to api");
-                            return;
-                        }
                     }
                 }
             }
