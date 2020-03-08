@@ -30,7 +30,7 @@ class WebsiteRepository extends AbstractMongoRepository
     public function getOneByHomepage(string $url)
     {
         return Website::query()
-            ->where('_id', '=', $url)
+            ->where('homepage', '=', $url)
             ->limit(1)
             ->first();
     }
