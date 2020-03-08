@@ -6,6 +6,7 @@ use app\dto\github\GithubProfileDto;
 use app\exceptions\InvalidUrlException;
 use app\messageBus\messages\crawlers\GithubFollowersToCrawlMessage;
 use app\messageBus\messages\persistors\GithubProfileParsedToPersistMessage;
+use app\messageBus\messages\persistors\GithubProfileRepoMetaForGroupToPersistMessage;
 use app\messageBus\messages\persistors\NewWebsiteToPersistMessage;
 use app\messageBus\messages\processors\GithubProfileParsedToProcessMessage;
 use app\valueObjects\Url;
@@ -44,6 +45,20 @@ class GithubProfileParsedProcessor implements ProcessorInterface
             } catch (InvalidUrlException $e) {
 
             }
+        }
+        if ($message->getRepo()) {
+            try {
+                $avatar = new Url($dto->avatar_url);
+            } catch (InvalidUrlException $e) {
+
+            }
+            $repoMessage = new GithubProfileRepoMetaForGroupToPersistMessage(
+                $message->getRepo(),
+                $avatar ?? null,
+                $dto->bio,
+                new \DateTime()
+            );
+            $this->persistorsBus->dispatch($repoMessage);
         }
         if ($dto->followers_url) {
             $followMessage = new GithubFollowersToCrawlMessage(

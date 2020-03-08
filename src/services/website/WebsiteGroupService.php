@@ -49,6 +49,7 @@ class WebsiteGroupService
             $group->slug = $slug;
             $group->name = $this->getNameByGithubRepo($repo);
             $group->show_on_main = false;
+            $group->is_deleted = false;
             $this->repository->save($group);
         }
 
@@ -60,8 +61,13 @@ class WebsiteGroupService
         return 'github-contributors-' . $repo->getProfile() . '-' . $repo->getName();
     }
 
+    public function save(WebsiteGroup $group): bool
+    {
+        return $this->repository->save($group);
+    }
+
     private function getNameByGithubRepo(GithubRepo $repo): string
     {
-        return 'github contributors to ' . $repo->getProfile() . '/' . $repo->getName();
+        return 'GitHub contributors to ' . $repo->getProfile() . '/' . $repo->getName();
     }
 }

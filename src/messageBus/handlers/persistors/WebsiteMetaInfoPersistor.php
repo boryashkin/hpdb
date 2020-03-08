@@ -2,6 +2,7 @@
 
 namespace app\messageBus\handlers\persistors;
 
+use app\exceptions\ProfileNotFoundException;
 use app\messageBus\messages\persistors\WebsiteMetaInfoMessage;
 use app\models\Website;
 use app\modules\web\ProfileRepository;
@@ -31,6 +32,9 @@ class WebsiteMetaInfoPersistor implements PersistorInterface
     {
         $repo = new ProfileRepository($this->mongo);
         $profile = $repo->getOneById($message->getWebsiteId());
+        if (!$profile) {
+            throw new ProfileNotFoundException($message->getWebsiteId());
+        }
         if (!$profile->content) {
             $content = new \stdClass();
             $content->title = $message->getTitle();

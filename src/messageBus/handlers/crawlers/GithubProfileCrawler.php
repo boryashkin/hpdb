@@ -35,7 +35,8 @@ class GithubProfileCrawler implements CrawlerInterface
             $message->getGithubProfileId(),
             $result,
             new DateTime(),
-            $message->getContributedTo()
+            $message->getContributedTo(),
+            $message->getRepo()
         );
         $this->processorsBus->dispatch($message);
     }

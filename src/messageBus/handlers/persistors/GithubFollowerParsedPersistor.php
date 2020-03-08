@@ -21,8 +21,11 @@ class GithubFollowerParsedPersistor implements PersistorInterface
 
     public function __invoke(GithubFollowerParsedToPersistMessage $message)
     {
-        $profile = new GithubProfile();
-        $profile->fill((array)$message->getDto());
+        $profile = $this->githubProfileRepository->getOneByLogin($message->getDto()->login);
+        if (!$profile) {
+            $profile = new GithubProfile();
+            $profile->fill((array)$message->getDto());
+        }
         $profile->parsing_status = GithubProfile::PARSING_STATUS_NEW;
 
         if (!$this->githubProfileRepository->save($profile)) {

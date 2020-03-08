@@ -20,4 +20,14 @@ class WebsiteGroup extends Model
 {
     protected $connection = 'mongodb';
     protected $collection = 'websiteGroup';
+
+    public function getShortName(): string
+    {
+        $name = $this->name;
+        if (0 && strlen($this->name) > 30) {
+            $name = substr($name, -30, 0);
+            $name = substr($name, strpos(' '));
+        }
+        return $name;
+    }
 }

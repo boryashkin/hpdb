@@ -3,6 +3,7 @@
 use app\messageBus\factories\WorkerFactory;
 use app\messageBus\handlers\persistors\GithubFollowerParsedPersistor;
 use app\messageBus\handlers\persistors\GithubProfileParsedPersistor;
+use app\messageBus\handlers\persistors\GithubProfileRepoMetaForGroupPersistor;
 use app\messageBus\handlers\persistors\NewGithubProfilePersistor;
 use app\messageBus\handlers\persistors\NewWebsitePersistor;
 use app\messageBus\handlers\persistors\RssItemElasticPersistor;
@@ -10,6 +11,7 @@ use app\messageBus\handlers\persistors\WebsiteIndexHistoryPersistor;
 use app\messageBus\handlers\persistors\WebsiteMetaInfoPersistor;
 use app\messageBus\messages\persistors\GithubFollowerParsedToPersistMessage;
 use app\messageBus\messages\persistors\GithubProfileParsedToPersistMessage;
+use app\messageBus\messages\persistors\GithubProfileRepoMetaForGroupToPersistMessage;
 use app\messageBus\messages\persistors\NewGithubProfileToPersistMessage;
 use app\messageBus\messages\persistors\NewWebsiteToPersistMessage;
 use app\messageBus\messages\persistors\RssItemToPersist;
@@ -54,6 +56,7 @@ $elastic = $container->get(CONTAINER_CONFIG_ELASTIC);
 $cache = $container->get(CONTAINER_CONFIG_REDIS_CACHE);
 $logger = $container->get(CONTAINER_CONFIG_LOGGER);
 $githubProfileService = new GithubProfileService(new GithubProfileRepository($mongo), $logger, $cache);
+$groupService = new WebsiteGroupService(new WebsiteGroupRepository($mongo), $cache);
 /** @var \Symfony\Component\Messenger\MessageBusInterface $processorsBus */
 $processorsBus = $container->get(CONTAINER_CONFIG_REDIS_STREAM_PROCESSORS);
 /** @var \Symfony\Component\Messenger\MessageBusInterface $persistorsBus */
@@ -85,7 +88,7 @@ $factory->addHandler(
             new WebsiteRepository($mongo),
             $crawlersBus,
             $githubProfileService,
-            new WebsiteGroupService(new WebsiteGroupRepository($mongo), $cache)
+            $groupService
         ),
         [
             'from_transport' => WebsiteMetaInfoPersistor::TRANSPORT,
@@ -121,6 +124,14 @@ $factory->addHandler(
         new GithubFollowerParsedPersistor(\getenv('REDIS_QUEUE_CONSUMER'), new GithubProfileRepository($mongo)),
         [
             'from_transport' => GithubFollowerParsedPersistor::TRANSPORT,
+        ]
+    )
+)->addHandler(
+    GithubProfileRepoMetaForGroupToPersistMessage::class,
+    new HandlerDescriptor(
+        new GithubProfileRepoMetaForGroupPersistor(\getenv('REDIS_QUEUE_CONSUMER'), $groupService),
+        [
+            'from_transport' => GithubProfileRepoMetaForGroupPersistor::TRANSPORT,
         ]
     )
 );

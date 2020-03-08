@@ -50,7 +50,7 @@ class ParseGithubContributiorsPage extends BaseAction
         }
 
         $message = new GithubContributorsToCrawlMessage($repo);
-        $messageNewGithubProfile = new NewGithubProfileToPersistMessage($github->login, new \DateTime(), null);
+        $messageNewGithubProfile = new NewGithubProfileToPersistMessage($github->login, new \DateTime(), null, $repo);
 
         /** @var MessageBusInterface $crawlerBus */
         $crawlerBus = $this->getContainer()->get(CONTAINER_CONFIG_REDIS_STREAM_CRAWLERS);

@@ -36,7 +36,8 @@ class NewGithubProfilePersistor implements PersistorInterface
         $message = new NewGithubProfileToCrawlMessage(
             new ObjectId($profile->_id),
             $message->getLogin(),
-            $message->getContributorTo()
+            $message->getContributorTo(),
+            $message->getRepo()
         );
         $this->crawlerBus->dispatch($message);
     }

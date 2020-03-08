@@ -11,12 +11,19 @@ class NewGithubProfileToCrawlMessage implements MessageInterface
     private $githubProfileId;
     private $login;
     private $contributedTo;
+    private $repo;
 
-    public function __construct(ObjectId $githubProfileId, string $login, ?GithubRepo $contributedTo)
+    public function __construct(
+        ObjectId $githubProfileId,
+        string $login,
+        ?GithubRepo $contributedTo,
+        ?GithubRepo $repo
+    )
     {
         $this->githubProfileId = $githubProfileId;
         $this->login = $login;
         $this->contributedTo = $contributedTo;
+        $this->repo = $repo;
     }
 
     public function getGithubProfileId(): ObjectId
@@ -32,5 +39,10 @@ class NewGithubProfileToCrawlMessage implements MessageInterface
     public function getContributedTo(): ?GithubRepo
     {
         return $this->contributedTo;
+    }
+
+    public function getRepo(): ?GithubRepo
+    {
+        return $this->repo;
     }
 }

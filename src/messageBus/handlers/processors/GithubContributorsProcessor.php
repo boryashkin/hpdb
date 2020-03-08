@@ -36,7 +36,8 @@ class GithubContributorsProcessor implements ProcessorInterface
             $messageToPersist = new NewGithubProfileToPersistMessage(
                 $contributor->author->login,
                 new \DateTime(),
-                $message->getRepo()
+                $message->getRepo(),
+                null
             );
             $this->persistorsBus->dispatch($messageToPersist);
         }

@@ -13,13 +13,21 @@ class GithubProfileParsedToProcessMessage implements MessageInterface
     private $content;
     private $parsedDate;
     private $contributedTo;
+    private $repo;
 
-    public function __construct(ObjectId $githubProfileId, WebsiteIndexDto $content, \DateTimeInterface $parsedDate, ?GithubRepo $contributedTo)
+    public function __construct(
+        ObjectId $githubProfileId,
+        WebsiteIndexDto $content,
+        \DateTimeInterface $parsedDate,
+        ?GithubRepo $contributedTo,
+        ?GithubRepo $repo
+    )
     {
         $this->githubProfileId = $githubProfileId;
         $this->parsedDate = $parsedDate;
         $this->content = $content;
         $this->contributedTo = $contributedTo;
+        $this->repo = $repo;
     }
 
     public function getGithubProfileId(): ObjectId
@@ -40,5 +48,10 @@ class GithubProfileParsedToProcessMessage implements MessageInterface
     public function getContributedTo(): ?GithubRepo
     {
         return $this->contributedTo;
+    }
+
+    public function getRepo(): ?GithubRepo
+    {
+        return $this->repo;
     }
 }
