@@ -19,7 +19,8 @@
                         <a href="#{{ websiteGroup.slug }}" class="btn link-group btn-outline-dark csv-repo-link"
                            title="{{websiteGroup.name}}" data-slug="{{websiteGroup._id}}">
                             <img src="{{websiteGroup.logo}}"/>
-                            {{websiteGroup.name}}
+                            {{websiteGroup.name|length > 35 ? websiteGroup.name|slice(start, 35) ~ '...' :
+                            websiteGroup.name}}
                         </a>
                     </div>
                     {% endfor %}
