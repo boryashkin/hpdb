@@ -42,7 +42,7 @@ jQuery(document).ready(function($){
         }
         var groupId = this.getAttribute("data-slug");
         var limit = this.getAttribute("data-limit");
-        var groupName = this.textContent.trim();
+        var groupName = this.getAttribute("title");
         for (i = 0; i < groupBtns.length; i++) {
             groupBtns.item(i).classList.remove('active');
         }
