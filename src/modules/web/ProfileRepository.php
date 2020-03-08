@@ -98,7 +98,6 @@ class ProfileRepository
             ->get()->all()[0];
     }
 
-
     /**
      * @param int $profileId
      * @return Website
@@ -121,5 +120,10 @@ class ProfileRepository
             ->orWhere('homepage', '=', $httpUrl . '/');
 
         return $q->first();
+    }
+
+    public function save(Website $website): bool
+    {
+        return $website->save();
     }
 }

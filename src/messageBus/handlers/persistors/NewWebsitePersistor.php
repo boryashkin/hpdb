@@ -2,11 +2,11 @@
 
 namespace app\messageBus\handlers\persistors;
 
-use app\exceptions\WebsiteAlreadyExists;
 use app\messageBus\messages\crawlers\NewWebsiteToCrawlMessage;
 use app\messageBus\messages\persistors\NewWebsiteToPersistMessage;
 use app\messageBus\repositories\WebsiteRepository;
 use app\models\Website;
+use app\modules\web\ProfileRepository;
 use app\services\github\GithubProfileService;
 use app\services\website\WebsiteGroupService;
 use app\valueObjects\GithubRepo;
@@ -17,7 +17,7 @@ class NewWebsitePersistor implements PersistorInterface
 {
     /** @var string */
     private $name;
-    /** @var WebsiteRepository */
+    /** @var ProfileRepository */
     private $websiteRepository;
     /** @var MessageBusInterface */
     private $crawlerBus;
@@ -28,7 +28,7 @@ class NewWebsitePersistor implements PersistorInterface
 
     public function __construct(
         string $name,
-        WebsiteRepository $websiteRepository,
+        ProfileRepository $websiteRepository,
         MessageBusInterface $crawlerBus,
         GithubProfileService $githubProfileService,
         WebsiteGroupService $groupService
@@ -43,7 +43,8 @@ class NewWebsitePersistor implements PersistorInterface
 
     public function __invoke(NewWebsiteToPersistMessage $message)
     {
-        $website = $this->websiteRepository->getOneByHomepage((string)$message->getUrl());
+
+        $website = $this->websiteRepository->getFirstOneByUrl($message->getUrl());
         $groups = [];
         if ($message->getGithubProfileId()) {
             $github = $this->githubProfileService->getOneById($message->getGithubProfileId());
@@ -59,7 +60,7 @@ class NewWebsitePersistor implements PersistorInterface
         }
         if ($website) {
             foreach ($groups as $groupId) {
-                $this->websiteRepository::addGroupIdAndSave($website, $groupId);
+                WebsiteRepository::addGroupIdAndSave($website, $groupId);
             }
         } else {
             $website = new Website();
