@@ -11,7 +11,7 @@ use MongoDB\BSON\UTCDateTime;
  * @property UTCDateTime $updated_at
  * @property bool $show_on_main
  * @property string $name
- * @property string $slug @idx/unique
+ * @property string $slug         @idx/unique
  * @property string $description
  * @property string $logo
  * @property string $is_deleted

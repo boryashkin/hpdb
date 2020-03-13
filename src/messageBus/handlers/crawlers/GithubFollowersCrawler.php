@@ -5,8 +5,8 @@ namespace app\messageBus\handlers\crawlers;
 use app\messageBus\messages\crawlers\GithubFollowersToCrawlMessage;
 use app\messageBus\messages\processors\GithubFollowersToProcessMessage;
 use app\services\github\GithubApiFetcher;
-use Symfony\Component\Messenger\MessageBusInterface;
 use DateTime;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class GithubFollowersCrawler implements CrawlerInterface
 {

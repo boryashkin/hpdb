@@ -17,6 +17,11 @@ class GithubRepo
         $this->name = $repoName;
     }
 
+    public function __toString()
+    {
+        return $this->getProfile() . '/' . $this->getName();
+    }
+
     public function getProfile(): string
     {
         return $this->profile;
@@ -25,11 +30,6 @@ class GithubRepo
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function __toString()
-    {
-        return $this->getProfile() . '/' . $this->getName();
     }
 
     public static function createByRepoString(string $repo): self

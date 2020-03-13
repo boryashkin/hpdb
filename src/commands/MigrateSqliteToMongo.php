@@ -1,4 +1,5 @@
 <?php
+
 namespace app\commands;
 
 use app\models\Website;
@@ -26,7 +27,7 @@ class MigrateSqliteToMongo extends Command
         $this->mongo = $mongo;
     }
 
-    /** @inheritDoc */
+    /** {@inheritdoc} */
     protected function configure()
     {
         $this
@@ -35,11 +36,11 @@ class MigrateSqliteToMongo extends Command
         ;
     }
 
-    /** @inheritDoc */
+    /** {@inheritdoc} */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $cnt = $this->sqlite->query()->from('all_profiles')->count() / self::PAGINATION_CNT + 1;
-        for ($i = 0; $i < $cnt; $i++) {
+        for ($i = 0; $i < $cnt; ++$i) {
             $profiles = $this->sqlite->query()
                 ->select(['*'])->from('all_profiles')
                 ->offset($i * self::PAGINATION_CNT)->limit(self::PAGINATION_CNT)
@@ -50,7 +51,6 @@ class MigrateSqliteToMongo extends Command
             }
         }
         // Example code
-        $output->writeLn("Data is moved.");
-
+        $output->writeLn('Data is moved.');
     }
 }

@@ -18,7 +18,7 @@ class Index extends BaseAction
         $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
         $groups = WebsiteGroup::query();
         if ($name) {
-            $groups = $groups->where('name', 'like', "%$name%");
+            $groups = $groups->where('name', 'like', "%{$name}%");
         }
         $groups = $groups->where('is_deleted', '=', false)
             ->limit(10)
@@ -30,4 +30,3 @@ class Index extends BaseAction
         return $response;
     }
 }
-

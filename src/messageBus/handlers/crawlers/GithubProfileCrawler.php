@@ -6,8 +6,8 @@ use app\messageBus\messages\crawlers\NewGithubProfileToCrawlMessage;
 use app\messageBus\messages\processors\GithubProfileParsedToProcessMessage;
 use app\services\github\GithubApiFetcher;
 use app\valueObjects\Url;
-use Symfony\Component\Messenger\MessageBusInterface;
 use DateTime;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class GithubProfileCrawler implements CrawlerInterface
 {
@@ -28,7 +28,7 @@ class GithubProfileCrawler implements CrawlerInterface
     public function __invoke(NewGithubProfileToCrawlMessage $message)
     {
         $login = $message->getLogin();
-        $parsedUrl = new Url("https://api.github.com/users/$login");
+        $parsedUrl = new Url("https://api.github.com/users/{$login}");
         $result = $this->fetcher->parseApi($parsedUrl);
 
         $message = new GithubProfileParsedToProcessMessage(

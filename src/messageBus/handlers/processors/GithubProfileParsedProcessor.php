@@ -43,14 +43,12 @@ class GithubProfileParsedProcessor implements ProcessorInterface
                 );
                 $this->persistorsBus->dispatch($newWebsiteMessage);
             } catch (InvalidUrlException $e) {
-
             }
         }
         if ($message->getRepo()) {
             try {
                 $avatar = new Url($dto->avatar_url);
             } catch (InvalidUrlException $e) {
-
             }
             $repoMessage = new GithubProfileRepoMetaForGroupToPersistMessage(
                 $message->getRepo(),

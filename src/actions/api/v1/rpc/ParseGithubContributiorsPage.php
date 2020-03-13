@@ -27,6 +27,7 @@ class ParseGithubContributiorsPage extends BaseAction
         if ($profile === null || $project === null) {
             $response = $response->withStatus(400);
             $response->getBody()->write(json_encode(['errors' => ['profile and project are mandatory fields']]));
+
             throw new SlimException($request, $response);
         }
         $repo = new GithubRepo($profile, $project);
@@ -40,12 +41,14 @@ class ParseGithubContributiorsPage extends BaseAction
             new WebsiteGroupRepository($this->getContainer()->get(CONTAINER_CONFIG_MONGO)),
             $this->getContainer()->get(CONTAINER_CONFIG_REDIS_CACHE)
         );
+
         try {
             $github = $service->createOrAddOwnersRepo($repo);
             $groupService->createGroupByGithubRepo($repo);
         } catch (UnableToSaveGithubProfile $e) {
             $response = $response->withStatus(500);
             $response->getBody()->write(json_encode(['errors' => ['Unable to save']]));
+
             throw new SlimException($request, $response);
         }
 
@@ -66,4 +69,3 @@ class ParseGithubContributiorsPage extends BaseAction
         return $response;
     }
 }
-

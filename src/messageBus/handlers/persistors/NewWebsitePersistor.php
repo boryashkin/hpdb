@@ -43,7 +43,6 @@ class NewWebsitePersistor implements PersistorInterface
 
     public function __invoke(NewWebsiteToPersistMessage $message)
     {
-
         $website = $this->websiteRepository->getFirstOneByUrl($message->getUrl());
         $groups = [];
         if ($message->getGithubProfileId()) {

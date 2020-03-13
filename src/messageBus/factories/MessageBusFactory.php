@@ -33,6 +33,7 @@ class MessageBusFactory
     /**
      * @param string $messageType event type
      * @param string $senderAlias key from the Container where Symfony\Component\Messenger\Transport\Sender\SenderInterface is located
+     *
      * @return $this
      */
     public function addSender(string $messageType, string $senderAlias): self

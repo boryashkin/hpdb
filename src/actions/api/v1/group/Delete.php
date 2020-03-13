@@ -15,7 +15,6 @@ class Delete extends BaseAction
 {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-
         $id = $request->getAttribute('id', null);
 
         try {
@@ -31,11 +30,9 @@ class Delete extends BaseAction
         $websiteGroup->is_deleted = true;
         $websiteGroup->save();
 
-
         $response = $response->withAddedHeader('Content-Type', 'application/json');
         $response->getBody()->write(\json_encode($websiteGroup));
 
         return $response;
     }
 }
-

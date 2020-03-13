@@ -10,7 +10,6 @@ use MongoDB\BSON\ObjectId;
 class GithubProfileRepository extends AbstractMongoRepository
 {
     /**
-     * @param ObjectId $id
      * @return GithubProfile|Model
      */
     public function getOne(ObjectId $id)
@@ -21,7 +20,6 @@ class GithubProfileRepository extends AbstractMongoRepository
     }
 
     /**
-     * @param string $login
      * @return GithubProfile|Model
      */
     public function getOneByLogin(string $login)

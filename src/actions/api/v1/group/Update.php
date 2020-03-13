@@ -15,18 +15,21 @@ class Update extends BaseAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $params = $request->getParsedBody();
-        $id = $request->getAttribute('id', null);;
+        $id = $request->getAttribute('id', null);
         $showOnMain = $params['show_on_main'] ?? null;
+
         try {
             $id = new ObjectId($id);
         } catch (\Exception $e) {
             $response->getBody()->write('{"errors": ["Id is not valid"]}');
             $response = $response->withStatus(400);
+
             throw new SlimException($request, $response);
         }
         if (!\is_bool($showOnMain)) {
             $response->getBody()->write('{"errors": ["show_on_main must be bool"]}');
             $response = $response->withStatus(400);
+
             throw new SlimException($request, $response);
         }
         $repo = new WebsiteGroupRepository($this->getContainer()->get(CONTAINER_CONFIG_MONGO));
@@ -34,6 +37,7 @@ class Update extends BaseAction
         if (!$group) {
             $response->getBody()->write('{"errors": ["Not Found"]}');
             $response = $response->withStatus(404, 'Not Found');
+
             throw new SlimException($request, $response);
         }
 
@@ -42,6 +46,7 @@ class Update extends BaseAction
         } catch (ServerException $e) {
             $response->getBody()->write('{"errors": ["Slug may be already exists"]}');
             $response = $response->withStatus(400);
+
             throw new SlimException($request, $response);
         }
 
@@ -51,4 +56,3 @@ class Update extends BaseAction
         return $response;
     }
 }
-

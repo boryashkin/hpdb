@@ -1,4 +1,5 @@
 <?php
+
 namespace app\actions\api\v1\reaction;
 
 use app\abstracts\BaseAction;
@@ -8,9 +9,6 @@ use MongoDB\Collection as MongoCollection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- *
- */
 class Index extends BaseAction
 {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
@@ -24,8 +22,7 @@ class Index extends BaseAction
         $reactions = $c->aggregate([
             ['$group' => [
                 '_id' => ['website_id' => '$website_id', 'reaction' => '$reaction'],
-                'count' => ['$sum' => 1]
-
+                'count' => ['$sum' => 1],
             ]],
             ['$sort' => ['count' => -1]],
             ['$limit' => 50],

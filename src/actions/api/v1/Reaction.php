@@ -1,4 +1,5 @@
 <?php
+
 namespace app\actions\api\v1;
 
 use app\abstracts\BaseAction;
@@ -11,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\NotFoundException;
 
 /**
- * Add a reaction to a website
+ * Add a reaction to a website.
  */
 class Reaction extends BaseAction
 {
@@ -21,6 +22,7 @@ class Reaction extends BaseAction
         if (!isset($params['profile_id']) || !\is_string($params['profile_id'])) {
             throw new NotFoundException($request, $response);
         }
+
         try {
             $id = new ObjectId($params['profile_id']);
         } catch (InvalidArgumentException $e) {

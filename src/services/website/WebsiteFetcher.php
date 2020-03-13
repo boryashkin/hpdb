@@ -27,16 +27,13 @@ class WebsiteFetcher
     }
 
     /**
-     * @param Url $originUrl
-     * @return WebsiteIndexDto
      * @throws TransferException|WebsiteBodyIsTooBig
      */
     public function parseWebsiteInUtf8(Url $originUrl): WebsiteIndexDto
     {
         $rsp = $this->parseWebsite($originUrl, []);
-        $rsp = $this->changeEncodingTo($rsp, 'UTF-8');
 
-        return $rsp;
+        return $this->changeEncodingTo($rsp, 'UTF-8');
     }
 
     private function parseWebsite(Url $originUrl, array $headers): WebsiteIndexDto
@@ -46,7 +43,7 @@ class WebsiteFetcher
         $time = microtime(true);
         $res = $this->client->requestGet((string)$originUrl, $headers);
         if ($res->getBody() && $res->getBody()->getSize() > $this->maxContentSize) {
-            throw new WebsiteBodyIsTooBig("Body of size is $originUrl " . $res->getBody()->getSize());
+            throw new WebsiteBodyIsTooBig("Body of size is {$originUrl} " . $res->getBody()->getSize());
         }
         $rsp->time = microtime(true) - $time;
         if ($redirects = $res->getHeaderLine('X-Guzzle-Redirect-History')) {

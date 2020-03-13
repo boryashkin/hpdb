@@ -9,7 +9,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * Extracting title, description and og fields
+ * Extracting title, description and og fields.
  */
 class MetaInfoProcessor implements ProcessorInterface
 {
@@ -49,7 +49,7 @@ class MetaInfoProcessor implements ProcessorInterface
                 if ($pos !== false) {
                     $endOfHeadTag = $pos + 6;
                     $content = substr($content, 0, $endOfHeadTag)
-                        . "<meta charset=\"$initialEncoding\">"
+                        . "<meta charset=\"{$initialEncoding}\">"
                         . substr($content, $endOfHeadTag);
                 }
             }

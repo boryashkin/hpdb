@@ -29,14 +29,15 @@ $dotenv->load(__DIR__ . '/../../.env');
 \Illuminate\Database\Eloquent\Model::setConnectionResolver(new \Illuminate\Database\ConnectionResolver());
 
 $messageBus = require 'message-bus.array.php';
+
 return new \Slim\Container(array_merge([
     CONTAINER_CONFIG_SETTINGS => [
         'displayErrorDetails' => !ENV_PROD,
     ],
-    CONTAINER_CONFIG_LOGGER => function (\Slim\Container $c) {
+    CONTAINER_CONFIG_LOGGER => function (Slim\Container $c) {
         return new \app\services\StdLogger();
     },
-    CONTAINER_CONFIG_VIEW => function (\Slim\Container $c) {
+    CONTAINER_CONFIG_VIEW => function (Slim\Container $c) {
         $view = new \Slim\Views\Twig(__DIR__ . '/../../src/views', []);
 
         // Instantiate and add Slim specific extension
@@ -46,16 +47,16 @@ return new \Slim\Container(array_merge([
 
         return $view;
     },
-    Illuminate\Database\Capsule\Manager::class => function (\Slim\Container $c) {
+    Illuminate\Database\Capsule\Manager::class => function (Slim\Container $c) {
         return new \Illuminate\Database\Capsule\Manager();
     },
-    SQLite3::class => function (\Slim\Container $c) {
+    SQLite3::class => function (Slim\Container $c) {
         $c->get(\Illuminate\Database\Capsule\Manager::class)->addConnection([
             'driver' => 'sqlite',
             'database' => __DIR__ . '/../../domainslibrary.db',
             //'charset'   => 'utf8',
             //'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
+            'prefix' => '',
         ], 'sqlite');
         $manager = $c->get(\Illuminate\Database\Capsule\Manager::class);
         \Illuminate\Database\Eloquent\Model::getConnectionResolver()
@@ -63,7 +64,7 @@ return new \Slim\Container(array_merge([
 
         return $manager->getConnection('sqlite');
     },
-    CONTAINER_CONFIG_MONGO => function (\Slim\Container $c) {
+    CONTAINER_CONFIG_MONGO => function (Slim\Container $c) {
         /** @var \Illuminate\Database\Capsule\Manager $manager */
         $manager = $c->get(\Illuminate\Database\Capsule\Manager::class);
         $manager->getDatabaseManager()->extend('mongodb', function ($config, $name) {
@@ -72,34 +73,35 @@ return new \Slim\Container(array_merge([
             return new Jenssegers\Mongodb\Connection($config);
         });
         $manager->addConnection([
-            'driver'   => 'mongodb',
-            'host'     => \getenv('MONGO_HOST', true),
-            'port'     => \getenv('MONGO_PORT', true),
+            'driver' => 'mongodb',
+            'host' => \getenv('MONGO_HOST', true),
+            'port' => \getenv('MONGO_PORT', true),
             'database' => \getenv('MONGO_DATABASE', true),
             'username' => \getenv('MONGO_USERNAME', true),
             'password' => \getenv('MONGO_PASSWORD', true),
-            'options'  => [
-                'database' => 'admin' // sets the authentication database required by mongo 3
-            ]
+            'options' => [
+                'database' => 'admin', // sets the authentication database required by mongo 3
+            ],
         ], 'mongodb');
         \Illuminate\Database\Eloquent\Model::getConnectionResolver()
             ->addConnection('mongodb', $manager->getConnection('mongodb'));
 
         return $manager->getConnection('mongodb');
     },
-    CONTAINER_CONFIG_REDIS_CACHE => function (\Slim\Container $c) {
+    CONTAINER_CONFIG_REDIS_CACHE => function (Slim\Container $c) {
         $config = [
             'schema' => 'tcp',
             'host' => \getenv('REDIS_HOST', true),
             'port' => 6379,
         ];
         $connection = new Predis\Client($config);
+
         return new Symfony\Component\Cache\Adapter\RedisAdapter($connection);
     },
-    CONTAINER_CONFIG_ELASTIC => function (\Slim\Container $c) {
+    CONTAINER_CONFIG_ELASTIC => function (Slim\Container $c) {
         return \Elasticsearch\ClientBuilder::create()->setHosts([\getenv('ELASTIC_HOST')])->build();
     },
-    CONTAINER_CONFIG_METRICS => function (\Slim\Container $c) {
+    CONTAINER_CONFIG_METRICS => function (Slim\Container $c) {
         return new \app\services\MetricsCollector(
             new \Prometheus\Storage\Redis([
                 'host' => \getenv('REDIS_HOST', true),

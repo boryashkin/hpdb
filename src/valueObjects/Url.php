@@ -13,11 +13,10 @@ class Url
         self::SCHEME_HTTPS,
     ];
 
-    /** @var array|false|int|string|null */
+    /** @var null|array|false|int|string */
     private $parts;
 
     /**
-     * @param string $url
      * @throws InvalidUrlException
      */
     public function __construct(string $url)
@@ -34,15 +33,20 @@ class Url
         $this->assertScheme();
     }
 
+    public function __toString(): string
+    {
+        return $this->buildUrl($this->parts);
+    }
+
     public function getScheme(): string
     {
         return $this->parts['scheme'];
     }
 
     /**
-     * @param string $scheme
      * @return $this
      * @throws InvalidUrlException
+     *
      */
     public function setScheme(string $scheme): self
     {
@@ -69,11 +73,6 @@ class Url
     public function getPath(): string
     {
         return $this->parts['path'] ?? '';
-    }
-
-    public function __toString(): string
-    {
-        return $this->buildUrl($this->parts);
     }
 
     private function buildUrl(array $parts): string

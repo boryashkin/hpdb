@@ -21,11 +21,13 @@ class Create extends BaseAction
         if (!$name || !$slug) {
             $response = $response->withStatus(400);
             $response->getBody()->write('{"errors": ["Slug and name fields are required"]}');
+
             throw new SlimException($request, $response);
         }
         if (!preg_match('/[a-zA-Z0-9\-]{0,20}/', $slug, $out) || $out[0] !== $slug) {
             $response->getBody()->write('{"errors": ["Slug should be an alphanumeric (en) string with \"-\" 20 symbols max"]}');
             $response = $response->withStatus(400);
+
             throw new SlimException($request, $response);
         }
         $websiteGroup = new WebsiteGroup();
@@ -33,15 +35,17 @@ class Create extends BaseAction
         $websiteGroup->slug = $slug;
         $websiteGroup->description = $description;
         $websiteGroup->logo = $logo;
-        $websiteGroup->show_on_main = true;//todo: turn to false, when moderation will be done
+        $websiteGroup->show_on_main = true; //todo: turn to false, when moderation will be done
         $websiteGroup->is_deleted = false;
 
         $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
+
         try {
             $websiteGroup->save();
         } catch (ServerException $e) {
             $response->getBody()->write('{"errors": ["Slug may be already exists"]}');
             $response = $response->withStatus(400);
+
             throw new SlimException($request, $response);
         }
 
@@ -51,4 +55,3 @@ class Create extends BaseAction
         return $response;
     }
 }
-

@@ -14,7 +14,7 @@ class NewGithubProfileToPersistMessage implements MessageInterface
     private $contributorTo;
     /** @var \DateTime */
     private $dateFound;
-    /** @var GithubRepo|null */
+    /** @var null|GithubRepo */
     private $repo;
 
     public function __construct(string $login, DateTime $dateFound, ?GithubRepo $contributorTo, ?GithubRepo $repo)

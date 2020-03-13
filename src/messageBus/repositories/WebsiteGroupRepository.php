@@ -10,8 +10,7 @@ use MongoDB\BSON\ObjectId;
 class WebsiteGroupRepository extends AbstractMongoRepository
 {
     /**
-     * @param ObjectId $id
-     * @return WebsiteGroup|object|null
+     * @return null|object|WebsiteGroup
      */
     public function getOneById(ObjectId $id)
     {
@@ -22,8 +21,7 @@ class WebsiteGroupRepository extends AbstractMongoRepository
     }
 
     /**
-     * @param string $slug
-     * @return WebsiteGroup|object|null
+     * @return null|object|WebsiteGroup
      */
     public function getOneBySlug(string $slug)
     {

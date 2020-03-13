@@ -9,8 +9,7 @@ use MongoDB\BSON\ObjectId;
 class WebsiteIndexHistoryRepository extends AbstractMongoRepository
 {
     /**
-     * @param ObjectId $id
-     * @return WebsiteIndexHistory|Model
+     * @return Model|WebsiteIndexHistory
      */
     public function getOne(ObjectId $id)
     {

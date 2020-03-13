@@ -1,4 +1,5 @@
 <?php
+
 namespace app\commands;
 
 use app\messageBus\messages\persistors\NewGithubProfileToPersistMessage;
@@ -9,9 +10,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-/**
- *
- */
 class GithubUserParser extends Command
 {
     /** @var \Jenssegers\Mongodb\Connection */
@@ -29,7 +27,7 @@ class GithubUserParser extends Command
         $this->persistorsBus = $persistorsBus;
     }
 
-    /** @inheritDoc */
+    /** {@inheritdoc} */
     protected function configure()
     {
         $this
@@ -38,7 +36,7 @@ class GithubUserParser extends Command
             ->addOption('login', null, InputOption::VALUE_REQUIRED, 'login of a profile');
     }
 
-    /** @inheritDoc */
+    /** {@inheritdoc} */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $login = (string)$input->getOption('login');
@@ -58,9 +56,8 @@ class GithubUserParser extends Command
         $message = new NewGithubProfileToPersistMessage($login, new \DateTime(), null);
         $this->persistorsBus->dispatch($message);
 
-        $output->writeln("Queued $login");
+        $output->writeln("Queued {$login}");
 
         return 0;
     }
-
 }

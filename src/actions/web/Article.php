@@ -1,4 +1,5 @@
 <?php
+
 namespace app\actions\web;
 
 use app\abstracts\BaseAction;

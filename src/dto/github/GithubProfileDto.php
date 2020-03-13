@@ -4,15 +4,6 @@ namespace app\dto\github;
 
 class GithubProfileDto
 {
-    public function __construct(array $data)
-    {
-        foreach ($data as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->$key = $value;
-            }
-        }
-    }
-
     public $id;
     public $node_id;
     public $avatar_url;
@@ -42,4 +33,13 @@ class GithubProfileDto
     public $blog;
     public $followers_url;
     public $following_url;
+
+    public function __construct(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->{$key} = $value;
+            }
+        }
+    }
 }

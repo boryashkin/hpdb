@@ -6,5 +6,4 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 interface HandlerInterface extends MessageHandlerInterface
 {
-
 }

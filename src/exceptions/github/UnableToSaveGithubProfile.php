@@ -6,5 +6,4 @@ namespace app\exceptions\github;
 
 class UnableToSaveGithubProfile extends \Exception
 {
-
 }

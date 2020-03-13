@@ -31,6 +31,7 @@ class HttpClient
     public function requestGet(string $url, array $additionalHeaders = []): ResponseInterface
     {
         $request = new Request('GET', $url, array_merge(['User-Agent' => $this->userAgent], $additionalHeaders));
+
         try {
             $res = $this->client->send($request);
         } catch (TransferException $e) {

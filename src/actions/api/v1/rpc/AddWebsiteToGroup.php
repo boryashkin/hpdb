@@ -23,12 +23,14 @@ class AddWebsiteToGroup extends BaseAction
         if (!$websiteId || !$groupId) {
             throw new SlimException($request, $response);
         }
+
         try {
             $websiteId = new ObjectId($websiteId);
             $groupId = new ObjectId($groupId);
         } catch (InvalidArgumentException | \Exception $e) {
             $response = $response->withStatus(400);
             $response->getBody()->write(json_encode(['errors' => ['website_id and group_id must be a mongoId']]));
+
             throw new SlimException($request, $response);
         }
 
@@ -38,6 +40,7 @@ class AddWebsiteToGroup extends BaseAction
         if (!$profile || !$group) {
             $response = $response->withStatus(400);
             $response->getBody()->write(json_encode(['errors' => ['No website or group found']]));
+
             throw new SlimException($request, $response);
         }
 
@@ -46,6 +49,7 @@ class AddWebsiteToGroup extends BaseAction
         } catch (ServerException $e) {
             $response->getBody()->write('{"errors": ["failed to save"]}');
             $response = $response->withStatus(400);
+
             throw new SlimException($request, $response);
         }
 
@@ -55,4 +59,3 @@ class AddWebsiteToGroup extends BaseAction
         return $response;
     }
 }
-

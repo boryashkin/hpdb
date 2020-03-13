@@ -10,9 +10,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- *
- */
 class MoveWebsiteContentDataToWebsite extends Command
 {
     /** @var \Jenssegers\Mongodb\Connection */
@@ -23,7 +20,7 @@ class MoveWebsiteContentDataToWebsite extends Command
         $this->mongo = $mongo;
     }
 
-    /** @inheritDoc */
+    /** {@inheritdoc} */
     protected function configure()
     {
         $this
@@ -31,7 +28,7 @@ class MoveWebsiteContentDataToWebsite extends Command
             ->setDescription('One time job: get rid of WebsiteContent');
     }
 
-    /** @inheritDoc */
+    /** {@inheritdoc} */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $repo = new ProfileRepository($this->mongo);
@@ -41,15 +38,16 @@ class MoveWebsiteContentDataToWebsite extends Command
         foreach ($q as $row) {
             $website = $repo->getOneById($row->website_id);
             if (!$website) {
-                $output->writeln("Website $row[website_id] not found");
+                $output->writeln("Website {$row['website_id']} not found");
+
                 continue;
             }
             $obj = (object)$row->toArray();
             $obj->updated_at = new UTCDateTime((new \DateTime($obj->updated_at))->getTimestamp() * 1000);
             $obj->created_at = new UTCDateTime((new \DateTime($obj->created_at))->getTimestamp() * 1000);
             $obj->from_website_index_history_id = new ObjectId($obj->from_website_index_history_id);
-            unset($obj->_id);
-            unset($obj->website_id);
+            unset($obj->_id, $obj->website_id);
+
             $website->content = $obj;
             $website->save();
             if ($i % 100) {
@@ -59,5 +57,4 @@ class MoveWebsiteContentDataToWebsite extends Command
 
         $output->writeln('Done');
     }
-
 }

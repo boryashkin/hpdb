@@ -33,6 +33,7 @@ class Create extends BaseAction
 
             throw new SlimException($request, $response);
         }
+
         try {
             $parsedUrl = new Url($params['website']);
         } catch (InvalidUrlException $e) {
@@ -97,13 +98,12 @@ class Create extends BaseAction
             $response = $response->withStatus(429, 'Too Many Requests');
 
             throw new SlimException($request, $response);
-        } else {
-            $redis->get(self::RATE_LIMIT_KEY_NAME, function (ItemInterface $item) {
-                $item->expiresAfter(60);
-                return time();
-            });
-
         }
+        $redis->get(self::RATE_LIMIT_KEY_NAME, function (ItemInterface $item) {
+            $item->expiresAfter(60);
+
+            return time();
+        });
     }
 
     private function clearRateLimit()

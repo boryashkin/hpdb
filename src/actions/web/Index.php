@@ -1,4 +1,5 @@
 <?php
+
 namespace app\actions\web;
 
 use app\abstracts\BaseAction;
@@ -26,9 +27,9 @@ class Index extends BaseAction
              */
             $mongo = $container->get(CONTAINER_CONFIG_MONGO);
             $c = $mongo->getCollection('websiteReaction');
+
             return $this->getTopReactions($c);
         });
-
 
         $newWebsites = $redis->get('mainNewWebsites', function (ItemInterface $item) use ($container) {
             $item->expiresAfter(60);
@@ -39,6 +40,7 @@ class Index extends BaseAction
             $mongo = $container->get(CONTAINER_CONFIG_MONGO);
             $wc = $mongo->getCollection('website');
             $c = $mongo->getCollection('websiteReaction');
+
             return $this->getNewWebsites($wc, $c);
         });
         $websiteGroups = $redis->get('mainWebsiteGroups', function (ItemInterface $item) use ($container) {
@@ -49,6 +51,7 @@ class Index extends BaseAction
              */
             $mongo = $container->get(CONTAINER_CONFIG_MONGO);
             $gc = $mongo->getCollection('websiteGroup');
+
             return $this->getWebsiteGroups($gc);
         });
 
@@ -66,8 +69,8 @@ class Index extends BaseAction
             [
                 '$group' => [
                     '_id' => ['website_id' => '$website_id', 'reaction' => '$reaction'],
-                    'count' => ['$sum' => 1]
-                ]
+                    'count' => ['$sum' => 1],
+                ],
             ],
             [
                 '$lookup' => [
@@ -76,7 +79,6 @@ class Index extends BaseAction
                     'foreignField' => '_id',
                     'as' => 'website',
                 ],
-
             ],
             ['$unwind' => '$website'],
             ['$sort' => ['count' => -1]],
@@ -116,7 +118,7 @@ class Index extends BaseAction
                     '$group' => [
                         '_id' => ['website_id' => '$website_id', 'reaction' => '$reaction'],
                         'count' => ['$sum' => 1],
-                    ]
+                    ],
                 ],
             ]);
 
@@ -140,7 +142,7 @@ class Index extends BaseAction
                 'show_on_main' => true,
             ],
             [
-                'limit' => 5
+                'limit' => 5,
             ]
         )->toArray();
     }

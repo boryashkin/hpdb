@@ -6,8 +6,8 @@ use app\messageBus\messages\crawlers\GithubContributorsToCrawlMessage;
 use app\messageBus\messages\processors\GithubContributorsToProcessMessage;
 use app\services\github\GithubApiFetcher;
 use app\valueObjects\Url;
-use Symfony\Component\Messenger\MessageBusInterface;
 use DateTime;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class GithubContributorsCrawler implements CrawlerInterface
 {

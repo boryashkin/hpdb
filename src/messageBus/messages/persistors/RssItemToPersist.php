@@ -3,20 +3,20 @@
 namespace app\messageBus\messages\persistors;
 
 use app\messageBus\messages\MessageInterface;
-use MongoDB\BSON\ObjectId;
 use DateTime;
+use MongoDB\BSON\ObjectId;
 
 class RssItemToPersist implements MessageInterface
 {
     /** @var ObjectId */
     private $websiteId;
-    /** @var string|null */
+    /** @var null|string */
     private $title;
-    /** @var string|null */
+    /** @var null|string */
     private $description;
-    /** @var string|null */
+    /** @var null|string */
     private $link;
-    /** @var DateTime|null */
+    /** @var null|DateTime */
     private $date;
 
     public function __construct(ObjectId $websiteId, ?string $title, ?string $description, ?string $link, ?DateTime $date)

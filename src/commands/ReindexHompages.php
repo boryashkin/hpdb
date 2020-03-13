@@ -1,4 +1,5 @@
 <?php
+
 namespace app\commands;
 
 use app\exceptions\InvalidUrlException;
@@ -21,7 +22,7 @@ class ReindexHompages extends Command
     private const PAGINATION_CNT = 1000;
     private const CURL_SKIP_EXCEPTION_CODES = [
         CURLE_COULDNT_RESOLVE_HOST,
-        CURLE_OPERATION_TIMEDOUT
+        CURLE_OPERATION_TIMEDOUT,
     ];
 
     /** @var \Jenssegers\Mongodb\Connection */
@@ -51,7 +52,21 @@ class ReindexHompages extends Command
         return $this->crawlersBus;
     }
 
-    /** @inheritDoc */
+    /**
+     * Check availability http & https and set "check date".
+     */
+    public function reindex(Website $website): void
+    {
+        try {
+            $url = new Url($website->homepage);
+        } catch (InvalidUrlException | \TypeError $e) {
+            return;
+        }
+        $message = new NewWebsiteToCrawlMessage(new ObjectId($website->_id), $url);
+        $this->getCrawlersBus()->dispatch($message);
+    }
+
+    /** {@inheritdoc} */
     protected function configure()
     {
         $this
@@ -60,7 +75,7 @@ class ReindexHompages extends Command
             ->addOption('skip', null, InputOption::VALUE_OPTIONAL, 'skip first qty of websites');
     }
 
-    /** @inheritDoc */
+    /** {@inheritdoc} */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('skip')) {
@@ -81,27 +96,10 @@ class ReindexHompages extends Command
             /** @var Website $website */
             foreach ($websites as $website) {
                 $this->reindex($website);
-                $queued++;
+                ++$queued;
             }
-            $i++;
+            ++$i;
         }
-        $output->writeln("$queued websites queued to crawl");
-
-    }
-
-    /**
-     * Check availability http & https and set "check date".
-     * @param Website $website
-     * @return void
-     */
-    public function reindex(Website $website): void
-    {
-        try {
-            $url = new Url($website->homepage);
-        } catch (InvalidUrlException | \TypeError $e) {
-            return;
-        }
-        $message = new NewWebsiteToCrawlMessage(new ObjectId($website->_id), $url);
-        $this->getCrawlersBus()->dispatch($message);
+        $output->writeln("{$queued} websites queued to crawl");
     }
 }

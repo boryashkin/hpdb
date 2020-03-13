@@ -13,8 +13,7 @@ use MongoDB\Driver\Exception\ServerException;
 class WebsiteRepository extends AbstractMongoRepository
 {
     /**
-     * @param ObjectId $id
-     * @return Website|Model
+     * @return Model|Website
      */
     public function getOne(ObjectId $id)
     {
@@ -24,8 +23,7 @@ class WebsiteRepository extends AbstractMongoRepository
     }
 
     /**
-     * @param string $url
-     * @return Website|Model|object|null
+     * @return null|Model|object|Website
      */
     public function getOneByHomepage(string $url)
     {
@@ -36,10 +34,6 @@ class WebsiteRepository extends AbstractMongoRepository
     }
 
     /**
-     * @param Website $profile
-     * @param ObjectId $groupId
-     * @return bool
-     *
      * @throws ServerException
      * @todo: move to ProfileService (create one)
      */

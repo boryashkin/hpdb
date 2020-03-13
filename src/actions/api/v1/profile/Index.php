@@ -1,4 +1,5 @@
 <?php
+
 namespace app\actions\api\v1\profile;
 
 use app\abstracts\BaseAction;
@@ -17,6 +18,7 @@ class Index extends BaseAction
         $page = isset($params['page']) && \is_numeric($params['page']) ? (int)$params['page'] : 0;
         $group = isset($params['group']) && \is_string($params['group']) ? $params['group'] : null;
         $limit = isset($params['limit']) && \is_numeric($params['limit']) ? $params['limit'] : 30;
+
         try {
             if ($group) {
                 $group = new ObjectId($group);

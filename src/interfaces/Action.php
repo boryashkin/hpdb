@@ -1,4 +1,5 @@
 <?php
+
 namespace app\interfaces;
 
 use Psr\Http\Message\ResponseInterface;

@@ -6,5 +6,4 @@ namespace app\exceptions;
 
 class UnexpectedContentException extends \Exception
 {
-
 }

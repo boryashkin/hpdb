@@ -38,7 +38,6 @@ use MongoDB\BSON\UTCDateTime;
  * @property string $followers_url
  * @property string $following_url
  * @property UTCDateTime $updated_at
- *
  * @property int $parsing_status
  * @property ObjectId[] $contributor_to
  * @property string[] $repos

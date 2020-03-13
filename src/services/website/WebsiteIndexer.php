@@ -10,7 +10,8 @@ use app\models\WebsiteIndexHistory;
 use app\valueObjects\Url;
 use GuzzleHttp\Exception\TransferException;
 use MongoDB\BSON\ObjectId;
-use \MongoDB\Driver\Exception\{UnexpectedValueException, InvalidArgumentException};
+use MongoDB\Driver\Exception\InvalidArgumentException;
+use MongoDB\Driver\Exception\UnexpectedValueException;
 
 class WebsiteIndexer
 {
@@ -24,13 +25,13 @@ class WebsiteIndexer
 
     /**
      * Check availability http & https and set "check date".
-     * @param Website $website
-     * @return WebsiteIndexingResultDto
-     * @throws UnexpectedValueException|InvalidArgumentException|InvalidUrlException
+     *
+     * @throws InvalidArgumentException|InvalidUrlException|UnexpectedValueException
      */
     public function reindex(Website $website): WebsiteIndexingResultDto
     {
         $result = new WebsiteIndexingResultDto();
+
         try {
             $parsedUrl = new Url($website->homepage);
         } catch (InvalidUrlException $e) {
@@ -42,6 +43,7 @@ class WebsiteIndexer
 
         $isHttp = $parsedUrl->getScheme() === 'http';
         $parsed = null;
+
         try {
             $parsed = $this->websiteFetcher->parseWebsiteInUtf8($parsedUrl->setScheme(Url::SCHEME_HTTPS));
             $isHttp = false;
@@ -49,6 +51,7 @@ class WebsiteIndexer
             error_log($e->getMessage());
             $result->errors[] = [$e->getCode() => $e->getMessage()];
             unset($e);
+
             try {
                 $parsed = $this->websiteFetcher->parseWebsiteInUtf8($parsedUrl->setScheme(Url::SCHEME_HTTP));
                 $isHttp = true;

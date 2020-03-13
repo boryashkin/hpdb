@@ -22,7 +22,7 @@ class RssFeedProcessor implements ProcessorInterface
     public function __invoke(XmlRssContentToProcessMessage $message)
     {
         $xml = simplexml_load_string(trim($message->getContent()), 'SimpleXMLElement', LIBXML_NOCDATA);
-        $items = $xml->xpath("//item");
+        $items = $xml->xpath('//item');
         if (!$items) {
             $items = $xml->xpath('//entry');
         }
@@ -38,6 +38,7 @@ class RssFeedProcessor implements ProcessorInterface
             //todo: clear from possible html tags
             $description = (string)$item->description ?: null;
             $link = (string)$item->link ?: null;
+
             try {
                 $pubDate = (string)$item->pubDate ? new \DateTime((string)$item->pubDate) : null;
             } catch (\Exception $e) {

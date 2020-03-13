@@ -15,9 +15,9 @@ class GithubProfileRepoMetaForGroupToPersistMessage implements MessageInterface
     private $dateFound;
     /** @var GithubRepo */
     private $repo;
-    /** @var Url|null */
+    /** @var null|Url */
     private $avatarUrl;
-    /** @var string|null */
+    /** @var null|string */
     private $bio;
 
     public function __construct(GithubRepo $repo, ?Url $avatarUrl, ?string $bio, DateTime $dateFound)

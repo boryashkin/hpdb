@@ -1,4 +1,5 @@
 <?php
+
 namespace app\commands;
 
 use app\messageBus\messages\processors\WebsiteHistoryMessage;
@@ -13,9 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-/**
- *
- */
 class ExtractIndexedContent extends Command
 {
     /** @var \Jenssegers\Mongodb\Connection */
@@ -33,7 +31,30 @@ class ExtractIndexedContent extends Command
         $this->processorBus = $bus;
     }
 
-    /** @inheritDoc */
+    public function extractAndSave(WebsiteIndexHistory $websiteHistory): bool
+    {
+        if (!$websiteHistory->content) {
+            return false;
+        }
+        $crawler = new Crawler($websiteHistory->content);
+        $repo = new ProfileRepository($this->mongo);
+        $website = $repo->getOneById($websiteHistory->website_id);
+        $content = new \stdClass();
+        $content->title = null;
+        $content->description = null;
+        $title = $crawler->filterXPath('//title');
+        if ($title->count()) {
+            $content->title = $title->text();
+        }
+        foreach ($crawler->filterXPath("//meta[@name='description']/@content") as $t) {
+            $content->description = $t->textContent;
+        }
+        $website->content = $content;
+
+        return $website->save();
+    }
+
+    /** {@inheritdoc} */
     protected function configure()
     {
         $this
@@ -41,11 +62,11 @@ class ExtractIndexedContent extends Command
             ->setDescription('Extracting valuable info from the indexed html list.');
     }
 
-    /** @inheritDoc */
+    /** {@inheritdoc} */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /**
-         * Not WebsiteIndexHistory::query() because of memory leaks
+         * Not WebsiteIndexHistory::query() because of memory leaks.
          *
          * @var MongoCollection $c
          */
@@ -58,18 +79,18 @@ class ExtractIndexedContent extends Command
                     'website_id' => 1,
                     'created_at' => 1,
                     'available' => 1,
-                ]
+                ],
             ],
             1 => [
                 '$match' => [
                     'available' => ['$eq' => true],
-                ]
+                ],
             ],
             2 => [
                 '$group' => [
                     '_id' => ['website_id' => '$website_id'],
                     'created_at' => ['$max' => '$created_at'],
-                ]
+                ],
             ],
             3 => [
                 '$skip' => $skip,
@@ -95,28 +116,5 @@ class ExtractIndexedContent extends Command
             }
             $skip = $skip + $limit;
         } while ($lastWebsiteData);
-    }
-
-    public function extractAndSave(WebsiteIndexHistory $websiteHistory): bool
-    {
-        if (!$websiteHistory->content) {
-            return false;
-        }
-        $crawler = new Crawler($websiteHistory->content);
-        $repo = new ProfileRepository($this->mongo);
-        $website = $repo->getOneById($websiteHistory->website_id);
-        $content = new \stdClass();
-        $content->title = null;
-        $content->description = null;
-        $title = $crawler->filterXPath('//title');
-        if ($title->count()) {
-            $content->title = $title->text();
-        }
-        foreach ($crawler->filterXPath("//meta[@name='description']/@content") as $t) {
-            $content->description = $t->textContent;
-        }
-        $website->content = $content;
-
-        return $website->save();
     }
 }

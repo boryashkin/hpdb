@@ -5,11 +5,11 @@ namespace app\messageBus\handlers\crawlers;
 use app\messageBus\messages\crawlers\NewWebsiteToCrawlMessage;
 use app\messageBus\messages\persistors\WebsiteFetchedPageToPersistMessage;
 use app\services\website\WebsiteFetcher;
-use Symfony\Component\Messenger\MessageBusInterface;
 use DateTime;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * Downloading planned websites and building exploring routes
+ * Downloading planned websites and building exploring routes.
  */
 class PageFetcherCrawler implements CrawlerInterface
 {

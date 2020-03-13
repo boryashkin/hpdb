@@ -9,9 +9,6 @@ use MongoDB\BSON\ObjectId;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-/**
- *
- */
 class RssFeedSeekerProcessor implements ProcessorInterface
 {
     /** @var MessageBusInterface */
@@ -49,7 +46,7 @@ class RssFeedSeekerProcessor implements ProcessorInterface
                 if ($pos !== false) {
                     $endOfHeadTag = $pos + 6;
                     $content = substr($content, 0, $endOfHeadTag)
-                        . "<meta charset=\"$initialEncoding\">"
+                        . "<meta charset=\"{$initialEncoding}\">"
                         . substr($content, $endOfHeadTag);
                 }
             }
@@ -57,7 +54,6 @@ class RssFeedSeekerProcessor implements ProcessorInterface
         $crawler = new Crawler($content);
         $links = $crawler->filter('link[type*="/rss"], link[type*="/atom"]')->extract(['type', 'href']);
         foreach ($links as $link) {
-
             if (\substr($link[1], 0, 4) !== 'http') {
                 $url->addPath($link[1]);
             } else {

@@ -3,7 +3,7 @@
 namespace app\messageBus\handlers\crawlers;
 
 /**
- * Downloading robots.txt and sitemap of discovered websites and building exploring routes
+ * Downloading robots.txt and sitemap of discovered websites and building exploring routes.
  */
 class RouteExplorerCrawler implements CrawlerInterface
 {

@@ -32,7 +32,7 @@ class RssItemElasticPersistor implements PersistorInterface
                 'date' => $message->getDate() ? $message->getDate()->format(DATE_ATOM) : null,
                 'website_id' => (string)$message->getWebsiteId(),
                 'link' => $message->getLink(),
-            ]
+            ],
         ];
 
         return $this->elastic->index($params);

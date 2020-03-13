@@ -1,4 +1,5 @@
 <?php
+
 namespace app\actions\proxy;
 
 use app\abstracts\BaseAction;
@@ -8,19 +9,19 @@ use app\valueObjects\Url;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\HandlerStack;
+use function GuzzleHttp\Psr7\stream_for;
 use GuzzleHttp\RedirectMiddleware;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Exception\InvalidArgumentException;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Proxy\Proxy;
 use Proxy\Adapter\Guzzle\GuzzleAdapter;
 use Proxy\Filter\RemoveEncodingFilter;
+use Proxy\Proxy;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\InvalidMethodException;
 use Slim\Exception\NotFoundException;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
-use function GuzzleHttp\Psr7\stream_for;
 
 class Index extends BaseAction
 {
@@ -31,6 +32,7 @@ class Index extends BaseAction
         if (!\is_string($profileId)) {
             throw new NotFoundException($request, $response);
         }
+
         try {
             $id = new ObjectId($profileId);
         } catch (InvalidArgumentException $e) {
@@ -39,6 +41,7 @@ class Index extends BaseAction
         if (!$profile = $repo->getOneById($id)) {
             throw new NotFoundException($request, $response);
         }
+
         try {
             $parsedUrl = new Url($profile['homepage']);
         } catch (InvalidUrlException $e) {
@@ -67,7 +70,7 @@ class Index extends BaseAction
         $clone = $clone->withUri($clone->getUri()->withPath($path));
 
         /**
-         * Crazy workaround to cache uncachable PSR Responses with streams inside (for some cases)
+         * Crazy workaround to cache uncachable PSR Responses with streams inside (for some cases).
          */
         /** @var RedisAdapter $redis */
         $redis = $this->getContainer()->get(CONTAINER_CONFIG_REDIS_CACHE);
@@ -76,6 +79,7 @@ class Index extends BaseAction
         if ($redis->hasItem($cacheKeyRsp) && $redis->hasItem($cacheKeyBody)) {
             return $redis->getItem($cacheKeyRsp)->get()->withBody(stream_for($redis->getItem($cacheKeyBody)->get()));
         }
+
         try {
             $res = $proxy->forward($clone)->to($parsedUrl->getScheme() . '://' . $parsedUrl->getHost());
         } catch (ConnectException $e) {
@@ -93,10 +97,13 @@ class Index extends BaseAction
         }
         $redis->get($cacheKeyBody, function (ItemInterface $item) use ($res) {
             $item->expiresAfter(3600);
+
             return $res->getBody()->getContents();
         });
+
         return $redis->get($cacheKeyRsp, function (ItemInterface $item) use ($res) {
             $item->expiresAfter(3600);
+
             return $res;
         });
     }

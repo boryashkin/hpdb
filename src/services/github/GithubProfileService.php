@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace app\services\github;
 
-
 use app\exceptions\github\UnableToSaveGithubProfile;
 use app\messageBus\repositories\GithubProfileRepository;
 use app\models\GithubProfile;
@@ -31,8 +30,6 @@ class GithubProfileService
     }
 
     /**
-     * @param GithubRepo $repo
-     * @return GithubProfile
      * @throws UnableToSaveGithubProfile
      * @throws \Psr\Cache\InvalidArgumentException
      */
@@ -61,9 +58,6 @@ class GithubProfileService
     }
 
     /**
-     * @param string $login
-     * @param GithubRepo|null $contributorTo
-     * @return GithubProfile
      * @throws UnableToSaveGithubProfile
      * @throws \Psr\Cache\InvalidArgumentException
      */

@@ -1,4 +1,5 @@
 <?php
+
 namespace app\commands;
 
 use app\messageBus\messages\crawlers\NewWebsiteToCrawlMessage;
@@ -13,9 +14,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-/**
- *
- */
 class AddWebsite extends Command
 {
     /** @var \Jenssegers\Mongodb\Connection */
@@ -40,7 +38,7 @@ class AddWebsite extends Command
         $this->crawlersBus = $crawlersBus;
     }
 
-    /** @inheritDoc */
+    /** {@inheritdoc} */
     protected function configure()
     {
         $this
@@ -49,7 +47,7 @@ class AddWebsite extends Command
             ->addOption('url', null, InputOption::VALUE_OPTIONAL, 'Url of website');
     }
 
-    /** @inheritDoc */
+    /** {@inheritdoc} */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('url')) {
@@ -57,6 +55,7 @@ class AddWebsite extends Command
             $parsedUrl = new Url($websiteUrl);
         } else {
             $output->writeln('No url provided');
+
             return 1;
         }
 
@@ -66,15 +65,16 @@ class AddWebsite extends Command
             $hist = WebsiteIndexHistory::query()->where('website_id', $website->_id)->first();
             if ($hist) {
                 $output->writeln('Website already exists: ' . $website->_id);
+
                 return 1;
             }
             $message = new NewWebsiteToCrawlMessage(new ObjectId($website->_id), $parsedUrl);
             $this->crawlersBus->dispatch($message);
+
             return 1;
         }
         $message = new NewWebsiteToPersistMessage($parsedUrl, 'cli', new \DateTime());
         $this->persistorsBus->dispatch($message);
         $output->writeln('Website is queued to be added');
     }
-
 }

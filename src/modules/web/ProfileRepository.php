@@ -14,8 +14,7 @@ class ProfileRepository
     private $connection;
 
     /**
-     * This is a hack to get mongodb work
-     * @param ConnectionInterface $connection
+     * This is a hack to get mongodb work.
      */
     public function __construct(ConnectionInterface $connection)
     {
@@ -44,21 +43,21 @@ class ProfileRepository
                 '_id' => 0,
                 'profile_id' => '$_id',
                 'homepage' => '$homepage',
-                'description' => '$content.description'
+                'description' => '$content.description',
             ]],
         ];
         if (isset($query)) {
             \array_unshift($aggQuery, [
                 '$match' => [
-                    'homepage' => ['$regex' => new Regex($query, "i")]
-                ]
+                    'homepage' => ['$regex' => new Regex($query, 'i')],
+                ],
             ]);
         }
         if ($groupId) {
             \array_unshift($aggQuery, [
                 '$match' => [
-                    'groups' => $groupId
-                ]
+                    'groups' => $groupId,
+                ],
             ]);
         }
         $websites = $websiteCollection->aggregate($aggQuery);
@@ -88,7 +87,6 @@ class ProfileRepository
     }
 
     /**
-     * @param ObjectId $id
      * @return Website
      */
     public function getOneById(ObjectId $id)
@@ -99,7 +97,6 @@ class ProfileRepository
     }
 
     /**
-     * @param int $profileId
      * @return Website
      */
     public function getOneByProfileId(int $profileId)

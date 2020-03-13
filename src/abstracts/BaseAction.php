@@ -1,6 +1,6 @@
 <?php
-namespace app\abstracts;
 
+namespace app\abstracts;
 
 use app\interfaces\Action;
 use app\services\MetricsCollector;
@@ -19,7 +19,6 @@ class BaseAction implements Action
 
     /**
      * BaseAction constructor.
-     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {

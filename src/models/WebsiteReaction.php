@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models;
 
 use Jenssegers\Mongodb\Eloquent\Model;
@@ -11,7 +12,6 @@ use MongoDB\BSON\UTCDateTime;
  * @property string $reaction
  * @property string $ip
  * @property string $user_agent
- *
  * @property UTCDateTime $created_at
  */
 class WebsiteReaction extends Model

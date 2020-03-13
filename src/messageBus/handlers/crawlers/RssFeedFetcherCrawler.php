@@ -7,9 +7,6 @@ use app\messageBus\messages\processors\XmlRssContentToProcessMessage;
 use app\services\website\WebsiteFetcher;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-/**
- *
- */
 class RssFeedFetcherCrawler implements CrawlerInterface
 {
     /** @var string */
@@ -35,7 +32,7 @@ class RssFeedFetcherCrawler implements CrawlerInterface
             $posOfEncodingProperty = $firstEncodingPos - 10;
             if (strcasecmp(substr($result->content, $posOfEncodingProperty, 9), 'encoding=') === 0) {
                 $result->content = substr($result->content, 0, $firstEncodingPos)
-                    . "UTF-8"
+                    . 'UTF-8'
                     . substr($result->content, $firstEncodingPos + strlen($result->initialEncoding));
             }
         }

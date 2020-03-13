@@ -11,9 +11,9 @@ class WebsiteMetaInfoMessage implements MessageInterface
     private $websiteId;
     /** @var ObjectId */
     private $historyIndexId;
-    /** @var string|null */
+    /** @var null|string */
     private $title;
-    /** @var string|null */
+    /** @var null|string */
     private $description;
 
     public function __construct(ObjectId $websiteId, ObjectId $historyIndexId, ?string $title, ?string $description)
