@@ -31,9 +31,8 @@
     },
     "autoload": {
         "psr-4": {
-            "app\\": "src/",
-            "services\\": "services/",
-            "tests\\": "tests/"
+          "App\\": "Src/",
+          "tests\\": "tests/"
         }
     }
 }

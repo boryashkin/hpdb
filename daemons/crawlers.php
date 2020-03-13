@@ -1,20 +1,20 @@
 <?php
 
-use app\messageBus\factories\MessageBusFactory;
-use app\messageBus\factories\WorkerFactory;
-use app\messageBus\handlers\crawlers\GithubContributorsCrawler;
-use app\messageBus\handlers\crawlers\GithubFollowersCrawler;
-use app\messageBus\handlers\crawlers\GithubProfileCrawler;
-use app\messageBus\handlers\crawlers\PageFetcherCrawler;
-use app\messageBus\handlers\crawlers\RssFeedFetcherCrawler;
-use app\messageBus\messages\crawlers\GithubContributorsToCrawlMessage;
-use app\messageBus\messages\crawlers\GithubFollowersToCrawlMessage;
-use app\messageBus\messages\crawlers\NewGithubProfileToCrawlMessage;
-use app\messageBus\messages\crawlers\NewWebsiteToCrawlMessage;
-use app\messageBus\messages\crawlers\RssFeedToCrawlMessage;
-use app\services\HttpClient;
-use app\services\github\GithubApiFetcher;
-use app\services\website\WebsiteFetcher;
+use App\Common\MessageBus\Factories\MessageBusFactory;
+use App\Common\MessageBus\Factories\WorkerFactory;
+use App\Common\MessageBus\Handlers\Crawlers\GithubContributorsCrawler;
+use App\Common\MessageBus\Handlers\Crawlers\GithubFollowersCrawler;
+use App\Common\MessageBus\Handlers\Crawlers\GithubProfileCrawler;
+use App\Common\MessageBus\Handlers\Crawlers\PageFetcherCrawler;
+use App\Common\MessageBus\Handlers\Crawlers\RssFeedFetcherCrawler;
+use App\Common\MessageBus\Messages\Crawlers\GithubContributorsToCrawlMessage;
+use App\Common\MessageBus\Messages\Crawlers\GithubFollowersToCrawlMessage;
+use App\Common\MessageBus\Messages\Crawlers\NewGithubProfileToCrawlMessage;
+use App\Common\MessageBus\Messages\Crawlers\NewWebsiteToCrawlMessage;
+use App\Common\MessageBus\Messages\Crawlers\RssFeedToCrawlMessage;
+use App\Common\Services\HttpClient;
+use App\Common\Services\Github\GithubApiFetcher;
+use App\Common\Services\Website\WebsiteFetcher;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -30,7 +30,7 @@ if ($argc < 2) {
 }
 \putenv("REDIS_QUEUE_CONSUMER=$argv[1]");
 /** @var \Slim\Container $container */
-$container = require __DIR__ . '/../src/config/container.php';
+$container = require __DIR__ . '/../config/container.php';
 
 /** @var RedisTransport $transport */
 $connection = $container->get(CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_CRAWLERS);

@@ -1,28 +1,28 @@
 <?php
 
-use app\messageBus\factories\WorkerFactory;
-use app\messageBus\handlers\persistors\GithubFollowerParsedPersistor;
-use app\messageBus\handlers\persistors\GithubProfileParsedPersistor;
-use app\messageBus\handlers\persistors\GithubProfileRepoMetaForGroupPersistor;
-use app\messageBus\handlers\persistors\NewGithubProfilePersistor;
-use app\messageBus\handlers\persistors\NewWebsitePersistor;
-use app\messageBus\handlers\persistors\RssItemElasticPersistor;
-use app\messageBus\handlers\persistors\WebsiteIndexHistoryPersistor;
-use app\messageBus\handlers\persistors\WebsiteMetaInfoPersistor;
-use app\messageBus\messages\persistors\GithubFollowerParsedToPersistMessage;
-use app\messageBus\messages\persistors\GithubProfileParsedToPersistMessage;
-use app\messageBus\messages\persistors\GithubProfileRepoMetaForGroupToPersistMessage;
-use app\messageBus\messages\persistors\NewGithubProfileToPersistMessage;
-use app\messageBus\messages\persistors\NewWebsiteToPersistMessage;
-use app\messageBus\messages\persistors\RssItemToPersist;
-use app\messageBus\messages\persistors\WebsiteFetchedPageToPersistMessage;
-use app\messageBus\messages\persistors\WebsiteMetaInfoMessage;
-use app\messageBus\repositories\GithubProfileRepository;
-use app\messageBus\repositories\WebsiteGroupRepository;
-use app\messageBus\repositories\WebsiteIndexHistoryRepository;
-use app\modules\web\ProfileRepository;
-use app\services\github\GithubProfileService;
-use app\services\website\WebsiteGroupService;
+use App\Common\MessageBus\Factories\WorkerFactory;
+use App\Common\MessageBus\Handlers\Persistors\GithubFollowerParsedPersistor;
+use App\Common\MessageBus\Handlers\Persistors\GithubProfileParsedPersistor;
+use App\Common\MessageBus\Handlers\Persistors\GithubProfileRepoMetaForGroupPersistor;
+use App\Common\MessageBus\Handlers\Persistors\NewGithubProfilePersistor;
+use App\Common\MessageBus\Handlers\Persistors\NewWebsitePersistor;
+use App\Common\MessageBus\Handlers\Persistors\RssItemElasticPersistor;
+use App\Common\MessageBus\Handlers\Persistors\WebsiteIndexHistoryPersistor;
+use App\Common\MessageBus\Handlers\Persistors\WebsiteMetaInfoPersistor;
+use App\Common\MessageBus\Messages\Persistors\GithubFollowerParsedToPersistMessage;
+use App\Common\MessageBus\Messages\Persistors\GithubProfileParsedToPersistMessage;
+use App\Common\MessageBus\Messages\Persistors\GithubProfileRepoMetaForGroupToPersistMessage;
+use App\Common\MessageBus\Messages\Persistors\NewGithubProfileToPersistMessage;
+use App\Common\MessageBus\Messages\Persistors\NewWebsiteToPersistMessage;
+use App\Common\MessageBus\Messages\Persistors\RssItemToPersist;
+use App\Common\MessageBus\Messages\Persistors\WebsiteFetchedPageToPersistMessage;
+use App\Common\MessageBus\Messages\Persistors\WebsiteMetaInfoMessage;
+use App\Common\Repositories\GithubProfileRepository;
+use App\Common\Repositories\WebsiteGroupRepository;
+use App\Common\Repositories\WebsiteIndexHistoryRepository;
+use App\Common\Repositories\ProfileRepository;
+use App\Common\Services\Github\GithubProfileService;
+use App\Common\Services\Website\WebsiteGroupService;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -38,7 +38,7 @@ if ($argc < 2) {
 }
 \putenv("REDIS_QUEUE_CONSUMER=$argv[1]");
 /** @var \Slim\Container $container */
-$container = require __DIR__ . '/../src/config/container.php';
+$container = require __DIR__ . '/../config/container.php';
 
 /** @var RedisTransport $transport */
 $connection = $container->get(CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_PERSISTORS);
@@ -61,7 +61,7 @@ $groupService = new WebsiteGroupService(new WebsiteGroupRepository($mongo), $cac
 $processorsBus = $container->get(CONTAINER_CONFIG_REDIS_STREAM_PROCESSORS);
 /** @var \Symfony\Component\Messenger\MessageBusInterface $persistorsBus */
 $crawlersBus = $container->get(CONTAINER_CONFIG_REDIS_STREAM_CRAWLERS);
-$factory = new \app\messageBus\factories\MessageBusFactory($container);
+$factory = new \App\Common\MessageBus\Factories\MessageBusFactory($container);
 // add only /persistors handlers
 $factory->addHandler(
     WebsiteMetaInfoMessage::class,

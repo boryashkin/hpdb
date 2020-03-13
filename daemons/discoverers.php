@@ -1,9 +1,8 @@
-
 <?php
 
-use app\messageBus\factories\WorkerFactory;
-use app\messageBus\handlers\discoverers\GithubProfileDiscoverer;
-use app\messageBus\messages\discoverers\GithubProfileMessage;
+use App\Common\MessageBus\Factories\WorkerFactory;
+use App\Common\MessageBus\Handlers\Discoverers\GithubProfileDiscoverer;
+use App\Common\MessageBus\Messages\Discoverers\GithubProfileMessage;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -19,7 +18,7 @@ if ($argc < 2) {
 }
 \putenv("REDIS_QUEUE_CONSUMER=$argv[1]");
 /** @var \Slim\Container $container */
-$container = require __DIR__ . '/../src/config/container.php';
+$container = require __DIR__ . '/../config/container.php';
 
 /** @var RedisTransport $transport */
 $connection = $container->get(CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_DISCOVERERS);
@@ -31,7 +30,7 @@ $receivers = [
 ];
 /** @var \Symfony\Component\Messenger\MessageBusInterface $busCrawlers */
 $busCrawlers = $container->get(CONTAINER_CONFIG_REDIS_STREAM_CRAWLERS);
-$factory = new \app\messageBus\factories\MessageBusFactory($container);
+$factory = new \App\Common\MessageBus\Factories\MessageBusFactory($container);
 // add only /discoveres handlers
 $factory->addHandler(
     GithubProfileMessage::class,

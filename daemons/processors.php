@@ -1,18 +1,18 @@
 <?php
 
-use app\messageBus\factories\MessageBusFactory;
-use app\messageBus\factories\WorkerFactory;
-use app\messageBus\handlers\processors\GithubContributorsProcessor;
-use app\messageBus\handlers\processors\GithubFollowersParsedProcessor;
-use app\messageBus\handlers\processors\GithubProfileParsedProcessor;
-use app\messageBus\handlers\processors\MetaInfoProcessor;
-use app\messageBus\handlers\processors\RssFeedProcessor;
-use app\messageBus\handlers\processors\RssFeedSeekerProcessor;
-use app\messageBus\messages\processors\GithubContributorsToProcessMessage;
-use app\messageBus\messages\processors\GithubFollowersToProcessMessage;
-use app\messageBus\messages\processors\GithubProfileParsedToProcessMessage;
-use app\messageBus\messages\processors\WebsiteHistoryMessage;
-use app\messageBus\messages\processors\XmlRssContentToProcessMessage;
+use App\Common\MessageBus\Factories\MessageBusFactory;
+use App\Common\MessageBus\Factories\WorkerFactory;
+use App\Common\MessageBus\Handlers\Processors\GithubContributorsProcessor;
+use App\Common\MessageBus\Handlers\Processors\GithubFollowersParsedProcessor;
+use App\Common\MessageBus\Handlers\Processors\GithubProfileParsedProcessor;
+use App\Common\MessageBus\Handlers\Processors\MetaInfoProcessor;
+use App\Common\MessageBus\Handlers\Processors\RssFeedProcessor;
+use App\Common\MessageBus\Handlers\Processors\RssFeedSeekerProcessor;
+use App\Common\MessageBus\Messages\Processors\GithubContributorsToProcessMessage;
+use App\Common\MessageBus\Messages\Processors\GithubFollowersToProcessMessage;
+use App\Common\MessageBus\Messages\Processors\GithubProfileParsedToProcessMessage;
+use App\Common\MessageBus\Messages\Processors\WebsiteHistoryMessage;
+use App\Common\MessageBus\Messages\Processors\XmlRssContentToProcessMessage;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -28,7 +28,7 @@ if ($argc < 2) {
 }
 \putenv("REDIS_QUEUE_CONSUMER=$argv[1]");
 /** @var \Slim\Container $container */
-$container = require __DIR__ . '/../src/config/container.php';
+$container = require __DIR__ . '/../config/container.php';
 
 /** @var RedisTransport $transport */
 $connection = $container->get(CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_PROCESSORS);

@@ -2,33 +2,33 @@
 
 require '../vendor/autoload.php';
 
-$container = require '../src/config/container.php';
+$container = require '../config/container.php';
 $app = new Slim\App($container);
 
 $app->group('', function () use ($app) {
-    $app->get('/', \app\actions\web\Index::class);
-    $app->get('/profile/{id}', \app\actions\web\Profile::class);
-    $app->get('/article/create-website', \app\actions\web\Article::class);
-})->add(\app\middlewares\WebMetricsMiddleware::class);
+    $app->get('/', \App\Web\Actions\Web\Index::class);
+    $app->get('/profile/{id}', \App\Web\Actions\Web\Profile::class);
+    $app->get('/article/create-website', \App\Web\Actions\Web\Article::class);
+})->add(\App\Web\Middlewares\WebMetricsMiddleware::class);
 $app->group('', function () use ($app) {
-    $app->get('/api/v1/profile/index', \app\actions\api\v1\profile\Index::class);
-    $app->get('/api/v1/profile/index-light', \app\actions\api\v1\profile\Index::class);
-    $app->post('/api/v1/profile/create', \app\actions\api\v1\profile\Create::class);
-    $app->post('/api/v1/reaction', \app\actions\api\v1\Reaction::class);
-    $app->get('/api/v1/reaction', \app\actions\api\v1\reaction\Index::class);
-    $app->get('/api/v1/group', \app\actions\api\v1\group\Index::class);
-    $app->post('/api/v1/group', \app\actions\api\v1\group\Create::class);
-    $app->delete('/api/v1/group/{id}', \app\actions\api\v1\group\Delete::class);
-    $app->patch('/api/v1/group/{id}', \app\actions\api\v1\group\Update::class);
+    $app->get('/api/v1/profile/index', \App\Web\Actions\Api\V1\Profile\Index::class);
+    $app->get('/api/v1/profile/index-light', \App\Web\Actions\Api\V1\Profile\Index::class);
+    $app->post('/api/v1/profile/create', \App\Web\Actions\Api\V1\Profile\Create::class);
+    $app->post('/api/v1/reaction', \App\Web\Actions\Api\V1\Reaction::class);
+    $app->get('/api/v1/reaction', \App\Web\Actions\Api\V1\Reaction\Index::class);
+    $app->get('/api/v1/group', \App\Web\Actions\Api\V1\Group\Index::class);
+    $app->post('/api/v1/group', \App\Web\Actions\Api\V1\Group\Create::class);
+    $app->delete('/api/v1/group/{id}', \App\Web\Actions\Api\V1\Group\Delete::class);
+    $app->patch('/api/v1/group/{id}', \App\Web\Actions\Api\V1\Group\Update::class);
 
-    $app->put('/api/v1/rpc/add-website-to-group', \app\actions\api\v1\rpc\AddWebsiteToGroup::class);
-    $app->put('/api/v1/rpc/parse-github-contributors', \app\actions\api\v1\rpc\ParseGithubContributiorsPage::class);
-})->add(\app\middlewares\ApiMetricsMiddleware::class);
+    $app->put('/api/v1/rpc/add-website-to-group', \App\Web\Actions\Api\V1\Rpc\AddWebsiteToGroup::class);
+    $app->put('/api/v1/rpc/parse-github-contributors', \App\Web\Actions\Api\V1\Rpc\ParseGithubContributiorsPage::class);
+})->add(\App\Web\Middlewares\ApiMetricsMiddleware::class);
 $app->group('', function () use ($app) {
-    $app->get('/proxy/{id}/', \app\actions\proxy\Index::class);
-    $app->get('/proxy/{id}/{path:.*}', \app\actions\proxy\Index::class);
-})->add(\app\middlewares\ProxyMetricsMiddleware::class);
+    $app->get('/proxy/{id}/', \App\Web\Actions\Proxy\Index::class);
+    $app->get('/proxy/{id}/{path:.*}', \App\Web\Actions\Proxy\Index::class);
+})->add(\App\Web\Middlewares\ProxyMetricsMiddleware::class);
 
-$app->get('/service/metrics', \app\actions\service\metrics\Index::class);
+$app->get('/service/metrics', \App\Web\Actions\Service\Metrics\Index::class);
 
 $app->run();
