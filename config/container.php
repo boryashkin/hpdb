@@ -109,4 +109,7 @@ return new \Slim\Container(array_merge([
             ])
         );
     },
+    \App\Common\Services\Scheduled\Base64Serializer::class => function (Slim\Container $c) {
+        return new \App\Common\Services\Scheduled\Base64Serializer();
+    },
 ], $messageBus));

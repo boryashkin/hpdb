@@ -6,3 +6,4 @@
 /daemons/systemd/hpdb.discoverers.service
 /daemons/systemd/hpdb.persistors.service
 /daemons/systemd/hpdb.processors.service
+/daemons/systemd/hpdb.scheduled.service

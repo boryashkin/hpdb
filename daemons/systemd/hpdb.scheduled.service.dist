@@ -1,0 +1,10 @@
+[Unit]
+Description="Hpdb scheduler daemon"
+After=network.target
+
+[Service]
+User=user
+Group=group
+ExecStart=/usr/bin/docker exec hpdb-php-api php daemons/scheduleProcessor.php group1
+StandardOutput=rsyslog
+StandardError=rsyslog
