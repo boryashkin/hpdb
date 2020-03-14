@@ -1,7 +1,5 @@
 <?php
 
-define('ENV_PROD', false);
-
 const CONTAINER_CONFIG_SETTINGS = 'settings';
 const CONTAINER_CONFIG_LOGGER = 'logger';
 const CONTAINER_CONFIG_VIEW = 'view';
@@ -25,6 +23,7 @@ const CONTAINER_CONFIG_REDIS_STREAM_PROCESSORS = 'redisStreamProcessors';
 
 $dotenv = new \Symfony\Component\Dotenv\Dotenv();
 $dotenv->load(__DIR__ . '/../.env');
+define('ENV_PROD', \getenv('ENV_PROD', true) === 'true');
 
 \Illuminate\Database\Eloquent\Model::setConnectionResolver(new \Illuminate\Database\ConnectionResolver());
 
@@ -35,7 +34,7 @@ return new \Slim\Container(array_merge([
         'displayErrorDetails' => !ENV_PROD,
     ],
     CONTAINER_CONFIG_LOGGER => function (Slim\Container $c) {
-        return new \App\Common\Services\StdLogger();
+        return new \App\Common\Services\StdLogger($enableDebug = !ENV_PROD);
     },
     CONTAINER_CONFIG_VIEW => function (Slim\Container $c) {
         $view = new \Slim\Views\Twig(__DIR__ . '/../Src/Web/views', []);
