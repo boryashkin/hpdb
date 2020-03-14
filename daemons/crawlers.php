@@ -83,7 +83,7 @@ $factory->addHandler(
 )->addHandler(
     GithubContributorsToCrawlMessage::class,
     new HandlerDescriptor(
-        new GithubContributorsCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $apiFetcher, $processorsBus),
+        new GithubContributorsCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $apiFetcher, $processorsBus, $persistorBus),
         [
             'from_transport' => GithubContributorsCrawler::TRANSPORT
         ]
