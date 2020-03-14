@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\unit\Services\Website;
+namespace tests\unit\Common\Services\Website;
 
 use App\Common\Dto\Website\WebsiteIndexingResultDto;
 use App\Common\Exceptions\InvalidUrlException;
