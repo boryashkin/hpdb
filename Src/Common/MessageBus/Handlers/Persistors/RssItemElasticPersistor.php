@@ -19,7 +19,7 @@ class RssItemElasticPersistor implements PersistorInterface
 
     public function __invoke(RssItemToPersist $message)
     {
-        $content = $this->saveIndex($message);
+        $this->saveIndex($message);
     }
 
     public function saveIndex(RssItemToPersist $message): array
@@ -29,7 +29,7 @@ class RssItemElasticPersistor implements PersistorInterface
             'body' => [
                 'title' => $message->getTitle(),
                 'description' => $message->getDescription(),
-                'date' => $message->getDate() ? $message->getDate()->format(DATE_ATOM) : null,
+                'date' => $message->getPubDate() ? $message->getPubDate()->format(DATE_ATOM) : null,
                 'website_id' => (string)$message->getWebsiteId(),
                 'link' => $message->getLink(),
             ],

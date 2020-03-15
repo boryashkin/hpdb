@@ -7,12 +7,14 @@ use App\Common\MessageBus\Handlers\Processors\GithubFollowersParsedProcessor;
 use App\Common\MessageBus\Handlers\Processors\GithubProfileParsedProcessor;
 use App\Common\MessageBus\Handlers\Processors\MetaInfoProcessor;
 use App\Common\MessageBus\Handlers\Processors\RssFeedProcessor;
-use App\Common\MessageBus\Handlers\Processors\RssFeedSeekerProcessor;
+use App\Common\MessageBus\Handlers\Processors\WebFeedSeekerProcessor;
 use App\Common\MessageBus\Messages\Processors\GithubContributorsToProcessMessage;
 use App\Common\MessageBus\Messages\Processors\GithubFollowersToProcessMessage;
 use App\Common\MessageBus\Messages\Processors\GithubProfileParsedToProcessMessage;
 use App\Common\MessageBus\Messages\Processors\WebsiteHistoryMessage;
 use App\Common\MessageBus\Messages\Processors\XmlRssContentToProcessMessage;
+use App\Common\Services\Parsers\HtmlParserService;
+use App\Common\Services\Parsers\XmlRssParserService;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -56,15 +58,15 @@ $factory->addHandler(
 )->addHandler(
     WebsiteHistoryMessage::class,
     new HandlerDescriptor(
-        new RssFeedSeekerProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $crawlersBus),
+        new WebFeedSeekerProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $crawlersBus, new HtmlParserService()),
         [
-            'from_transport' => RssFeedSeekerProcessor::TRANSPORT,
+            'from_transport' => WebFeedSeekerProcessor::TRANSPORT,
         ]
     )
 )->addHandler(
     XmlRssContentToProcessMessage::class,
     new HandlerDescriptor(
-        new RssFeedProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $persistorBus),
+        new RssFeedProcessor(\getenv('REDIS_QUEUE_CONSUMER'), $persistorBus, new XmlRssParserService()),
         [
             'from_transport' => RssFeedProcessor::TRANSPORT,
         ]

@@ -2,6 +2,7 @@
 
 namespace App\Common\Models;
 
+use App\Common\Dto\Website\WebsiteWebFeedEmbedded;
 use Jenssegers\Mongodb\Eloquent\Model;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\UTCDateTime;
@@ -15,6 +16,7 @@ use MongoDB\BSON\UTCDateTime;
  * @property WebsiteContent $content
  * @property ObjectId[] $groups
  * @property ObjectId $github_profile_id
+ * @property WebsiteWebFeedEmbedded[] $web_feeds
  */
 class Website extends Model
 {
@@ -37,6 +39,7 @@ class Website extends Model
             'title',
             'description',
             'github_profile_id',
+            'web_feeds'
         ];
     }
 }

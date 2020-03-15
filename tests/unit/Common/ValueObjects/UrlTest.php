@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\unit\ValueObjects;
+namespace tests\unit\Common\ValueObjects;
 
 use App\Common\Exceptions\InvalidUrlException;
 use App\Common\ValueObjects\Url;

@@ -8,13 +8,14 @@ use App\Common\MessageBus\Messages\Crawlers\GithubContributorsToCrawlMessage;
 use App\Common\MessageBus\Messages\Crawlers\GithubFollowersToCrawlMessage;
 use App\Common\MessageBus\Messages\Crawlers\NewGithubProfileToCrawlMessage;
 use App\Common\MessageBus\Messages\Crawlers\NewWebsiteToCrawlMessage;
-use App\Common\MessageBus\Messages\Crawlers\RssFeedToCrawlMessage;
+use App\Common\MessageBus\Messages\Crawlers\WebFeedToCrawlMessage;
 use App\Common\MessageBus\Messages\Discoverers\GithubProfileMessage;
 use App\Common\MessageBus\Messages\Persistors\GithubFollowerParsedToPersistMessage;
 use App\Common\MessageBus\Messages\Persistors\GithubProfileParsedToPersistMessage;
 use App\Common\MessageBus\Messages\Persistors\GithubProfileRepoMetaForGroupToPersistMessage;
 use App\Common\MessageBus\Messages\Persistors\NewGithubProfileToPersistMessage;
 use App\Common\MessageBus\Messages\Persistors\NewWebsiteToPersistMessage;
+use App\Common\MessageBus\Messages\Persistors\RssFeedMetaInfoToPersist;
 use App\Common\MessageBus\Messages\Persistors\RssItemToPersist;
 use App\Common\MessageBus\Messages\Persistors\ScheduledMessageToPersistMessage;
 use App\Common\MessageBus\Messages\Persistors\WebsiteFetchedPageToPersistMessage;
@@ -34,7 +35,7 @@ class HandlersToMessageMapper
             GithubFollowersToCrawlMessage::class,
             NewGithubProfileToCrawlMessage::class,
             NewWebsiteToCrawlMessage::class,
-            RssFeedToCrawlMessage::class,
+            WebFeedToCrawlMessage::class,
         ];
     }
 
@@ -57,6 +58,7 @@ class HandlersToMessageMapper
             ScheduledMessageToPersistMessage::class,
             WebsiteFetchedPageToPersistMessage::class,
             WebsiteMetaInfoMessage::class,
+            RssFeedMetaInfoToPersist::class,
         ];
     }
 

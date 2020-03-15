@@ -17,15 +17,15 @@ class RssItemToPersist implements MessageInterface
     /** @var null|string */
     private $link;
     /** @var null|DateTime */
-    private $date;
+    private $pubDate;
 
-    public function __construct(ObjectId $websiteId, ?string $title, ?string $description, ?string $link, ?DateTime $date)
+    public function __construct(ObjectId $websiteId, ?string $title, ?string $description, ?string $link, ?DateTime $pubDate)
     {
         $this->websiteId = $websiteId;
         $this->title = $title;
         $this->description = $description;
         $this->link = $link;
-        $this->date = $date;
+        $this->pubDate = $pubDate;
     }
 
     public function getWebsiteId(): ObjectId
@@ -48,8 +48,8 @@ class RssItemToPersist implements MessageInterface
         return $this->link;
     }
 
-    public function getDate(): ?DateTime
+    public function getPubDate(): ?DateTime
     {
-        return $this->date;
+        return $this->pubDate;
     }
 }

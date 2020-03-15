@@ -2,28 +2,30 @@
 
 namespace App\Common\MessageBus\Handlers\Processors;
 
-use App\Common\MessageBus\Messages\Crawlers\RssFeedToCrawlMessage;
+use App\Common\MessageBus\Messages\Crawlers\WebFeedToCrawlMessage;
 use App\Common\MessageBus\Messages\Processors\WebsiteHistoryMessage;
+use App\Common\Services\Parsers\HtmlParserService;
 use App\Common\ValueObjects\Url;
 use MongoDB\BSON\ObjectId;
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class RssFeedSeekerProcessor implements ProcessorInterface
+class WebFeedSeekerProcessor implements ProcessorInterface
 {
     /** @var MessageBusInterface */
     private $crawlersBus;
     private $name;
+    private $parserService;
 
-    public function __construct(string $name, MessageBusInterface $crawlersBus)
+    public function __construct(string $name, MessageBusInterface $crawlersBus, HtmlParserService $parserService)
     {
         $this->name = $name;
         $this->crawlersBus = $crawlersBus;
+        $this->parserService = $parserService;
     }
 
     public function __invoke(WebsiteHistoryMessage $historyMessage)
     {
-        $this->sendRssToCrawlMessage(
+        $this->sendFeedToCrawlMessage(
             new ObjectId($historyMessage->getWebsiteId()),
             $historyMessage->getUrl(),
             $historyMessage->getInitialEncoding(),
@@ -31,7 +33,7 @@ class RssFeedSeekerProcessor implements ProcessorInterface
         );
     }
 
-    private function sendRssToCrawlMessage(
+    private function sendFeedToCrawlMessage(
         ObjectId $websiteId,
         Url $url,
         ?string $initialEncoding,
@@ -51,15 +53,15 @@ class RssFeedSeekerProcessor implements ProcessorInterface
                 }
             }
         }
-        $crawler = new Crawler($content);
-        $links = $crawler->filter('link[type*="/rss"], link[type*="/atom"]')->extract(['type', 'href']);
-        foreach ($links as $link) {
-            if (\substr($link[1], 0, 4) !== 'http') {
-                $url->addPath($link[1]);
+        $feeds = $this->parserService->extractWebFeeds($content);
+        foreach ($feeds as $feed) {
+            $feedUrl = clone $url;
+            if (\substr($feed->getUrl(), 0, 4) !== 'http') {
+                $feedUrl->addPath($feed->getUrl());
             } else {
-                $url = new Url($link[1]);
+                $feedUrl = new Url($feed->getUrl());
             }
-            $message = new RssFeedToCrawlMessage($websiteId, $url);
+            $message = new WebFeedToCrawlMessage($websiteId, $feed, $feedUrl);
             $this->crawlersBus->dispatch($message);
         }
     }
