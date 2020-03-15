@@ -64,22 +64,20 @@ class WorkerFactory
                 ''
             )->inc();
         });
-        if (!ENV_PROD) {
-            $dispatcher->addListener(WorkerMessageHandledEvent::class, function (WorkerMessageHandledEvent $e) use ($logger) {
-                static $cnt = 1;
-                $logger->info(
-                    \implode(
-                        ', ',
-                        [
-                            $cnt++,
-                            date(DATE_ATOM),
-                            $e->getReceiverName(),
-                            \get_class($e->getEnvelope() ? $e->getEnvelope()->getMessage() : $e->getEnvelope()),
-                        ]
-                    )
-                );
-            });
-        }
+        $dispatcher->addListener(WorkerMessageHandledEvent::class, function (WorkerMessageHandledEvent $e) use ($logger) {
+            static $cnt = 1;
+            $logger->info(
+                \implode(
+                    ', ',
+                    [
+                        $cnt++,
+                        date(DATE_ATOM),
+                        $e->getReceiverName(),
+                        \get_class($e->getEnvelope() ? $e->getEnvelope()->getMessage() : $e->getEnvelope()),
+                    ]
+                )
+            );
+        });
 
         return new Worker($receivers, $bus, $dispatcher);
     }
