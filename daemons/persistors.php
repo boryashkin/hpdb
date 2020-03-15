@@ -6,6 +6,7 @@ use App\Common\MessageBus\Handlers\Persistors\GithubProfileParsedPersistor;
 use App\Common\MessageBus\Handlers\Persistors\GithubProfileRepoMetaForGroupPersistor;
 use App\Common\MessageBus\Handlers\Persistors\NewGithubProfilePersistor;
 use App\Common\MessageBus\Handlers\Persistors\NewWebsitePersistor;
+use App\Common\MessageBus\Handlers\Persistors\RssFeedMetaInfoPersistor;
 use App\Common\MessageBus\Handlers\Persistors\RssItemElasticPersistor;
 use App\Common\MessageBus\Handlers\Persistors\ScheduledMessagePersistor;
 use App\Common\MessageBus\Handlers\Persistors\WebsiteIndexHistoryPersistor;
@@ -15,6 +16,7 @@ use App\Common\MessageBus\Messages\Persistors\GithubProfileParsedToPersistMessag
 use App\Common\MessageBus\Messages\Persistors\GithubProfileRepoMetaForGroupToPersistMessage;
 use App\Common\MessageBus\Messages\Persistors\NewGithubProfileToPersistMessage;
 use App\Common\MessageBus\Messages\Persistors\NewWebsiteToPersistMessage;
+use App\Common\MessageBus\Messages\Persistors\RssFeedMetaInfoToPersist;
 use App\Common\MessageBus\Messages\Persistors\RssItemToPersist;
 use App\Common\MessageBus\Messages\Persistors\ScheduledMessageToPersistMessage;
 use App\Common\MessageBus\Messages\Persistors\WebsiteFetchedPageToPersistMessage;
@@ -28,6 +30,7 @@ use App\Common\Services\Github\GithubProfileService;
 use App\Common\Services\Scheduled\Base64Serializer;
 use App\Common\Services\Scheduled\ScheduledMessageService;
 use App\Common\Services\Website\WebsiteGroupService;
+use App\Common\Services\Website\WebsiteService;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -62,6 +65,7 @@ $cache = $container->get(CONTAINER_CONFIG_REDIS_CACHE);
 $logger = $container->get(CONTAINER_CONFIG_LOGGER);
 $scheduledSerializer = $container->get(Base64Serializer::class);
 $githubProfileService = new GithubProfileService(new GithubProfileRepository($mongo), $logger, $cache);
+$profileRepository = new ProfileRepository($mongo);
 $groupService = new WebsiteGroupService(new WebsiteGroupRepository($mongo), $cache);
 /** @var \Symfony\Component\Messenger\MessageBusInterface $processorsBus */
 $processorsBus = $container->get(CONTAINER_CONFIG_REDIS_STREAM_PROCESSORS);
@@ -91,7 +95,7 @@ $factory->addHandler(
     new HandlerDescriptor(
         new NewWebsitePersistor(
             \getenv('REDIS_QUEUE_CONSUMER'),
-            new ProfileRepository($mongo),
+            $profileRepository,
             $crawlersBus,
             $githubProfileService,
             $groupService
@@ -149,6 +153,17 @@ $factory->addHandler(
         ),
         [
             'from_transport' => ScheduledMessagePersistor::TRANSPORT,
+        ]
+    )
+)->addHandler(
+    RssFeedMetaInfoToPersist::class,
+    new HandlerDescriptor(
+        new RssFeedMetaInfoPersistor(
+            \getenv('REDIS_QUEUE_CONSUMER'),
+            new WebsiteService($profileRepository)
+        ),
+        [
+            'from_transport' => RssFeedMetaInfoPersistor::TRANSPORT,
         ]
     )
 );

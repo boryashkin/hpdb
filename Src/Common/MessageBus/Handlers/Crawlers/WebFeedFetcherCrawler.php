@@ -2,12 +2,14 @@
 
 namespace App\Common\MessageBus\Handlers\Crawlers;
 
-use App\Common\MessageBus\Messages\Crawlers\RssFeedToCrawlMessage;
+use App\Common\Exceptions\WebFeed\UnknownWebFeedType;
+use App\Common\MessageBus\Messages\Crawlers\WebFeedToCrawlMessage;
+use App\Common\MessageBus\Messages\Processors\XmlAtomContentToProcessMessage;
 use App\Common\MessageBus\Messages\Processors\XmlRssContentToProcessMessage;
 use App\Common\Services\Website\WebsiteFetcher;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class RssFeedFetcherCrawler implements CrawlerInterface
+class WebFeedFetcherCrawler implements CrawlerInterface
 {
     /** @var string */
     private $name;
@@ -23,7 +25,7 @@ class RssFeedFetcherCrawler implements CrawlerInterface
         $this->processorsBus = $processorsBus;
     }
 
-    public function __invoke(RssFeedToCrawlMessage $message)
+    public function __invoke(WebFeedToCrawlMessage $message)
     {
         $result = $this->fetcher->parseWebsiteInUtf8($message->getUrl());
 
@@ -36,10 +38,22 @@ class RssFeedFetcherCrawler implements CrawlerInterface
                     . substr($result->content, $firstEncodingPos + strlen($result->initialEncoding));
             }
         }
-        $message = new XmlRssContentToProcessMessage(
-            $message->getWebsiteId(),
-            $result->content
-        );
+        if ($message->getFeed()->isRss()) {
+            $message = new XmlRssContentToProcessMessage(
+                $message->getWebsiteId(),
+                $result->content,
+                $message->getUrl()
+            );
+        } elseif ($message->getFeed()->isAtom()) {
+            throw new UnknownWebFeedType($message->getFeed()->getType());
+            //todo: доделать парсер
+            $message = new XmlAtomContentToProcessMessage(
+                $message->getWebsiteId(),
+                $result->content
+            );
+        } else {
+            throw new UnknownWebFeedType($message->getFeed()->getType());
+        }
         $this->processorsBus->dispatch($message);
     }
 }

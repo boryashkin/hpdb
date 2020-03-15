@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xml:base="http://www.nasa.gov/" xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+     xmlns:media="http://search.yahoo.com/mrss/">
+    <channel>
+        <title>NASA Breaking News</title>
+        <description>A RSS news feed containing the latest NASA news articles and press releases.</description>
+        <link>http://www.nasa.gov/</link>
+        <atom:link rel="self" href="http://www.nasa.gov/rss/dyn/breaking_news.rss"/>
+        <language>en-us</language>
+        <managingEditor>jim.wilson@nasa.gov</managingEditor>
+        <webMaster>brian.dunbar@nasa.gov</webMaster>
+        <docs>http://blogs.harvard.edu/tech/rss</docs>
+        <link>http://www.nasa.gov/press-release/nasa-astronaut-chris-cassidy-available-for-interviews-before-launch
+        </link>
+        <item>
+            <title>NASA Astronaut Chris Cassidy Available for Interviews Before Launch</title>
+            <description>NASA astronaut Chris Cassidy will be</description>
+            <enclosure url="http://www.nasa.gov/sites/default/files/styles/1x1_c...itok=pN-Ngsaa" length="1092709"
+                       type="image/jpeg"/>
+            <guid isPermaLink="false">http://www.nasa.gov/press-release/nasa-astronaut</guid>
+            <pubDate>Thu, 12 Mar 2020 17:53 EDT</pubDate>
+            <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+            <dc:identifier>458877</dc:identifier>
+        </item>
+        <item>
+            <title>NASA Science to Hold Virtual Community Town Hall Meeting</title>
+            <link>http://www.nasa.gov/press-release/nasa-science-to-hold-virtual-community-town-hall-meeting</link>
+            <description>NASA’s Science Mission Directorate (SMD) will hold a community town hall meeting with Associate
+                Administrator for Science Thomas Zurbuchen and his leadership team at 11 a.m. EDT Friday, March 20, to
+                discuss the president’s Fiscal Year 2021 budget request for the directorate and other updates.
+            </description>
+            <enclosure
+                    url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/smdtownhall.jpg?itok=A50p-eTJ"
+                    length="315521" type="image/jpeg"/>
+            <guid isPermaLink="false">
+                http://www.nasa.gov/press-release/nasa-science-to-hold-virtual-community-town-hall-meeting
+            </guid>
+            <pubDate>Thu, 12 Mar 2020 13:11 EDT</pubDate>
+            <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+            <dc:identifier>458861</dc:identifier>
+        </item>
+        <item>
+            <title>New York City Students to Speak with NASA Astronaut Aboard Space Station</title>
+            <link>
+                http://www.nasa.gov/press-release/new-york-city-students-to-speak-with-nasa-astronaut-aboard-space-station
+            </link>
+            <description>Students from New York City will have an opportunity this week to talk with a NASA astronaut
+                aboard the International Space Station.
+            </description>
+            <enclosure
+                    url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/iss062e014341.jpg?itok=XAnKptam"
+                    length="1900372" type="image/jpeg"/>
+            <guid isPermaLink="false">
+                http://www.nasa.gov/press-release/new-york-city-students-to-speak-with-nasa-astronaut-aboard-space-station
+            </guid>
+            <pubDate>Wed, 11 Mar 2020 15:16 EDT</pubDate>
+            <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+            <dc:identifier>458832</dc:identifier>
+        </item>
+        <item>
+            <title>NASA Awards Construction Contract to Multiple Companies</title>
+            <link>http://www.nasa.gov/press-release/nasa-awards-construction-contract-to-multiple-companies</link>
+            <description>NASA has selected eight companies to perform new construction, rehabilitation and modification
+                of agency facilities and infrastructure.
+            </description>
+            <enclosure
+                    url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/nasa-logo-web-rgb_0.jpg?itok=mrBnB_c9"
+                    length="189751" type="image/jpeg"/>
+            <guid isPermaLink="false">
+                http://www.nasa.gov/press-release/nasa-awards-construction-contract-to-multiple-companies
+            </guid>
+            <pubDate>Tue, 10 Mar 2020 10:06 EDT</pubDate>
+            <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+            <dc:identifier>458772</dc:identifier>
+        </item>
+        <item>
+            <title>NASA Administrator Statement on Coronavirus Situation</title>
+            <link>http://www.nasa.gov/press-release/nasa-administrator-statement-on-coronavirus-situation</link>
+            <description>The following is a statement from NASA Administrator Jim Bridenstine:</description>
+            <enclosure
+                    url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/698814main_acd12-0026-004_full_0.jpg?itok=ODH0B6cG"
+                    length="3284963" type="image/jpeg"/>
+            <guid isPermaLink="false">
+                http://www.nasa.gov/press-release/nasa-administrator-statement-on-coronavirus-situation
+            </guid>
+            <pubDate>Mon, 09 Mar 2020 16:28 EDT</pubDate>
+            <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+            <dc:identifier>458767</dc:identifier>
+        </item>
+        <item>
+            <title>SpaceX Dragon Heads to Space Station with NASA Science, Cargo</title>
+            <link>http://www.nasa.gov/press-release/spacex-dragon-heads-to-space-station-with-nasa-science-cargo-1
+            </link>
+            <description>A SpaceX Dragon cargo spacecraft is on its way to the International Space Station after
+                launching at 11:50 p.m. EST Friday. Dragon will deliver more than 4,300 pounds of NASA cargo and science
+                investigations, including a new science facility scheduled to be installed to the outside of the station
+                during a spacewalk this spring.
+            </description>
+            <enclosure
+                    url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/spx_launch_0.png?itok=jlsrAtrt"
+                    length="953717" type="image/png"/>
+            <guid isPermaLink="false">
+                http://www.nasa.gov/press-release/spacex-dragon-heads-to-space-station-with-nasa-science-cargo-1
+            </guid>
+            <pubDate>Fri, 06 Mar 2020 23:59 EST</pubDate>
+            <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+            <dc:identifier>458744</dc:identifier>
+        </item>
+        <item>
+            <title>Virginia Middle School Student Earns Honor of Naming NASA&#039;s Next Mars Rover</title>
+            <link>
+                http://www.nasa.gov/press-release/virginia-middle-school-student-earns-honor-of-naming-nasas-next-mars-rover
+            </link>
+            <description>NASA&#039;s next Mars rover has a new name – Perseverance.</description>
+            <enclosure
+                    url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/2020_rover_name_plate-1080_0.png?itok=sJNPzlao"
+                    length="2920751" type="image/png"/>
+            <guid isPermaLink="false">
+                http://www.nasa.gov/press-release/virginia-middle-school-student-earns-honor-of-naming-nasas-next-mars-rover
+            </guid>
+            <pubDate>Thu, 05 Mar 2020 13:18 EST</pubDate>
+            <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+            <dc:identifier>458672</dc:identifier>
+        </item>
+        <item>
+            <title>NASA to Hold Media Briefing on New Global Air Quality Constellation</title>
+            <link>
+                http://www.nasa.gov/press-release/nasa-to-hold-media-briefing-on-new-global-air-quality-constellation
+            </link>
+            <description>NASA is hosting a media teleconference at 10 a.m. EDT Monday, March 9, to discuss an
+                international collaboration aimed at improving our understanding of air quality.
+            </description>
+            <enclosure
+                    url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/aq_constellation_advisory.jpg?itok=FUkCrBkX"
+                    length="230692" type="image/jpeg"/>
+            <guid isPermaLink="false">
+                http://www.nasa.gov/press-release/nasa-to-hold-media-briefing-on-new-global-air-quality-constellation
+            </guid>
+            <pubDate>Thu, 05 Mar 2020 13:12 EST</pubDate>
+            <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+            <dc:identifier>458671</dc:identifier>
+        </item>
+        <item>
+            <title>NASA to Reveal Name of Next Mars Rover, Hold Media Teleconference</title>
+            <link>http://www.nasa.gov/press-release/nasa-to-reveal-name-of-next-mars-rover-hold-media-teleconference
+            </link>
+            <description>NASA will unveil the name of the agency’s next Mars rover, currently known as Mars 2020, during
+                a live event on NASA Television at 1:30 p.m. EST Thursday, March 5, followed by a media teleconference
+                at 3:30 p.m. about the mission and the naming.
+            </description>
+            <enclosure
+                    url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/name_a2.jpg?itok=4dcMW-y6"
+                    length="6084514" type="image/jpeg"/>
+            <guid isPermaLink="false">
+                http://www.nasa.gov/press-release/nasa-to-reveal-name-of-next-mars-rover-hold-media-teleconference
+            </guid>
+            <pubDate>Tue, 03 Mar 2020 15:46 EST</pubDate>
+            <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+            <dc:identifier>458614</dc:identifier>
+        </item>
+        <item>
+            <title>NASA’s Urban Air Mobility Grand Challenge Advances with Agreement Signings</title>
+            <link>
+                http://www.nasa.gov/press-release/nasa-s-urban-air-mobility-grand-challenge-advances-with-agreement-signings
+            </link>
+            <description>NASA has signed Space Act Agreements with 17 companies in the aviation industry to advance
+                plans for the first in a series of technology demonstrations known as the Urban Air Mobility (UAM) Grand
+                Challenge.
+            </description>
+            <enclosure
+                    url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/ov_1_great_hall_0.jpg?itok=5A4qm3MM"
+                    length="2754276" type="image/jpeg"/>
+            <guid isPermaLink="false">
+                http://www.nasa.gov/press-release/nasa-s-urban-air-mobility-grand-challenge-advances-with-agreement-signings
+            </guid>
+            <pubDate>Tue, 03 Mar 2020 14:33 EST</pubDate>
+            <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+            <dc:identifier>458612</dc:identifier>
+        </item>
+    </channel>
+</rss>

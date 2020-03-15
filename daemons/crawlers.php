@@ -6,12 +6,12 @@ use App\Common\MessageBus\Handlers\Crawlers\GithubContributorsCrawler;
 use App\Common\MessageBus\Handlers\Crawlers\GithubFollowersCrawler;
 use App\Common\MessageBus\Handlers\Crawlers\GithubProfileCrawler;
 use App\Common\MessageBus\Handlers\Crawlers\PageFetcherCrawler;
-use App\Common\MessageBus\Handlers\Crawlers\RssFeedFetcherCrawler;
+use App\Common\MessageBus\Handlers\Crawlers\WebFeedFetcherCrawler;
 use App\Common\MessageBus\Messages\Crawlers\GithubContributorsToCrawlMessage;
 use App\Common\MessageBus\Messages\Crawlers\GithubFollowersToCrawlMessage;
 use App\Common\MessageBus\Messages\Crawlers\NewGithubProfileToCrawlMessage;
 use App\Common\MessageBus\Messages\Crawlers\NewWebsiteToCrawlMessage;
-use App\Common\MessageBus\Messages\Crawlers\RssFeedToCrawlMessage;
+use App\Common\MessageBus\Messages\Crawlers\WebFeedToCrawlMessage;
 use App\Common\Services\HttpClient;
 use App\Common\Services\Github\GithubApiFetcher;
 use App\Common\Services\Website\WebsiteFetcher;
@@ -57,9 +57,9 @@ $factory->addHandler(
         ]
     )
 )->addHandler(
-    RssFeedToCrawlMessage::class,
+    WebFeedToCrawlMessage::class,
     new HandlerDescriptor(
-        new RssFeedFetcherCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $websiteFetcher, $processorsBus),
+        new WebFeedFetcherCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $websiteFetcher, $processorsBus),
         [
             'from_transport' => PageFetcherCrawler::TRANSPORT
         ]
