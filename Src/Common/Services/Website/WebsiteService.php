@@ -24,18 +24,28 @@ class WebsiteService
     /**
      * @throws ServerException
      */
-    public function addWebFeedIdAndSave(Website $profile, WebsiteWebFeedEmbedded $webFeedDto): bool
+    public function addWebFeedAndSave(Website $profile, WebsiteWebFeedEmbedded $webFeedDto): bool
     {
         if ($webFeedDto->pub_date instanceof \DateTimeInterface) {
             $webFeedDto->pub_date = new UTCDateTime($webFeedDto->pub_date->getTimestamp() * 1000);
         }
-        $saved = false;
-        if (!$profile->web_feeds || (\is_array($profile->web_feeds) && !\in_array($webFeedDto, $profile->web_feeds))) {
-            $profile->web_feeds = \array_merge($profile->web_feeds ?? [], [$webFeedDto]);
-            $saved = $profile->update(['web_feeds' => $profile->web_feeds]);
+        $added = false;
+        if ($profile->web_feeds && \is_array($profile->web_feeds)) {
+            $feeds = $profile->web_feeds;
+            foreach ($feeds as $key => $feed) {
+                if ($feed['url'] === $webFeedDto->url) {
+                    $feeds[$key] = $webFeedDto;
+                    $added = true;
+                    $profile->web_feeds = $feeds;
+                    break;
+                }
+            }
+        }
+        if (!$added) {
+            $profile->web_feeds = array_merge($profile->web_feeds ?? [], [$webFeedDto]);
         }
 
-        return $saved;
+        return $profile->update(['web_feeds' => $profile->web_feeds]);
     }
 
     public function getOneById(ObjectId $id): ?Website

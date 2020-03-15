@@ -31,6 +31,6 @@ class RssFeedMetaInfoPersistor implements PersistorInterface
         $dto->url = (string)$message->getUrl();
         $dto->pub_date = $message->getPubDate();
         $dto->pub_date = $message->getPubDate();
-        $this->websiteService->addWebFeedIdAndSave($website, $dto);
+        $this->websiteService->addWebFeedAndSave($website, $dto);
     }
 }
