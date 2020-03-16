@@ -22,7 +22,7 @@ class Index extends BaseAction
         }
         $groups = $groups->where('is_deleted', '=', false)
             ->limit(10)
-            ->offset($page < 0 ? 0 : $page)->get();
+            ->offset($page < 0 ? 0 : $page * 10)->get();
 
         $response = $response->withAddedHeader('Content-Type', 'application/json');
         $response->getBody()->write(\json_encode($groups));
