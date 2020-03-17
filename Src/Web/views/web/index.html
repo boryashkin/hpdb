@@ -4,34 +4,45 @@
 <div class="main-container container-fluid">
     <h1>Поиск креативности</h1>
     <div class="row">
-        <div class="col col-lg-4 col-md-12 p-3">
-            <div class="row pl-3">
-                <div class="website-group-list">
-                    <div class="website-group-link-li">
-                        <a href="#" class="btn link-group link-group btn-outline-dark csv-repo-link active" title="New"
-                           data-slug="" data-limit="5">
-                            <span></span><i class="emoji fire small"></i>
-                            Новое
-                        </a>
+        <div class="col col-12">
+            <div class='horizontal-scroller'>
+                <div class="slider">
+                    <div class="inner-box">
+                        <div class="website-group-list item-box">
+                            <div class="website-group-link-li">
+                                <a href="#" class="btn link-group link-group btn-outline-dark csv-repo-link active"
+                                   title="New"
+                                   data-slug="" data-limit="5">
+                                    <span></span><i class="emoji fire small"></i>
+                                    Новое
+                                </a>
+                            </div>
+                            {% for websiteGroup in websiteGroups %}
+                            <div role="presentation" class="website-group-link-li">
+                                <a href="#{{ websiteGroup.slug }}" class="btn link-group btn-outline-dark csv-repo-link"
+                                   title="{{websiteGroup.name}}" data-slug="{{websiteGroup._id}}">
+                                    <img src="{{websiteGroup.logo}}"/>
+                                    {{websiteGroup.name|length > 35 ? websiteGroup.name|slice(start, 35) ~ '...' :
+                                    websiteGroup.name}}
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class='vertical-mid-hack'></div>
                     </div>
-                    {% for websiteGroup in websiteGroups %}
-                    <div class="website-group-link-li">
-                        <a href="#{{ websiteGroup.slug }}" class="btn link-group btn-outline-dark csv-repo-link"
-                           title="{{websiteGroup.name}}" data-slug="{{websiteGroup._id}}">
-                            <img src="{{websiteGroup.logo}}"/>
-                            {{websiteGroup.name|length > 35 ? websiteGroup.name|slice(start, 35) ~ '...' :
-                            websiteGroup.name}}
-                        </a>
-                    </div>
-                    {% endfor %}
                 </div>
-
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-lg-4 col-md-12 px-3 py-1">
+            <div class="row pl-3">
                 <p>
                     Социальная сеть из малоизвестных
                     <mark>шедевров</mark>
                     - персональных "домашних страниц".
                 </p>
-                <p><em>Все сайты открываются внутри этого, а не в новом окне</em></p>
+                <div><em>Все сайты открываются внутри этого, а не в новом окне</em></div>
             </div>
         </div>
         <div class="col col-lg-4 col-md-12">
