@@ -142,7 +142,7 @@ class Index extends BaseAction
                 'show_on_main' => true,
             ],
             [
-                'limit' => 5,
+                'limit' => 20,
             ]
         )->toArray();
     }

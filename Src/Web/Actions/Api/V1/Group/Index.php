@@ -14,6 +14,7 @@ class Index extends BaseAction
         $params = $request->getQueryParams();
         $name = isset($params['name']) && \is_string($params['name']) ? $params['name'] : null;
         $page = isset($params['page']) && \is_numeric($params['page']) ? (int)$params['page'] : 0;
+        $page--;
 
         $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
         $groups = WebsiteGroup::query();
