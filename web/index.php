@@ -20,6 +20,7 @@ $app->group('', function () use ($app) {
     $app->post('/api/v1/group', \App\Web\Actions\Api\V1\Group\Create::class);
     $app->delete('/api/v1/group/{id}', \App\Web\Actions\Api\V1\Group\Delete::class);
     $app->patch('/api/v1/group/{id}', \App\Web\Actions\Api\V1\Group\Update::class);
+    $app->get('/api/v1/feed', \App\Web\Actions\Api\V1\Feed\Index::class);
 
     $app->put('/api/v1/rpc/add-website-to-group', \App\Web\Actions\Api\V1\Rpc\AddWebsiteToGroup::class);
     $app->put('/api/v1/rpc/parse-github-contributors', \App\Web\Actions\Api\V1\Rpc\ParseGithubContributiorsPage::class);
