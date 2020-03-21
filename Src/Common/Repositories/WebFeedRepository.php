@@ -9,9 +9,11 @@ use App\Common\Dto\WebFeed\WebFeedSearchQuery;
 
 class WebFeedRepository extends AbstractElasticRepository
 {
+    private const PIPELINE_LANG_DETECTION = 'langdetect-pipeline';
+
     public static function getIndex(): string
     {
-        return 'website_rss_item';
+        return 'web_feed_item';
     }
 
     /**
@@ -34,6 +36,26 @@ class WebFeedRepository extends AbstractElasticRepository
         return $result;
     }
 
+    public function indexWithLanguageDetection(WebFeedItem $item): array
+    {
+        return $this->getClient()->index([
+            'pipeline' => self::PIPELINE_LANG_DETECTION,
+            'index' => self::getIndex(),
+            'body' => [
+                'title' => $item->title,
+                'description' => $item->description,
+                'date' => $item->date->format(DATE_ATOM),
+                'link' => (string)$item->link,
+                'website_id' => (string)$item->website_id,
+            ],
+        ]);
+    }
+
+    public function bulkIndex(): array
+    {
+        throw new \Exception('Not implemented yet');
+    }
+
     private function getFormattedQuery(WebFeedSearchQuery $query): array
     {
         return [
@@ -41,6 +63,13 @@ class WebFeedRepository extends AbstractElasticRepository
             'from' => $query->getFrom(),
             'size' => $query->getSize(),
             'sort' => $query->getSort(),
+            'body' => [
+                'query' => [
+                    'bool' => [
+                        'filter' => $query->getFilter() ?? [],
+                    ],
+                ],
+            ],
         ];
     }
 }

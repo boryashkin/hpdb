@@ -2,19 +2,20 @@
 
 namespace App\Common\MessageBus\Handlers\Persistors;
 
+use App\Common\Dto\WebFeed\WebFeedItem;
 use App\Common\MessageBus\Messages\Persistors\RssItemToPersist;
-use Elasticsearch\Client;
+use App\Common\Repositories\WebFeedRepository;
 
 class RssItemElasticPersistor implements PersistorInterface
 {
     private $name;
-    /** @var Client */
-    private $elastic;
+    /** @var WebFeedRepository */
+    private $repository;
 
-    public function __construct(string $name, Client $elastic)
+    public function __construct(string $name, WebFeedRepository $repository)
     {
         $this->name = $name;
-        $this->elastic = $elastic;
+        $this->repository = $repository;
     }
 
     public function __invoke(RssItemToPersist $message)
@@ -24,17 +25,14 @@ class RssItemElasticPersistor implements PersistorInterface
 
     public function saveIndex(RssItemToPersist $message): array
     {
-        $params = [
-            'index' => 'website_rss_item',
-            'body' => [
-                'title' => $message->getTitle(),
-                'description' => $message->getDescription(),
-                'date' => $message->getPubDate() ? $message->getPubDate()->format(DATE_ATOM) : null,
-                'website_id' => (string)$message->getWebsiteId(),
-                'link' => $message->getLink(),
-            ],
-        ];
+        $item = new WebFeedItem([
+            'title' => $message->getTitle(),
+            'description' => $message->getDescription(),
+            'date' => $message->getPubDate(),
+            'website_id' => $message->getWebsiteId(),
+            'link' => $message->getLink(),
+        ]);
 
-        return $this->elastic->index($params);
+        return $this->repository->indexWithLanguageDetection($item);
     }
 }

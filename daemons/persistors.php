@@ -23,6 +23,7 @@ use App\Common\MessageBus\Messages\Persistors\WebsiteFetchedPageToPersistMessage
 use App\Common\MessageBus\Messages\Persistors\WebsiteMetaInfoMessage;
 use App\Common\Repositories\GithubProfileRepository;
 use App\Common\Repositories\ScheduledMessageRepository;
+use App\Common\Repositories\WebFeedRepository;
 use App\Common\Repositories\WebsiteGroupRepository;
 use App\Common\Repositories\WebsiteIndexHistoryRepository;
 use App\Common\Repositories\ProfileRepository;
@@ -107,7 +108,7 @@ $factory->addHandler(
 )->addHandler(
     RssItemToPersist::class,
     new HandlerDescriptor(
-        new RssItemElasticPersistor(\getenv('REDIS_QUEUE_CONSUMER'), $elastic),
+        new RssItemElasticPersistor(\getenv('REDIS_QUEUE_CONSUMER'), new WebFeedRepository($elastic)),
         [
             'from_transport' => RssItemElasticPersistor::TRANSPORT,
         ]
