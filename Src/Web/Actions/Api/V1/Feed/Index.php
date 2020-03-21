@@ -17,12 +17,18 @@ class Index extends BaseAction
     {
         $params = $request->getQueryParams();
         $page = isset($params['page']) && \is_numeric($params['page']) ? (int)$params['page'] : 0;
+        $lang = isset($params['lang']) && \is_string($params['lang']) ? $params['lang'] : null;
         $page = $page > 0 ? $page - 1 : $page;
 
         /** @var Client $client */
         $client = $this->getContainer()->get(CONTAINER_CONFIG_ELASTIC);
         $repo = new WebFeedRepository($client);
         $query = new WebFeedSearchQuery();
+        if ($lang) {
+            $query->setFilter([
+                'term' => ['language' => $lang],
+            ]);
+        }
         $query->setSort('date', $query::SORT_DESC);
         $query->setSize(30);
         $query->setFrom($page * $query->setSize());

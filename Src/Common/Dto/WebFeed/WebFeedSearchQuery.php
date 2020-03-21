@@ -15,6 +15,7 @@ class WebFeedSearchQuery
     private $from = 0;
     private $size = 10;
     private $sort;
+    private $filter;
 
     public function setFrom(int $from = 0): self
     {
@@ -40,13 +41,27 @@ class WebFeedSearchQuery
         return $this->size;
     }
 
-    public function setSort(string $sort, string $direction = self::SORT_ASC): void
+    public function setSort(string $sort, string $direction = self::SORT_ASC): self
     {
         $this->sort = "{$sort}:{$direction}";
+
+        return $this;
     }
 
     public function getSort(): ?string
     {
         return $this->sort;
+    }
+
+    public function setFilter(array $filter): self
+    {
+        $this->filter = $filter;
+
+        return $this;
+    }
+
+    public function getFilter(): ?array
+    {
+        return $this->filter;
     }
 }
