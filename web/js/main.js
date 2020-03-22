@@ -117,7 +117,9 @@ jQuery(document).ready(function($){
                             "                                    </div>\n" +
                             "                                </div>\n" +
                             "                                <div class=\"col col-3 text-right align-text-bottom\">\n" +
-                            "                                    <a href=\"" + feedItem.link + "\"><i>Читать</i></a>\n" +
+                            "                                    <a href=\"" + feedItem.link + "\"><i>Читать</i></a>" +
+                            "                                    <span class=\"text-muted small\">"
+                            + feedItem.date + "</span>" +
                             "                                </div>\n" +
                             "                            </div>\n" +
                             "                        </div>";

@@ -8,7 +8,7 @@ use App\Common\Dto\WebFeed\WebFeedItem;
 
 class WebFeedResponseBuilder
 {
-    private const DATE_FORMAT = 'Y-m-d H:i:s';
+    private const DATE_FORMAT = 'd M H:i';
 
     /**
      * @param WebFeedItem[]
