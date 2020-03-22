@@ -3,6 +3,9 @@
 namespace App\Web\Actions\Web;
 
 use App\Common\Abstracts\BaseAction;
+use App\Common\Dto\WebFeed\WebFeedSearchQuery;
+use App\Common\Repositories\WebFeedRepository;
+use App\Web\Services\WebFeed\WebFeedResponseBuilder;
 use Jenssegers\Mongodb\Collection;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Collection as MongoCollection;
@@ -54,8 +57,23 @@ class Index extends BaseAction
 
             return $this->getWebsiteGroups($gc);
         });
+        $feed = $redis->get('mainFeed', function (ItemInterface $item) use ($container) {
+            $item->expiresAfter(60);
+
+            $repo = new WebFeedRepository($container->get(CONTAINER_CONFIG_ELASTIC));
+            $lang = 'ru';
+            $query = (new WebFeedSearchQuery())
+                ->setFilter(['term' => ['language' => $lang]])
+                ->setSort('date', WebFeedSearchQuery::SORT_DESC)
+                ->setSize(5);
+            $builder = new WebFeedResponseBuilder();
+
+            return $builder->createList($repo->getSearchResults($query, false) ?? []);
+        });
+
 
         return $this->getView()->render($response, 'web/index.html', [
+            'webFeed' => $feed,
             'reactions' => $reactions,
             'newWebsites' => $newWebsites,
             'websiteGroups' => $websiteGroups,

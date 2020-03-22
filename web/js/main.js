@@ -11,6 +11,8 @@ jQuery(document).ready(function($){
     var groupBtns = document.getElementsByClassName('link-group');
     var groupContainerWrapper = document.getElementById('top-group-container-wrapper');
     var groupContainer = document.getElementsByClassName('group-container').item(0);
+    var feedLangBtns = document.getElementsByClassName('link-feed');
+    var feedLangContainer = document.getElementsByClassName('feed-container').item(0);
     var reactOnProfile = function () {
         var element = this;
         var reaction = this.getAttribute("data-reaction");
@@ -79,12 +81,61 @@ jQuery(document).ready(function($){
             }
         );
     };
+    var reactOnFeedLang = function () {
+        if (this.classList.contains('active')) {
+            return;
+        }
+        var lang = this.getAttribute("data-slug");
+        var limit = this.getAttribute("data-limit");
+        for (i = 0; i < feedLangBtns.length; i++) {
+            feedLangBtns.item(i).classList.remove('active');
+        }
+        this.classList.add('active');
+
+        $.get(
+            "/api/v1/feed",
+            {lang: lang, limit: limit ? limit : 100, preview: 1},
+            function (content) {
+                if (content) {
+                    Array.from(feedLangContainer.getElementsByClassName('feed-item')).forEach(function (item) {
+                        item.remove();
+                    });
+                    for (var i = 0; i < content.length; i++) {
+                        let feedItem = content[i];
+                        if (!feedItem.description) {
+                            continue;
+                        }
+                        console.log(feedItem);
+                        var feedItemEl = "<div class=\"p-2 border border-light bg-white feed-item\">\n" +
+                            "                            <div class=\"row\">\n" +
+                            "                                <div class=\"col col-9\">\n" +
+                            "                                    <div class=\"embed-responsive\">\n" +
+                            feedItem.title +
+                            "                                    </div>\n" +
+                            "                                    <div class=\"embed-responsive\">\n" +
+                            "                                        <span class=\"text-muted small\">" + feedItem.description + "</span>\n" +
+                            "                                    </div>\n" +
+                            "                                </div>\n" +
+                            "                                <div class=\"col col-3 text-right align-text-bottom\">\n" +
+                            "                                    <a href=\"" + feedItem.link + "\"><i>Читать</i></a>\n" +
+                            "                                </div>\n" +
+                            "                            </div>\n" +
+                            "                        </div>";
+                        feedLangContainer.insertAdjacentHTML("beforeEnd", feedItemEl);
+                    }
+                }
+            }
+        );
+    };
 
     for (var i = 0; i < reactionBtns.length; i++) {
         reactionBtns[i].addEventListener('click', reactOnProfile, false);
     }
     for (i = 0; i < groupBtns.length; i++) {
         groupBtns[i].addEventListener('click', reactOnGroup, false);
+    }
+    for (i = 0; i < feedLangBtns.length; i++) {
+        feedLangBtns[i].addEventListener('click', reactOnFeedLang, false);
     }
 });
 

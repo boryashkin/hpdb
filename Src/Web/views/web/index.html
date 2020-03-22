@@ -4,6 +4,65 @@
 <div class="main-container container-fluid">
     <h1>Поиск креативности</h1>
     <div class="row">
+        <div class="col col-12 col-lg-4"></div>
+        <div class="col col-12 col-lg-4">
+            <div class="row">
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                    <p><strong>Лента:</strong></p>
+                    <div class="py-2">
+                        <a href="#feed-ru" class="btn btn-outline-dark link-feed active"
+                           title="На русском"
+                           data-slug="ru" data-limit="10">
+                            🇷🇺
+                        </a>
+                        <a href="#feed-en" class="btn btn-outline-dark link-feed"
+                           title="In english"
+                           data-slug="en" data-limit="10">
+                            🇬🇧 / 🇺🇸
+                        </a>
+                        <a href="#feed-cn" class="btn btn-outline-dark link-feed"
+                           title="In chinese"
+                           data-slug="zh" data-limit="10">
+                            🇨🇳
+                        </a>
+                        <a href="#feed-fr" class="btn btn-outline-dark link-feed"
+                           title="In french"
+                           data-slug="fr" data-limit="10">
+                            🇫🇷
+                        </a>
+                        <a href="#feed-de" class="btn btn-outline-dark link-feed"
+                           title="In deutsch"
+                           data-slug="de" data-limit="10">
+                            🇩🇪
+                        </a>
+                    </div>
+                    <div class="feed-container item-box">
+                        {% for feedItem in webFeed %}
+                        <div class="p-2 border border-light bg-white feed-item">
+                            <div class="row">
+                                <div class="col col-9">
+                                    <div class="embed-responsive">
+                                        {{ feedItem.title }}
+                                    </div>
+                                    <div class="embed-responsive">
+                                        <span class="text-muted small">{{ feedItem.description }}</span>
+                                    </div>
+                                </div>
+                                <div class="col col-3 text-right align-text-bottom">
+                                    <a href="{{ feedItem.link }}"><i>Читать</i></a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col col-12 col-lg-4"></div>
+    </div>
+    <div class="row">
         <div class="col col-12">
             <div class='horizontal-scroller'>
                 <div class="slider">
