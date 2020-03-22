@@ -28,7 +28,7 @@ class WebFeedResponseBuilder
     {
         $response = new WebFeedResponseItem();
         $response->title = $item->title;
-        $response->description = strip_tags(mb_substr($item->description ?? '', 0, 201));
+        $response->description = strip_tags(htmlspecialchars_decode(mb_substr($item->description ?? '', 0, 201)));
         $response->link = (string)$item->link;
         $response->website_id = (string)$item->website_id;
         $response->language = $item->language;
