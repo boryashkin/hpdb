@@ -39,6 +39,7 @@ class WebFeedRepository extends AbstractElasticRepository
     public function indexWithLanguageDetection(WebFeedItem $item): array
     {
         return $this->getClient()->index([
+            'id' => crc32((string)$item->link),
             'pipeline' => self::PIPELINE_LANG_DETECTION,
             'index' => self::getIndex(),
             'body' => [
