@@ -3,14 +3,10 @@
 namespace App\Web\Actions\Api\V1\Profile;
 
 use App\Common\Abstracts\BaseAction;
-use App\Cli\Commands\ExtractIndexedContent;
-use App\Common\Dto\Website\WebsiteIndexingResultDto;
 use App\Common\Exceptions\InvalidUrlException;
+use App\Common\MessageBus\Messages\Persistors\NewWebsiteToPersistMessage;
 use App\Common\Models\Website;
 use App\Common\Repositories\ProfileRepository;
-use App\Common\Services\HttpClient;
-use App\Common\Services\Website\WebsiteFetcher;
-use App\Common\Services\Website\WebsiteIndexer;
 use App\Common\ValueObjects\Url;
 use Jenssegers\Mongodb\Connection;
 use Psr\Http\Message\ResponseInterface;
@@ -21,9 +17,6 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class Create extends BaseAction
 {
-    private const CRAWLER_USER_AGENT = 'hdpb-web/1.0';
-    private const RATE_LIMIT_KEY_NAME = 'profile-create-ratelimit';
-
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $params = $request->getParsedBody();
@@ -42,36 +35,26 @@ class Create extends BaseAction
 
             throw new SlimException($request, $response);
         }
-        $indexer = new WebsiteIndexer(
-            new WebsiteFetcher(
-                new HttpClient(self::CRAWLER_USER_AGENT)
-            )
-        );
-        $repo = new ProfileRepository($this->getMongo());
-        $website = $repo->getFirstOneByUrl($parsedUrl);
-        if (!$website) {
-            $this->setRateLimit($request, $response);
-            $website = new Website();
-            $website->homepage = (string)$parsedUrl;
-            $website->save();
-            $resultDto = $indexer->reindex($website);
-            if ($resultDto->status === WebsiteIndexingResultDto::STATUS_WEBSITE_UNAVAILABLE) {
-                $response = $response->withStatus(400, 'Bad Request');
-                $response->getBody()->write('Website is unavailable');
+        $profile = new ProfileRepository($this->getMongo());
+        if ($website = $profile->getFirstOneByUrl($parsedUrl)) {
+            $response = $response->withAddedHeader('Content-Type', 'application/json');
+            $response->getBody()->write(json_encode($website));
 
-                throw new SlimException($request, $response);
-            }
-            if ($website->isDirty()) {
-                $website->save();
-            }
-            if ($resultDto->historyRow) {
-                $resultDto->historyRow->save();
-            }
-            $extractor = new ExtractIndexedContent();
-            $extractor->setMongo($this->getContainer()->get(CONTAINER_CONFIG_MONGO));
-            $extractor->extractAndSave($resultDto->historyRow);
-            $this->clearRateLimit();
+            return $response;
         }
+        $website = new Website();
+        $website->homepage = (string)$parsedUrl;
+        if (!$profile->save($website)) {
+            $response = $response->withStatus(512);
+            $response->getBody()->write('Unable to save a website');
+
+            throw new SlimException($request, $response);
+        }
+        /** @var \Symfony\Component\Messenger\MessageBusInterface $crawlersBus */
+        $bus = $this->getContainer()->get(CONTAINER_CONFIG_REDIS_STREAM_PERSISTORS);
+
+        $message = new NewWebsiteToPersistMessage($parsedUrl, 'cli', new \DateTime());
+        $bus->dispatch($message);
 
         $response = $response->withAddedHeader('Content-Type', 'application/json');
         $response->getBody()->write(\json_encode($website));
