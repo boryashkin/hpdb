@@ -110,16 +110,15 @@ jQuery(document).ready(function($){
                             "                            <div class=\"row\">\n" +
                             "                                <div class=\"col col-9\">\n" +
                             "                                    <div class=\"embed-responsive\">\n" +
-                            feedItem.title +
+                            "<a href=\"" + feedItem.link + "\" class=\"text-dark\">" + feedItem.title + "</a>" +
                             "                                    </div>\n" +
                             "                                    <div class=\"embed-responsive\">\n" +
                             "                                        <span class=\"text-muted small\">" + feedItem.description + "</span>\n" +
                             "                                    </div>\n" +
                             "                                </div>\n" +
                             "                                <div class=\"col col-3 text-right align-text-bottom\">\n" +
-                            "                                    <a href=\"" + feedItem.link + "\"><i>Читать</i></a>" +
-                            "                                    <span class=\"text-muted small\">"
-                            + feedItem.date + "</span>" +
+                            "                                    <div class=\"text-muted small\">"
+                            + feedItem.date + "</div>" +
                             "                                </div>\n" +
                             "                            </div>\n" +
                             "                        </div>";
