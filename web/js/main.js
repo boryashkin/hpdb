@@ -115,10 +115,12 @@ jQuery(document).ready(function($){
                             "                                    <div class=\"embed-responsive\">\n" +
                             "                                        <span class=\"text-muted small\">" + feedItem.description + "</span>\n" +
                             "                                    </div>\n" +
+                            "                                    <div class=\"text-muted small\">" +
+                            "<a href=\"/profile/" + feedItem.website_id + "\">" + feedItem.host + "</a></div>" +
                             "                                </div>\n" +
                             "                                <div class=\"col col-3 text-right align-text-bottom\">\n" +
-                            "                                    <div class=\"text-muted small\">"
-                            + feedItem.date + "</div>" +
+                            "                                    <div class=\"text-muted small\">" +
+                            feedItem.date + "</div>" +
                             "                                </div>\n" +
                             "                            </div>\n" +
                             "                        </div>";
