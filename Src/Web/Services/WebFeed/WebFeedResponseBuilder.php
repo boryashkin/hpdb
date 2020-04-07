@@ -30,6 +30,7 @@ class WebFeedResponseBuilder
         $response->title = $item->title;
         $response->description = strip_tags(htmlspecialchars_decode(mb_substr($item->description ?? '', 0, 201)));
         $response->link = (string)$item->link;
+        $response->host = $item->link->getHost();
         $response->website_id = (string)$item->website_id;
         $response->language = $item->language;
         $response->date = $item->date->format(self::DATE_FORMAT);

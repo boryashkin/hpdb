@@ -11,5 +11,6 @@ class WebFeedResponseItem
     public $website_id;
     public $language;
     public $link;
+    public $host;
     public $date;
 }
