@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Common\Services\Scheduled;
 
+use App\Common\Exceptions\Scheduled\ScheduledMessageExists;
 use App\Common\MessageBus\Messages\MessageInterface;
 use App\Common\Models\ScheduledMessage;
 use App\Common\Repositories\ScheduledMessageRepository;
@@ -43,6 +44,9 @@ class ScheduledMessageService
         $message->classname = \get_class($messageToDeffer);
         $message->serialized = $this->serializer->serialize($messageToDeffer);
         $message->status = ScheduledMessage::STATUS_READY;
+        if ($this->repository->isDuplicateExists($message)) {
+            throw new ScheduledMessageExists(json_encode($messageToDeffer));
+        }
         $this->repository->save($message);
 
         return $message;

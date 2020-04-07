@@ -41,4 +41,13 @@ class ScheduledMessageRepository extends AbstractMongoRepository
     {
         return $message->save();
     }
+
+    public function isDuplicateExists(ScheduledMessage $message): bool
+    {
+        return ScheduledMessage::query()
+            ->where('classname', '=', $message->classname)
+            ->where('serialized', '=', $message->serialized)
+            ->where('status', '=', ScheduledMessage::STATUS_READY)
+            ->exists();
+    }
 }
