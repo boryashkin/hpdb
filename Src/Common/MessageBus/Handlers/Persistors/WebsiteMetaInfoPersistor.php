@@ -35,13 +35,11 @@ class WebsiteMetaInfoPersistor implements PersistorInterface
         if (!$profile) {
             throw new ProfileNotFoundException($message->getWebsiteId());
         }
-        if (!$profile->content) {
-            $content = new \stdClass();
-            $content->title = $message->getTitle();
-            $content->description = $message->getDescription();
-            $content->from_website_index_history_id = $message->getHistoryIndexId();
-            $profile->content = $content;
-        }
+        $content = new \stdClass();
+        $content->title = $message->getTitle();
+        $content->description = $message->getDescription();
+        $content->from_website_index_history_id = $message->getHistoryIndexId();
+        $profile->content = $content;
 
         return $profile;
     }

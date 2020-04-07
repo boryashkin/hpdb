@@ -86,8 +86,8 @@ class ReindexHompages extends Command
         $websites = true;
         $cnt = Website::query()->count() / self::PAGINATION_CNT;
         $queued = 0;
+        $yesterday = new \DateTime('yesterday');
         while ($websites && $i <= $cnt) {
-            $this->mongo->reconnect();
             $websites = Website::query()
                 ->offset($i * self::PAGINATION_CNT)
                 ->take(self::PAGINATION_CNT)
@@ -95,6 +95,9 @@ class ReindexHompages extends Command
                 ->all();
             /** @var Website $website */
             foreach ($websites as $website) {
+                if ($website->updated_at->toDateTime() > $yesterday) {
+                    continue;
+                }
                 $this->reindex($website);
                 ++$queued;
             }
