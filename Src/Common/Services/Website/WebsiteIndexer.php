@@ -33,7 +33,7 @@ class WebsiteIndexer
         $result = new WebsiteIndexingResultDto();
 
         try {
-            $parsedUrl = new Url($website->homepage);
+            $parsedUrl = Url::createFromNormalized($website->scheme, $website->homepage);
         } catch (InvalidUrlException $e) {
             //to know where and which exactly exceptions are
             throw $e;
@@ -69,9 +69,9 @@ class WebsiteIndexer
         }
         $historyRow->available = true;
         if ($isHttp && $website->isHttps()) {
-            $website->setAttribute('homepage', \str_replace('https://', 'http://', $website->homepage));
+            $website->scheme = 'http';
         } elseif (!$isHttp && !$website->isHttps()) {
-            $website->homepage = \str_replace('http://', 'https://', $website->homepage);
+            $website->scheme = 'https';
         }
         $historyRow->http_status = $parsed->httpStatus;
         $historyRow->http_headers = $parsed->httpHeaders;

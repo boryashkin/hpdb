@@ -39,6 +39,9 @@ $command = new \App\Cli\Commands\MoveWebsiteContentDataToWebsite();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
 /* remove reindexer */
 $commands[] = $command;
+$command = new \App\Cli\Commands\NormalizeWebsites();
+$command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
+$commands[] = $command;
 
 
 $application = new Application();

@@ -4,6 +4,7 @@ namespace App\Common\Repositories;
 
 use App\Common\Models\Website;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\LazyCollection;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Driver\Exception\ServerException;
 
@@ -51,5 +52,12 @@ class WebsiteRepository extends AbstractMongoRepository
     public function save(Website $website): bool
     {
         return $website->save();
+    }
+
+    public function getAllCursor(): LazyCollection
+    {
+        return Website::query()
+            ->useWritePdo()
+            ->get()->lazy();
     }
 }

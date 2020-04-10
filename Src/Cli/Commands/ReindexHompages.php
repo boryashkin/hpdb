@@ -58,7 +58,7 @@ class ReindexHompages extends Command
     public function reindex(Website $website): void
     {
         try {
-            $url = new Url($website->homepage);
+            $url = Url::createFromNormalized($website->scheme, $website->homepage);
         } catch (InvalidUrlException | \TypeError $e) {
             return;
         }

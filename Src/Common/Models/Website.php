@@ -9,9 +9,8 @@ use MongoDB\BSON\UTCDateTime;
 
 /**
  * @property ObjectId $_id
- * @property int $profile_id        @deprecated, now profile_id on the api and web must be == _id
  * @property string $homepage
- * @property bool $is_http_only
+ * @property string $scheme
  * @property UTCDateTime $updated_at
  * @property WebsiteContent $content
  * @property ObjectId[] $groups
@@ -25,21 +24,20 @@ class Website extends Model
 
     public function isHttps()
     {
-        return \stripos($this->homepage, 'https:') === 0;
+        return $this->scheme === 'https';
     }
 
     public function getFillable()
     {
         return [
             'homepage',
+            'scheme',
             'content',
-            'is_http_only',
             'groups',
-            'profile_id',
             'title',
             'description',
             'github_profile_id',
-            'web_feeds'
+            'web_feeds',
         ];
     }
 }

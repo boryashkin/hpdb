@@ -36,7 +36,7 @@ class Profile extends BaseAction
         }
 
         try {
-            $parsedUrl = new Url($profile['homepage']);
+            $parsedUrl = Url::createFromNormalized($profile->scheme, $profile->homepage);
             $host = $parsedUrl->getHost();
         } catch (InvalidUrlException $e) {
             $parsedUrl = htmlspecialchars($profile['homepage']);

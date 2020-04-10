@@ -82,4 +82,48 @@ class UrlTest extends \Codeception\Test\Unit
 
         new Url('php://filter/resource=http://maliscious.com/?test=1');
     }
+
+    /**
+     * @dataProvider normalizeTestProvider
+     */
+    public function testNormalize(string $raw, string $normalized): void
+    {
+        $url = new Url($raw);
+
+        $this->assertEquals($normalized, $url->getNormalized());
+    }
+
+    public function normalizeTestProvider(): array
+    {
+        return [
+            [
+                'raw' => 'http://test.com/profile/',
+                'normalized' => 'test.com/profile',
+            ],
+            [
+                'raw' => 'http://test.com/profile',
+                'normalized' => 'test.com/profile',
+            ],
+            [
+                'raw' => 'test.com/profile',
+                'normalized' => 'test.com/profile',
+            ],
+            [
+                'raw' => 'test.com/profile?',
+                'normalized' => 'test.com/profile',
+            ],
+            [
+                'raw' => 'test.com/profile?asd=asd',
+                'normalized' => 'test.com/profile',
+            ],
+            [
+                'raw' => 'test.com/profile/?asd=asd',
+                'normalized' => 'test.com/profile',
+            ],
+            [
+                'raw' => 'test.com',
+                'normalized' => 'test.com',
+            ],
+        ];
+    }
 }

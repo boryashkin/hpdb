@@ -43,7 +43,8 @@ class Create extends BaseAction
             return $response;
         }
         $website = new Website();
-        $website->homepage = (string)$parsedUrl;
+        $website->homepage = $parsedUrl->getNormalized();
+        $website->scheme = $parsedUrl->getScheme();
         if (!$profile->save($website)) {
             $response = $response->withStatus(512);
             $response->getBody()->write('Unable to save a website');

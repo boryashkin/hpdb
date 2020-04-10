@@ -63,7 +63,8 @@ class NewWebsitePersistor implements PersistorInterface
             }
         } else {
             $website = new Website();
-            $website->homepage = (string)$message->getUrl();
+            $website->homepage = $message->getUrl()->getNormalized();
+            $website->scheme = $message->getUrl()->getScheme();
             $website->github_profile_id = $message->getGithubProfileId();
             $website->groups = $groups;
 

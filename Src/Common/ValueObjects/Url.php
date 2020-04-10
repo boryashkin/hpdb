@@ -33,6 +33,11 @@ class Url
         $this->assertScheme();
     }
 
+    public static function createFromNormalized(string $scheme, string $normalized): self
+    {
+        return new Url($scheme . '://' . $normalized);
+    }
+
     public function __toString(): string
     {
         return $this->buildUrl($this->parts);
@@ -73,6 +78,15 @@ class Url
     public function getPath(): string
     {
         return $this->parts['path'] ?? '';
+    }
+
+    public function getNormalized(): string
+    {
+        $path = $this->getPath();
+        if ($path && $path[strlen($path) - 1] === '/') {
+            $path = substr($path, 0, strlen($path) - 1);
+        }
+        return $this->getHost() . $path;
     }
 
     private function buildUrl(array $parts): string
