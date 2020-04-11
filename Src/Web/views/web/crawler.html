@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block htmlAttributes %}class="h-100 mh-100"{% endblock %}
+{% block bodyAttributes %}class="h-100 mh-100"{% endblock %}
+{% block headTitle %}{{ title }} - ищет лучшие домашние страницы в интернете{% endblock %}
+{% block headDescription %}{{ metaDescription }}{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="row p-1 px-2">
+        <h2>Паук Hpdb</h2>
+
+        <div class="p-1">
+            <h3>Ru</h3>
+            <p>
+                Поиск самых интересных сайтов в интернете - непосильная задача для человека, поэтому человек пишет
+                сервис, который делает это автоматически.
+                Этот сервис называется Hpdb и имеет пул User-Agent'ов "hpdb-bot-*/*.*".
+            </p>
+            <h3>En</h3>
+            <p>
+                Finding the most interesting websites on the Internet is an impossible task for a person, so a person
+                writes a service that does this automatically.
+                This service is called Hpdb and has a pool of User-Agents named like "hpdb-bot - * / *. *".
+            </p>
+        </div>
+        <div class="p-1">
+            <p>
+                <a href="mailto:hpdb@borisd.ru">hpdb@borisd.ru</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

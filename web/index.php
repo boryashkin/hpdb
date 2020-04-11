@@ -9,6 +9,7 @@ $app->group('', function () use ($app) {
     $app->get('/', \App\Web\Actions\Web\Index::class);
     $app->get('/profile/{id}', \App\Web\Actions\Web\Profile::class);
     $app->get('/article/create-website', \App\Web\Actions\Web\Article::class);
+    $app->get('/crawler', \App\Web\Actions\Web\Crawler::class);
 })->add(\App\Web\Middlewares\WebMetricsMiddleware::class);
 $app->group('', function () use ($app) {
     $app->get('/api/v1/profile/index', \App\Web\Actions\Api\V1\Profile\Index::class);
