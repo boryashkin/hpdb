@@ -4,7 +4,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
 
-const HPDB_CRAWLER_NAME = 'hpdb-bot/0.1';
+const HPDB_CRAWLER_NAME = 'hpdb-bot-m/0.1 (+https://hpdb.ru/crawler)';
 
 $container = require __DIR__ . '/config/container.php';
 

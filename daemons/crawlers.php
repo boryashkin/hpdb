@@ -40,8 +40,8 @@ $receivers = [
         $container->get(CONTAINER_CONFIG_REDIS_STREAM_SERIALIZER)
     )
 ];
-$websiteFetcher = new WebsiteFetcher(new HttpClient('hpdb-bot-c/0.1'), \getenv('DAEMONS_WEBSITE_FETCHER_MAX_SIZE_BYTES'));
-$apiFetcher = new GithubApiFetcher(new HttpClient('hpdb-bot-a/0.1'), \getenv('GITHUB_API_AUTH'));
+$websiteFetcher = new WebsiteFetcher(new HttpClient('hpdb-bot-c/0.1 (+https://hpdb.ru/crawler)'), \getenv('DAEMONS_WEBSITE_FETCHER_MAX_SIZE_BYTES'));
+$apiFetcher = new GithubApiFetcher(new HttpClient('hpdb-bot-a/0.1 (+https://hpdb.ru/crawler)'), \getenv('GITHUB_API_AUTH'));
 /** @var \Symfony\Component\Messenger\MessageBusInterface $persistorBus */
 $persistorBus = $container->get(CONTAINER_CONFIG_REDIS_STREAM_PERSISTORS);
 /** @var \Symfony\Component\Messenger\MessageBusInterface $processorsBus */
