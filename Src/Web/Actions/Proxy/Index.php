@@ -55,7 +55,8 @@ class Index extends BaseAction
         }
         //No need to proxying https
         if ($profile->isHttps()) {
-            return $response->withAddedHeader('Location', $profile['homepage'])->withStatus(301, 'Moved permanently');
+            $url = Url::createFromNormalized($profile->scheme, $profile->homepage);
+            return $response->withAddedHeader('Location', (string)$url)->withStatus(301, 'Moved permanently');
         }
         // Create a guzzle client
         $stack = HandlerStack::create();
