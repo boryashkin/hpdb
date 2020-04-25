@@ -30,6 +30,11 @@ $app->group('', function () use ($app) {
     $app->get('/proxy/{id}/', \App\Web\Actions\Proxy\Index::class);
     $app->get('/proxy/{id}/{path:.*}', \App\Web\Actions\Proxy\Index::class);
 })->add(\App\Web\Middlewares\ProxyMetricsMiddleware::class);
+$app->group('/admin', function () use ($app) {
+    $app->get('/website/categorisation', \App\Web\Actions\Admin\Website\Categorisation\Index::class);
+})
+    ->add(\App\Web\Middlewares\AdminMetricsMiddleware::class)
+    ->add(\App\Web\Middlewares\Security\IpPassFilterMiddleware::class);
 
 $app->get('/service/metrics', \App\Web\Actions\Service\Metrics\Index::class);
 

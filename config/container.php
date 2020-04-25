@@ -111,4 +111,9 @@ return new \Slim\Container(array_merge([
     \App\Common\Services\Scheduled\Base64Serializer::class => function (Slim\Container $c) {
         return new \App\Common\Services\Scheduled\Base64Serializer();
     },
+    \App\Common\Services\IpCheckService::class => static function (Slim\Container $c) {
+        $adminAllowedIp = \getenv('SECURITY_ADMIN_ALLOWED_IP', true) ?: '172.172.172.172';
+
+        return new \App\Common\Services\IpCheckService($adminAllowedIp);
+    },
 ], $messageBus));
