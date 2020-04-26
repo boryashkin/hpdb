@@ -42,14 +42,13 @@ class MoveWebsiteIndexDataToWebsite extends Command
         $output->writeln('before');
         /** @var Website $website */
         foreach ($indexCursor as $website) {
-            $output->writeln('iteration');
             $index = $indexRepository->getLastByWebsiteId(new ObjectId($website->_id));
             $content = $website->content;
             $content['from_website_index_history_id'] = new ObjectId($index->_id);
             $website->content = $content;
             $websiteRepository->save($website);
-            if ($i % 100) {
-                $output->writeln($i++);
+            if ($i++ % 100) {
+                $output->writeln($i);
             }
         }
 
