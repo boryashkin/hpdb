@@ -11,9 +11,11 @@ use MongoDB\BSON\UTCDateTime;
  * @property ObjectId $_id
  * @property string $homepage
  * @property string $scheme
+ * @property int $category
  * @property UTCDateTime $updated_at
  * @property WebsiteContent $content
  * @property ObjectId[] $groups
+ * @property string[] $tags
  * @property ObjectId $github_profile_id
  * @property WebsiteWebFeedEmbedded[] $web_feeds
  */
@@ -32,12 +34,14 @@ class Website extends Model
         return [
             'homepage',
             'scheme',
+            'category',
             'content',
             'groups',
             'title',
             'description',
             'github_profile_id',
             'web_feeds',
+            'tags',
         ];
     }
 }
