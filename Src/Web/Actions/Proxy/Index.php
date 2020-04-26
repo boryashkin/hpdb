@@ -5,6 +5,7 @@ namespace App\Web\Actions\Proxy;
 use App\Common\Abstracts\BaseAction;
 use App\Common\Exceptions\InvalidUrlException;
 use App\Common\Repositories\ProfileRepository;
+use App\Common\Repositories\WebsiteIndexHistoryRepository;
 use App\Common\ValueObjects\Url;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
@@ -27,7 +28,8 @@ class Index extends BaseAction
 {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $repo = new ProfileRepository($this->getContainer()->get(CONTAINER_CONFIG_MONGO));
+        $mongo = $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
+        $repo = new ProfileRepository($mongo);
         $profileId = $request->getAttribute('id');
         if (!\is_string($profileId)) {
             throw new NotFoundException($request, $response);
@@ -55,8 +57,22 @@ class Index extends BaseAction
         }
         //No need to proxying https
         if ($profile->isHttps()) {
-            $url = Url::createFromNormalized($profile->scheme, $profile->homepage);
-            return $response->withAddedHeader('Location', (string)$url)->withStatus(301, 'Moved permanently');
+            $redirectToWebsite = true;
+            if ($profile->content && isset($profile->content['from_website_index_history_id'])) {
+                $indexRepo = new WebsiteIndexHistoryRepository($mongo);
+                $index = $indexRepo->getOne($profile->content['from_website_index_history_id']);
+                if (
+                    in_array('sameorigin', $index->http_headers['X-Frame-Options'], true)
+                    || in_array('SAMEORIGIN', $index->http_headers['X-Frame-Options'], true)
+                ) {
+                    $redirectToWebsite = false;
+                }
+            }
+            if ($redirectToWebsite) {
+                $url = Url::createFromNormalized($profile->scheme, $profile->homepage);
+
+                return $response->withAddedHeader('Location', (string)$url)->withStatus(301, 'Moved permanently');
+            }
         }
         // Create a guzzle client
         $stack = HandlerStack::create();
@@ -85,13 +101,6 @@ class Index extends BaseAction
             $res = $proxy->forward($clone)->to($parsedUrl->getScheme() . '://' . $parsedUrl->getHost());
         } catch (ConnectException $e) {
             return $this->getView()->render($response, 'proxy/unable.html');
-        }
-        if ($redirects = $res->getHeaderLine('X-Guzzle-Redirect-History')) {
-            $redirects = explode(', ', $redirects);
-            if (stripos($redirects[0], 'https:/') === 0) {
-                //if there is https, we don't have to proxy it
-                return $response->withAddedHeader('Location', $redirects[0])->withStatus(301, 'Moved permanently');
-            }
         }
         if ($res->getBody()->getSize() > 15000) {
             return $res;

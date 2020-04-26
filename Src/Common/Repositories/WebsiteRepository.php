@@ -54,10 +54,22 @@ class WebsiteRepository extends AbstractMongoRepository
         return $website->save();
     }
 
-    public function getAllCursor(): LazyCollection
+    public function getAllCursor(?ObjectId $startingFromId = null, int $sortDirection = SORT_ASC): LazyCollection
     {
-        return Website::query()
-            ->useWritePdo()
-            ->get()->lazy();
+        $query = Website::query()
+            ->useWritePdo();
+        if ($sortDirection === SORT_ASC) {
+            $sort = 'asc';
+            $idOperator = '>=';
+        } else {
+            $sort = 'desc';
+            $idOperator = '<=';
+        }
+        if ($startingFromId) {
+            $query->where('_id', $idOperator, $startingFromId);
+        }
+        $query->orderBy('_id', $sort);
+
+        return $query->get()->lazy();
     }
 }

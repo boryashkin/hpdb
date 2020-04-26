@@ -1,0 +1,15 @@
+{% extends "admin/layout.twig" %}
+
+{% block htmlAttributes %}class="h-100 mh-100"{% endblock %}
+{% block bodyAttributes %}class="h-100 mh-100"{% endblock %}
+{% block headTitle %}{{ title }} - ищет лучшие домашние страницы в интернете{% endblock %}
+{% block body %}
+    <div class="container">
+        <h2>Категоризация</h2>
+        {% if website %}
+            <a href="/admin/website/categorisation/{{ website.id }}" class="btn btn-success">Start</a>
+        {% else %}
+            <button disabled class="btn btn-success">Start</button>
+        {% endif %}
+    </div>
+{% endblock %}

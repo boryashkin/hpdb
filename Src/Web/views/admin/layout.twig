@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru" {% block htmlAttributes %}{% endblock %}>
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-141272686-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-141272686-1');
+    </script>
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css?v=20200317_1"/>
+    <link rel="stylesheet" type="text/css" href="/css/admin.css?v=20200417_1"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1">
+
+    {% block metaData %}
+        <title>Администрирование | {% block headTitle %}База данных интересных домашних страниц{% endblock %} - Home
+            Page DataBase</title>
+        <meta name="title" content="{{ block('headTitle') }} - Home Page DataBase">
+        <meta name="description"
+              content="{% block headDescription %}Собрание лучших самодельных сайтов в интернете. Поиск талантов, творческих работ, интересных блогов.{% endblock %}">
+        <meta property="og:title" content="{{ block('headTitle') }} - Home Page DataBase">
+        <meta property="og:description" content="{{ block('headDescription') }}">
+    {% endblock %}
+</head>
+<body {% block bodyAttributes %}{% endblock %}>
+<header>
+    {% block headerNav %}
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/">hpdb.ru / </a><i>База данных домашних страниц / Администрирование</i>
+            <div class="navbar-nav mr-auto mt-2 mt-lg-0"></div>
+            <form id="main-search-form" class="form-inline my-2 my-lg-0 text-right">
+                <div class="input-group">
+                </div>
+            </form>
+        </nav>
+    {% endblock %}
+    {% block underNavHeader %}{% endblock %}
+</header>
+{% block body %}{% endblock %}
+<script src="/js/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+<script src="/js/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+{% block scriptsEnd %}{% endblock %}
+</body>
+</html>

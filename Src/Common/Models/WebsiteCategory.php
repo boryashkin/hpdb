@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Common\Dictionaries;
+namespace App\Common\Models;
 
 use Jenssegers\Mongodb\Eloquent\Model;
 use MongoDB\BSON\ObjectId;
@@ -24,6 +24,13 @@ class WebsiteCategory extends Model
     public const CODE_COMMERCIAL = 1;
     public const CODE_GOVERNMENT = 2;
     public const CODE_NON_PROFIT = 3;
+
+    public const CODES = [
+        self::CODE_PERSONAL,
+        self::CODE_COMMERCIAL,
+        self::CODE_GOVERNMENT,
+        self::CODE_NON_PROFIT,
+    ];
 
     public function getFillable(): array
     {

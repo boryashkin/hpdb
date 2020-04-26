@@ -1,0 +1,39 @@
+{% extends "admin/layout.twig" %}
+
+{% block htmlAttributes %}class="h-100 mh-100"{% endblock %}
+{% block bodyAttributes %}class="h-100 mh-100"{% endblock %}
+{% block headTitle %}{{ title }} - ищет лучшие домашние страницы в интернете{% endblock %}
+{% block body %}
+    <div class="container">
+        <h2>Категоризация</h2>
+        <b>{{ website.homepage }}</b>:
+        <div>
+            <form method="POST" class="d-inline">
+                <input type="hidden" name="category" value="{{ cat_personal }}">
+                <button type="submit" class="btn btn-info">Personal</button>
+            </form>
+            <form method="POST" class="d-inline">
+                <input type="hidden" name="category" value="{{ cat_commercial }}">
+                <button type="submit" class="btn btn-info">Commercial</button>
+            </form>
+            <form method="POST" class="d-inline">
+                <input type="hidden" name="category" value="{{ cat_government }}">
+                <button type="submit" class="btn btn-info">Government</button>
+            </form>
+            <form method="POST" class="d-inline">
+                <input type="hidden" name="category" value="{{ cat_non_profit }}">
+                <button type="submit" class="btn btn-info">Non-Profit</button>
+            </form>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {% if nextId %}
+                <a href="/admin/website/categorisation/{{ nextId }}" class="btn btn-link">Next ></a>
+            {% endif %}
+            <div>
+                <i class="text-muted">Will redirect you to the next homepage</i>
+            </div>
+        </div>
+    </div>
+    <br/><br/>
+    <iframe src="/proxy/{{ website.id }}/" class="categorisation"></iframe>
+{% endblock %}
