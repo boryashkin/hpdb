@@ -55,7 +55,7 @@ class WebsiteRepository extends AbstractMongoRepository
         return $website->save();
     }
 
-    public function getAllCursor(?ObjectId $startingFromId = null, int $sortDirection = SORT_ASC): LazyCollection
+    public function getAllCursor(?ObjectId $startingFromId = null, int $sortDirection = SORT_ASC, int $limit = null): LazyCollection
     {
         $query = Website::query()
             ->useWritePdo();
@@ -65,6 +65,9 @@ class WebsiteRepository extends AbstractMongoRepository
         } else {
             $sort = 'desc';
             $idOperator = '<=';
+        }
+        if ($limit > 0) {
+            $query->limit($limit);
         }
         if ($startingFromId) {
             $query->where('_id', $idOperator, $startingFromId);

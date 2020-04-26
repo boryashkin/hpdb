@@ -7,6 +7,7 @@ namespace App\Admin\Category\Dto;
 class WebsiteDto
 {
     public $id;
+    public $scheme;
     public $homepage;
     public $content;
 }

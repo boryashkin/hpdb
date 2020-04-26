@@ -39,7 +39,7 @@ class CategoryService
      */
     public function getWebsites(ObjectId $fromId = null, int $count = 10): array
     {
-        $cursor = $this->websiteRepository->getAllCursor($fromId, SORT_DESC);
+        $cursor = $this->websiteRepository->getAllCursor($fromId, SORT_DESC, $count);
         $websites = [];
         /** @var Website $website */
         foreach ($cursor as $website) {
@@ -60,6 +60,7 @@ class CategoryService
         $dto = new WebsiteDto();
         $dto->id = (string)$website->_id;
         $dto->homepage = $website->homepage;
+        $dto->scheme = $website->scheme;
         $dto->content = $history->content;
 
         return $dto;
