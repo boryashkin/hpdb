@@ -8,6 +8,7 @@ use App\Common\Repositories\ProfileRepository;
 use App\Common\Repositories\WebsiteIndexHistoryRepository;
 use App\Common\ValueObjects\Url;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\HandlerStack;
 use function GuzzleHttp\Psr7\stream_for;
@@ -99,7 +100,7 @@ class Index extends BaseAction
 
         try {
             $res = $proxy->forward($clone)->to($parsedUrl->getScheme() . '://' . $parsedUrl->getHost());
-        } catch (ConnectException $e) {
+        } catch (ConnectException | ClientException $e) {
             return $this->getView()->render($response, 'proxy/unable.html');
         }
         if ($res->getBody()->getSize() > 15000) {
