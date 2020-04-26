@@ -35,7 +35,7 @@ $command = new \App\Cli\Commands\GithubUserParser();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
 $command->setPersistorsBus($container->get(CONTAINER_CONFIG_REDIS_STREAM_PERSISTORS));
 $commands[] = $command;
-$command = new \App\Cli\Commands\MoveWebsiteContentDataToWebsite();
+$command = new \App\Cli\Commands\MoveWebsiteIndexDataToWebsite();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
 /* remove reindexer */
 $commands[] = $command;

@@ -3,6 +3,7 @@
 namespace App\Common\Repositories;
 
 use App\Common\Models\Website;
+use App\Common\Repositories\Filters\WebsiteFilter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\LazyCollection;
 use MongoDB\BSON\ObjectId;
@@ -69,6 +70,24 @@ class WebsiteRepository extends AbstractMongoRepository
             $query->where('_id', $idOperator, $startingFromId);
         }
         $query->orderBy('_id', $sort);
+
+        return $query->get()->lazy();
+    }
+
+    public function getCursorByFilter(WebsiteFilter $filter): LazyCollection
+    {
+        $query = Website::query();
+
+        if ($filter->contentFromWebsiteIndexHistoryIdExists !== null) {
+            $query->where(
+                'content.from_website_index_history_id',
+                '$exists',
+                $filter->contentFromWebsiteIndexHistoryIdExists
+            );
+        }
+        if ($filter->contentExists !== null) {
+            $query->where('content', '$exists', true);
+        }
 
         return $query->get()->lazy();
     }

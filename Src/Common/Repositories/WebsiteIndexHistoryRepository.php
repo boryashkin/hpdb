@@ -18,6 +18,15 @@ class WebsiteIndexHistoryRepository extends AbstractMongoRepository
             ->first();
     }
 
+    public function getLastByWebsiteId(ObjectId $websiteId): ?WebsiteIndexHistory
+    {
+        $query = WebsiteIndexHistory::query()->orderBy('_id', 'desc')
+            ->where('website_id', '=', $websiteId)
+            ->limit(1);
+
+        return $query->get()->first();
+    }
+
     public function save(WebsiteIndexHistory $websiteHistory): bool
     {
         return $websiteHistory->save();
