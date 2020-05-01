@@ -94,6 +94,7 @@ class ReindexHompages extends Command
             $websiteId = new ObjectId($input->getOption('website-id'));
         } catch (InvalidArgumentException $exception) {
             $output->writeln('Invalid id');
+
             return;
         }
 
@@ -102,8 +103,12 @@ class ReindexHompages extends Command
         $website = $service->getOneById($websiteId);
 
         if (!$website) {
-            $this->reindex($website);
+            $output->writeln('Website not found');
+
+            return;
         }
+
+        $this->reindex($website);
     }
 
     private function handleMultiple(InputInterface $input, OutputInterface $output): void
