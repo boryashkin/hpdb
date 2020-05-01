@@ -5,9 +5,12 @@ namespace App\Cli\Commands;
 use App\Common\Exceptions\InvalidUrlException;
 use App\Common\MessageBus\Messages\Crawlers\NewWebsiteToCrawlMessage;
 use App\Common\Models\Website;
-use App\Common\Services\Website\WebsiteIndexer;
+use App\Common\Repositories\ProfileRepository;
+use App\Common\Services\Website\WebsiteService;
 use App\Common\ValueObjects\Url;
+use Jenssegers\Mongodb\Connection;
 use MongoDB\BSON\ObjectId;
+use MongoDB\Driver\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -25,21 +28,14 @@ class ReindexHompages extends Command
         CURLE_OPERATION_TIMEDOUT,
     ];
 
-    /** @var \Jenssegers\Mongodb\Connection */
+    /** @var Connection */
     private $mongo;
-    /** @var WebsiteIndexer */
-    private $websiteIndexer;
     /** @var MessageBusInterface */
     private $crawlersBus;
 
-    public function setMongo(\Jenssegers\Mongodb\Connection $mongo)
+    public function setMongo(Connection $mongo)
     {
         $this->mongo = $mongo;
-    }
-
-    public function setWebsiteIndexer(WebsiteIndexer $indexer)
-    {
-        $this->websiteIndexer = $indexer;
     }
 
     public function setCrawlersBus(MessageBusInterface $bus): void
@@ -72,11 +68,45 @@ class ReindexHompages extends Command
         $this
             ->setName('service:reindex-homepages')
             ->setDescription('Go through all of the HPs and refill the info about them.')
-            ->addOption('skip', null, InputOption::VALUE_OPTIONAL, 'skip first qty of websites');
+            ->addOption('skip', null, InputOption::VALUE_OPTIONAL, 'skip first qty of websites')
+            ->addOption('website-id', null, InputOption::VALUE_OPTIONAL, 'specific id to reindex');
     }
 
     /** {@inheritdoc} */
     protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $output->writeln(date('H:i:s') . ' [started]');
+
+        if ($input->getOption('website-id')) {
+            $this->handleOne($input, $output);
+        } else {
+            $this->handleMultiple($input, $output);
+        }
+
+        $output->writeln(date('H:i:s') . ' [done]');
+
+        return 0;
+    }
+
+    private function handleOne(InputInterface $input, OutputInterface $output): void
+    {
+        try {
+            $websiteId = new ObjectId($input->getOption('website-id'));
+        } catch (InvalidArgumentException $exception) {
+            $output->writeln('Invalid id');
+            return;
+        }
+
+        $repo = new ProfileRepository($this->mongo);
+        $service = new WebsiteService($repo);
+        $website = $service->getOneById($websiteId);
+
+        if (!$website) {
+            $this->reindex($website);
+        }
+    }
+
+    private function handleMultiple(InputInterface $input, OutputInterface $output): void
     {
         if ($input->getOption('skip')) {
             $i = (int)$input->getOption('skip');

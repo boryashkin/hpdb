@@ -16,11 +16,6 @@ $commands[] = $command;
 $command = new \App\Cli\Commands\ReindexHompages();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
 $command->setCrawlersBus($container->get(CONTAINER_CONFIG_REDIS_STREAM_CRAWLERS));
-$command->setWebsiteIndexer(
-    new \App\Common\Services\Website\WebsiteIndexer(
-        new \App\Common\Services\Website\WebsiteFetcher(new \App\Common\Services\HttpClient(HPDB_CRAWLER_NAME))
-    )
-);
 $commands[] = $command;
 $command = new \App\Cli\Commands\ExtractIndexedContent();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
