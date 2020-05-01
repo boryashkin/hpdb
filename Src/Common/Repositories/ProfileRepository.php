@@ -108,13 +108,7 @@ class ProfileRepository
 
     public function getFirstOneByUrl(Url $url): ?Website
     {
-        $websiteUrl = (string)$url;
-        $httpUrl = \str_replace('https://', 'http://', $websiteUrl);
-        $httpsUrl = \str_replace('http://', 'https://', $websiteUrl);
-        $q = Website::query()->where('homepage', '=', $httpsUrl)
-            ->orWhere('homepage', '=', $httpUrl)
-            ->orWhere('homepage', '=', $httpsUrl . '/')
-            ->orWhere('homepage', '=', $httpUrl . '/');
+        $q = Website::query()->where('homepage', '=', $url->getNormalized());
 
         return $q->first();
     }
