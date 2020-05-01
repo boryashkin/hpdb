@@ -106,11 +106,12 @@ class Index extends BaseAction
         $result = [];
         foreach ($reactions as $reaction) {
             //damn you laravel
+            $title = $reaction->website->content->title ?: $reaction->website->content->description;
             $result[] = [
                 'profile_id' => (string)$reaction->website->_id,
-                'homepage' => \str_replace(['http://', 'https://'], '', $reaction->website->homepage),
+                'homepage' => $reaction->website->homepage,
                 'reaction' => $reaction->_id->reaction,
-                'title' => $reaction->website->content->title ? \substr(trim($reaction->website->content->title ?? ''), 0, 50) : 'No description yet',
+                'title' => $title ? \substr(trim($title), 0, 50) : 'No description yet',
                 'count' => $reaction->count,
             ];
         }
@@ -140,11 +141,12 @@ class Index extends BaseAction
                 ],
             ]);
 
+            $title = $website->content->title ?: $website->content->description;
             $result[] = [
                 'profile_id' => (string)$website->_id,
-                'homepage' => \str_replace(['http://', 'https://'], '', $website->homepage),
+                'homepage' => $website->homepage,
                 'reactions' => $reactions,
-                'title' => $website->content->title ? \mb_substr(trim($website->content->title ?? ''), 0, 50) : 'No description yet',
+                'title' => $title ? \mb_substr(trim($title), 0, 50) : 'No description yet',
             ];
         }
 
