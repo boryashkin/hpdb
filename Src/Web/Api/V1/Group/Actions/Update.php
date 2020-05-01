@@ -4,6 +4,7 @@ namespace App\Web\Api\V1\Group\Actions;
 
 use App\Common\Abstracts\BaseAction;
 use App\Common\Repositories\WebsiteGroupRepository;
+use App\Web\Api\V1\Group\Builders\GroupResponseBuilder;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Driver\Exception\ServerException;
 use Psr\Http\Message\ResponseInterface;
@@ -49,9 +50,10 @@ class Update extends BaseAction
 
             throw new SlimException($request, $response);
         }
+        $responseBuilder = new GroupResponseBuilder();
 
         $response = $response->withAddedHeader('Content-Type', 'application/json');
-        $response->getBody()->write(\json_encode($group));
+        $response->getBody()->write(\json_encode($responseBuilder->createOne($group)));
 
         return $response;
     }

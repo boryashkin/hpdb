@@ -4,6 +4,7 @@ namespace App\Web\Api\V1\Group\Actions;
 
 use App\Common\Abstracts\BaseAction;
 use App\Common\Models\WebsiteGroup;
+use App\Web\Api\V1\Group\Builders\GroupResponseBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -16,6 +17,7 @@ class Index extends BaseAction
         $page = isset($params['page']) && \is_numeric($params['page']) ? (int)$params['page'] : 0;
         $page--;
 
+        $responseBuilder = new GroupResponseBuilder();
         $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
         $groups = WebsiteGroup::query();
         if ($name) {
@@ -23,10 +25,11 @@ class Index extends BaseAction
         }
         $groups = $groups->where('is_deleted', '=', false)
             ->limit(10)
-            ->offset($page < 0 ? 0 : $page * 10)->get();
+            ->offset($page < 0 ? 0 : $page * 10)->get()->all();
+        /** @var WebsiteGroup[] $groups */
 
         $response = $response->withAddedHeader('Content-Type', 'application/json');
-        $response->getBody()->write(\json_encode($groups));
+        $response->getBody()->write(\json_encode($responseBuilder->createList($groups)));
 
         return $response;
     }
