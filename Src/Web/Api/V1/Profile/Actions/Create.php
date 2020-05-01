@@ -10,6 +10,7 @@ use App\Common\MessageBus\Messages\Persistors\NewWebsiteToPersistMessage;
 use App\Common\Models\Website;
 use App\Common\Repositories\ProfileRepository;
 use App\Common\ValueObjects\Url;
+use App\Web\Api\V1\Profile\Builders\WebsiteResponseBuilder;
 use Jenssegers\Mongodb\Connection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,6 +28,8 @@ class Create extends BaseAction
             throw new SlimException($request, $response);
         }
 
+        $responseBuilder = new WebsiteResponseBuilder();
+
         try {
             $parsedUrl = new Url($params['website']);
         } catch (InvalidUrlException $e) {
@@ -38,7 +41,7 @@ class Create extends BaseAction
         $profile = new ProfileRepository($this->getMongo());
         if ($website = $profile->getFirstOneByUrl($parsedUrl)) {
             $response = $response->withAddedHeader('Content-Type', 'application/json');
-            $response->getBody()->write(json_encode($website));
+            $response->getBody()->write(json_encode($responseBuilder->createOne($website)));
 
             return $response;
         }
@@ -58,7 +61,7 @@ class Create extends BaseAction
         $bus->dispatch($message);
 
         $response = $response->withAddedHeader('Content-Type', 'application/json');
-        $response->getBody()->write(\json_encode($website));
+        $response->getBody()->write(\json_encode($responseBuilder->createOne($website)));
 
         return $response;
     }
