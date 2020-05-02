@@ -5,6 +5,7 @@ namespace App\Web\Api\V1\Reaction\Actions;
 use App\Common\Abstracts\BaseAction;
 use App\Common\Models\WebsiteReaction;
 use App\Common\Repositories\ProfileRepository;
+use App\Web\Api\V1\Reaction\Builders\ReactionResponseBuilder;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Driver\Exception\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
@@ -14,7 +15,7 @@ use Slim\Exception\NotFoundException;
 /**
  * Add a reaction to a website.
  */
-class Reaction extends BaseAction
+class Create extends BaseAction
 {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
@@ -30,6 +31,7 @@ class Reaction extends BaseAction
         }
         $reactionTag = isset($params['reaction']) && \is_string($params['reaction']) ? (string)$params['reaction'] : null;
 
+        $responseBuilder = new ReactionResponseBuilder();
         $repo = new ProfileRepository($this->getContainer()->get(CONTAINER_CONFIG_MONGO));
         $website = $repo->getOneById($id);
         if (!$website || !$reactionTag) {
@@ -44,9 +46,10 @@ class Reaction extends BaseAction
         $reaction->reaction = $reactionTag;
         $reaction->ip = $request->getServerParams()['REMOTE_ADDR'];
         $reaction->user_agent = $userAgent;
+        $reaction->save();
 
         $response = $response->withAddedHeader('Content-Type', 'application/json');
-        $response->getBody()->write(\json_encode($reaction->save()));
+        $response->getBody()->write(\json_encode($responseBuilder->createOne($reaction)));
 
         return $response;
     }
