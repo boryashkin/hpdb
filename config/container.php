@@ -1,5 +1,9 @@
 <?php
 
+use Slim\Http\Body;
+use Slim\Http\Headers;
+use Slim\Http\Response;
+
 const CONTAINER_CONFIG_SETTINGS = 'settings';
 const CONTAINER_CONFIG_LOGGER = 'logger';
 const CONTAINER_CONFIG_VIEW = 'view';
@@ -34,6 +38,13 @@ return new \Slim\Container(array_merge([
         'displayErrorDetails' => !ENV_PROD,
         'routerCacheFile' => __DIR__ . '/../data/slim/routes.cache.php',
     ],
+    'response' => function ($container) {
+        $headers = new Headers(['Content-Type' => 'text/html; charset=UTF-8']);
+        $body = new Body(fopen('php://memory', 'r+'));
+        $response = new Response(200, $headers, $body);
+
+        return $response->withProtocolVersion($container->get('settings')['httpVersion']);
+    },
     CONTAINER_CONFIG_LOGGER => function (Slim\Container $c) {
         return new \App\Common\Services\StdLogger($enableDebug = !ENV_PROD);
     },
