@@ -11,6 +11,7 @@ use App\Common\Repositories\WebsiteGroupRepository;
 use App\Common\Services\Github\GithubProfileService;
 use App\Common\Services\Website\WebsiteGroupService;
 use App\Common\ValueObjects\GithubRepo;
+use App\Web\Api\V1\Rpc\Builders\RpcGithubResponseBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\SlimException;
@@ -44,7 +45,7 @@ class ParseGithubContributiorsPage extends BaseAction
 
         try {
             $github = $service->createOrAddOwnersRepo($repo);
-            $groupService->createGroupByGithubRepo($repo);
+            $group = $groupService->createGroupByGithubRepo($repo);
         } catch (UnableToSaveGithubProfile $e) {
             $response = $response->withStatus(500);
             $response->getBody()->write(json_encode(['errors' => ['Unable to save']]));
@@ -63,8 +64,10 @@ class ParseGithubContributiorsPage extends BaseAction
         $crawlerBus->dispatch($message);
         $persistorsBus->dispatch($messageNewGithubProfile);
 
+        $responseBuilder = new RpcGithubResponseBuilder();
+
         $response = $response->withAddedHeader('Content-Type', 'application/json');
-        $response->getBody()->write(\json_encode(['saved' => true, 'github_profile' => $github]));
+        $response->getBody()->write(\json_encode($responseBuilder->createOne($github, $repo, $group)));
 
         return $response;
     }

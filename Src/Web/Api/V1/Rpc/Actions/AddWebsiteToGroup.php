@@ -6,6 +6,7 @@ use App\Common\Abstracts\BaseAction;
 use App\Common\Repositories\WebsiteRepository;
 use App\Common\Models\WebsiteGroup;
 use App\Common\Repositories\ProfileRepository;
+use App\Web\Api\V1\Rpc\Builders\RpcWebsiteResponseBuilder;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Driver\Exception\ServerException;
 use MongoDB\Exception\InvalidArgumentException;
@@ -45,7 +46,7 @@ class AddWebsiteToGroup extends BaseAction
         }
 
         try {
-            $saved = WebsiteRepository::addGroupIdAndSave($profile, $groupId);
+            WebsiteRepository::addGroupIdAndSave($profile, $groupId);
         } catch (ServerException $e) {
             $response->getBody()->write('{"errors": ["failed to save"]}');
             $response = $response->withStatus(400);
@@ -53,8 +54,10 @@ class AddWebsiteToGroup extends BaseAction
             throw new SlimException($request, $response);
         }
 
+        $responseBuilder = new RpcWebsiteResponseBuilder();
+
         $response = $response->withAddedHeader('Content-Type', 'application/json');
-        $response->getBody()->write(\json_encode(['saved' => $saved, 'website' => $profile]));
+        $response->getBody()->write(\json_encode($responseBuilder->createOneWebsiteGroupsResponse($profile)));
 
         return $response;
     }
