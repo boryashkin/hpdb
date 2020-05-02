@@ -7,11 +7,13 @@ use App\Common\Services\MetricsCollector;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class BaseMiddleware implements Middleware
 {
     private $container;
     private $metrics;
+    private $dispatcher;
 
     /**
      * BaseAction constructor.
@@ -20,6 +22,7 @@ class BaseMiddleware implements Middleware
     {
         $this->container = $container;
         $this->metrics = $container->get(CONTAINER_CONFIG_METRICS);
+        $this->dispatcher = $container->get(EventDispatcherInterface::class);
     }
 
     public function __invoke(RequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
@@ -41,5 +44,10 @@ class BaseMiddleware implements Middleware
     public function getMetrics()
     {
         return $this->metrics;
+    }
+
+    public function getDispatcher(): EventDispatcherInterface
+    {
+        return $this->dispatcher;
     }
 }

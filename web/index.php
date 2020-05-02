@@ -25,7 +25,9 @@ $app->group('', function () use ($app) {
 
     $app->put('/api/v1/rpc/add-website-to-group', \App\Web\Api\V1\Rpc\Actions\AddWebsiteToGroup::class);
     $app->put('/api/v1/rpc/parse-github-contributors', \App\Web\Api\V1\Rpc\Actions\ParseGithubContributiorsPage::class);
-})->add(\App\Web\Api\V1\Middlewares\ApiMetricsMiddleware::class);
+})
+    ->add(\App\Web\Api\V1\Middlewares\DbQueryMetricsMiddleware::class)
+    ->add(\App\Web\Api\V1\Middlewares\ApiMetricsMiddleware::class);
 $app->group('', function () use ($app) {
     $app->get('/proxy/{id}/', \App\Web\Proxy\Actions\Index::class);
     $app->get('/proxy/{id}/{path:.*}', \App\Web\Proxy\Actions\Index::class);

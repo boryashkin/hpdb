@@ -1,5 +1,9 @@
 <?php
 
+use App\Common\Adapters\IlluminateDispatcherAdapter;
+use Illuminate\Container\Container;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
 const CONTAINER_CONFIG_SETTINGS = 'settings';
 const CONTAINER_CONFIG_LOGGER = 'logger';
 const CONTAINER_CONFIG_VIEW = 'view';
@@ -87,6 +91,10 @@ return new \Slim\Container(array_merge([
         ], 'mongodb');
         \Illuminate\Database\Eloquent\Model::getConnectionResolver()
             ->addConnection('mongodb', $manager->getConnection('mongodb'));
+        $dispatcher = new IlluminateDispatcherAdapter(new Container());
+        $dispatcher->setEventDispatcher($c->get(EventDispatcherInterface::class));
+        $manager->getConnection('mongodb')->setEventDispatcher($dispatcher);
+        $manager->getConnection('mongodb')->enableQueryLog();
 
         return $manager->getConnection('mongodb');
     },
@@ -118,5 +126,10 @@ return new \Slim\Container(array_merge([
         $adminAllowedIp = \getenv('SECURITY_ADMIN_ALLOWED_IP', true) ?: '172.172.172.172';
 
         return new \App\Common\Services\IpCheckService($adminAllowedIp);
+    },
+    EventDispatcherInterface::class => static function (Slim\Container $c) {
+        $dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+
+        return $dispatcher;
     },
 ], $messageBus));
