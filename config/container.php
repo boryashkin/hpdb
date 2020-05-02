@@ -32,12 +32,15 @@ $messageBus = require 'message-bus.array.php';
 return new \Slim\Container(array_merge([
     CONTAINER_CONFIG_SETTINGS => [
         'displayErrorDetails' => !ENV_PROD,
+        'routerCacheFile' => __DIR__ . '/../data/slim/routes.cache.php',
     ],
     CONTAINER_CONFIG_LOGGER => function (Slim\Container $c) {
         return new \App\Common\Services\StdLogger($enableDebug = !ENV_PROD);
     },
     CONTAINER_CONFIG_VIEW => function (Slim\Container $c) {
-        $view = new \Slim\Views\Twig(__DIR__ . '/../Src/Web/views', []);
+        $view = new \Slim\Views\Twig(__DIR__ . '/../Src/Web/views', [
+            'cache' => __DIR__ . '/../data/twig/cache',
+        ]);
 
         // Instantiate and add Slim specific extension
         $router = $c->get('router');
