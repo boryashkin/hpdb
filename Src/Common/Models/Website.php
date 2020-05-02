@@ -16,6 +16,7 @@ use MongoDB\BSON\UTCDateTime;
  * @property WebsiteContent $content
  * @property ObjectId[] $groups
  * @property string[] $tags
+ * @property int[] $reactions ['reactionName' => count]
  * @property ObjectId $github_profile_id
  * @property WebsiteWebFeedEmbedded[] $web_feeds
  */
@@ -42,6 +43,7 @@ class Website extends Model
             'github_profile_id',
             'web_feeds',
             'tags',
+            'reactions',
         ];
     }
 }

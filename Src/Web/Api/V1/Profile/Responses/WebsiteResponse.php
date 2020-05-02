@@ -15,4 +15,6 @@ class WebsiteResponse
     public $description;
 
     public $updatedAt;
+
+    public $reactions;
 }

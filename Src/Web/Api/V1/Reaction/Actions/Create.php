@@ -3,8 +3,11 @@
 namespace App\Web\Api\V1\Reaction\Actions;
 
 use App\Common\Abstracts\BaseAction;
-use App\Common\Models\WebsiteReaction;
+use App\Common\Dto\Website\WebsiteReactionDto;
 use App\Common\Repositories\ProfileRepository;
+use App\Common\Repositories\ReactionRepository;
+use App\Common\Services\Website\ProfileReactionService;
+use App\Common\Services\Website\WebsiteService;
 use App\Web\Api\V1\Reaction\Builders\ReactionResponseBuilder;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Driver\Exception\InvalidArgumentException;
@@ -30,23 +33,30 @@ class Create extends BaseAction
             throw new NotFoundException($request, $response);
         }
         $reactionTag = isset($params['reaction']) && \is_string($params['reaction']) ? (string)$params['reaction'] : null;
+        $userAgent = $request->getHeader('user-agent');
+        if (\count($userAgent)) {
+            $userAgent = \current($userAgent);
+        }
 
+        $mongo = $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
+        $reactionService = new ProfileReactionService(
+            new ReactionRepository($mongo),
+            new WebsiteService(new ProfileRepository($mongo))
+        );
         $responseBuilder = new ReactionResponseBuilder();
         $repo = new ProfileRepository($this->getContainer()->get(CONTAINER_CONFIG_MONGO));
         $website = $repo->getOneById($id);
         if (!$website || !$reactionTag) {
             throw new NotFoundException($request, $response);
         }
-        $userAgent = $request->getHeader('user-agent');
-        if (\count($userAgent)) {
-            $userAgent = \current($userAgent);
-        }
-        $reaction = new WebsiteReaction();
-        $reaction->website_id = $website->getAttributes()['_id'];
-        $reaction->reaction = $reactionTag;
-        $reaction->ip = $request->getServerParams()['REMOTE_ADDR'];
-        $reaction->user_agent = $userAgent;
-        $reaction->save();
+
+        $reactionDto = new WebsiteReactionDto();
+        $reactionDto->reaction = $reactionTag;
+        $reactionDto->websiteId = $website->_id;
+        $reactionDto->ip = $request->getServerParams()['REMOTE_ADDR'];
+        $reactionDto->userAgent = $userAgent;
+        $reaction = $reactionService->addReaction($website, $reactionDto);
+
 
         $response = $response->withAddedHeader('Content-Type', 'application/json');
         $response->getBody()->write(\json_encode($responseBuilder->createOne($reaction)));

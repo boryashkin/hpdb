@@ -55,6 +55,7 @@ class WebsiteRepository extends AbstractMongoRepository
         return $website->save();
     }
 
+    /** @deprecated */
     public function getAllCursor(?ObjectId $startingFromId = null, int $sortDirection = SORT_ASC, int $limit = null): LazyCollection
     {
         $query = Website::query()

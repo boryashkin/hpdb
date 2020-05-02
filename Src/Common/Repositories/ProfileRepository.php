@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Common\Repositories;
 
 use App\Common\Models\Website;
+use App\Common\Repositories\Filters\WebsiteFilter;
 use App\Common\ValueObjects\Url;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Support\LazyCollection;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
 use MongoDB\Collection as MongoCollection;
@@ -19,6 +23,30 @@ class ProfileRepository
     public function __construct(ConnectionInterface $connection)
     {
         $this->connection = $connection;
+    }
+
+    /**
+     * @param WebsiteFilter $websiteFilter
+     * @return Website[]
+     */
+    public function find(WebsiteFilter $websiteFilter): array
+    {
+        $query = Website::query();
+
+        if ($websiteFilter->homepageLike) {
+            $query->where('homepage', 'regex', new Regex($websiteFilter->homepageLike, 'i'));
+        }
+        if ($websiteFilter->group) {
+            $query->where('groups', 'elemmatch', ['$in' => [$websiteFilter->group]]);
+        }
+        if ($websiteFilter->fromId) {
+            $query->where('_id', '>', $websiteFilter->fromId);
+        }
+        if ($websiteFilter->getLimit()) {
+            $query->limit($websiteFilter->getLimit());
+        }
+
+        return $query->get()->all();
     }
 
     public function getList(int $page, $query = null, ObjectId $groupId = null, int $limit = 30)
@@ -116,5 +144,31 @@ class ProfileRepository
     public function save(Website $website): bool
     {
         return $website->save();
+    }
+
+    public function getAllCursor(
+        ?ObjectId $startingFromId = null,
+        int $sortDirection = SORT_ASC,
+        int $limit = null
+    ): LazyCollection
+    {
+        $query = Website::query()
+            ->useWritePdo();
+        if ($sortDirection === SORT_ASC) {
+            $sort = 'asc';
+            $idOperator = '>=';
+        } else {
+            $sort = 'desc';
+            $idOperator = '<=';
+        }
+        if ($limit > 0) {
+            $query->limit($limit);
+        }
+        if ($startingFromId) {
+            $query->where('_id', $idOperator, $startingFromId);
+        }
+        $query->orderBy('_id', $sort);
+
+        return $query->get()->lazy();
     }
 }

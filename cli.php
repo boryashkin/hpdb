@@ -38,6 +38,10 @@ $command = new \App\Cli\Commands\NormalizeWebsites();
 $command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
 $commands[] = $command;
 
+$command = new \App\Cli\Commands\RecalculateWebsiteReactions();
+$command->setMongo($container->get(CONTAINER_CONFIG_MONGO));
+$commands[] = $command;
+
 
 $application = new Application();
 $application->addCommands($commands);

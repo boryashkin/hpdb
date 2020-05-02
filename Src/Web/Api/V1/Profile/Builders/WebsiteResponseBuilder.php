@@ -21,6 +21,7 @@ class WebsiteResponseBuilder
         $response->updatedAt = $website->updated_at ?
             $website->updated_at->toDateTime()->format(self::DATE_FORMAT)
             : null;
+        $response->reactions = $website->reactions ?? [];
 
         return $response;
     }
@@ -28,9 +29,8 @@ class WebsiteResponseBuilder
     /**
      * @param Website[] $websites
      * @return WebsiteResponse[]
-     * @deprecated
      */
-    public function createFromArray(array $websites): array
+    public function createList(array $websites): array
     {
         $response = [];
 

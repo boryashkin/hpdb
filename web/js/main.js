@@ -7,36 +7,11 @@ jQuery(document).ready(function($){
         return false;
     });
 
-    var reactionBtns = document.getElementsByClassName("reaction");
     var groupBtns = document.getElementsByClassName('link-group');
     var groupContainerWrapper = document.getElementById('top-group-container-wrapper');
     var groupContainer = document.getElementsByClassName('group-container').item(0);
     var feedLangBtns = document.getElementsByClassName('link-feed');
     var feedLangContainer = document.getElementsByClassName('feed-container').item(0);
-    var reactOnProfile = function () {
-        var element = this;
-        var reaction = this.getAttribute("data-reaction");
-        var profileId = this.getAttribute("data-profile");
-        var reactedClass = "reacted";
-        var arr = element.className.split(" ");
-        if (arr.indexOf(reactedClass) == -1) {
-            element.className += " " + reactedClass;
-        } else {
-            return;
-        }
-        var cntEls = this.getElementsByClassName("count");
-        var cntEl = cntEls[0] ? cntEls[0] : null;
-        $.post(
-            "/api/v1/reaction",
-            {profile_id: profileId, reaction: reaction},
-            function () {
-                if (cntEl) {
-                    console.log(cntEl);
-                    cntEl.innerText++;
-                }
-            }
-        );
-    };
     var reactOnGroup = function () {
         var element = this;
         if (this.classList.contains('active')) {
@@ -45,7 +20,7 @@ jQuery(document).ready(function($){
         var groupId = this.getAttribute("data-slug");
         var limit = this.getAttribute("data-limit");
         var groupName = this.getAttribute("title");
-        for (i = 0; i < groupBtns.length; i++) {
+        for (var i = 0; i < groupBtns.length; i++) {
             groupBtns.item(i).classList.remove('active');
         }
         this.classList.add('active');
@@ -67,7 +42,7 @@ jQuery(document).ready(function($){
                             "                            <div class=\"row\">\n" +
                             "                                <div class=\"col\">\n" +
                             "                                    <div>\n" +
-                            "                                        <a href=\"/profile/" + website.profile_id + "\">" + website.homepage.replace('http://', '').replace('https://', '') + "</a>\n" +
+                            "                                        <a href=\"/profile/" + website.id + "\">" + website.homepage.replace('http://', '').replace('https://', '') + "</a>\n" +
                             "                                    </div>\n" +
                             "                                    <div>\n" +
                             "                                        <span class=\"text-muted small\">" + websiteDescription + "</span>\n" +
@@ -87,7 +62,7 @@ jQuery(document).ready(function($){
         }
         var lang = this.getAttribute("data-slug");
         var limit = this.getAttribute("data-limit");
-        for (i = 0; i < feedLangBtns.length; i++) {
+        for (var i = 0; i < feedLangBtns.length; i++) {
             feedLangBtns.item(i).classList.remove('active');
         }
         this.classList.add('active');
@@ -131,13 +106,11 @@ jQuery(document).ready(function($){
         );
     };
 
-    for (var i = 0; i < reactionBtns.length; i++) {
-        reactionBtns[i].addEventListener('click', reactOnProfile, false);
-    }
-    for (i = 0; i < groupBtns.length; i++) {
+    listenReactionButtons();
+    for (let i = 0; i < groupBtns.length; i++) {
         groupBtns[i].addEventListener('click', reactOnGroup, false);
     }
-    for (i = 0; i < feedLangBtns.length; i++) {
+    for (let i = 0; i < feedLangBtns.length; i++) {
         feedLangBtns[i].addEventListener('click', reactOnFeedLang, false);
     }
 });
@@ -166,7 +139,7 @@ function autocomplete(inp) {
                     /*create a DIV element for each matching element:*/
                     //b = document.createElement("DIV");
                     c = document.createElement("A");
-                    c.href = "/profile/" + response[i].profile_id;
+                    c.href = "/profile/" + response[i].id;
                     /*make the matching letters bold:*/
                     let word = response[i].homepage.substr(0, wordLenLimit);
                     let valPos = word.search(val);
@@ -240,8 +213,41 @@ function autocomplete(inp) {
             }
         }
     }
+
     /*execute a function when someone clicks in the document:*/
     document.addEventListener("click", function (e) {
         closeAllLists(e.target);
     });
+}
+
+let reactOnProfile = function () {
+    var element = this;
+    var reaction = this.getAttribute("data-reaction");
+    var profileId = this.getAttribute("data-profile");
+    var reactedClass = "reacted";
+    var arr = element.className.split(" ");
+    if (arr.indexOf(reactedClass) == -1) {
+        element.className += " " + reactedClass;
+    } else {
+        return;
+    }
+    var cntEls = this.getElementsByClassName("count");
+    var cntEl = cntEls[0] ? cntEls[0] : null;
+    $.post(
+        "/api/v1/reaction",
+        {profile_id: profileId, reaction: reaction},
+        function () {
+            if (cntEl) {
+                console.log(cntEl);
+                cntEl.innerText++;
+            }
+        }
+    );
+};
+
+function listenReactionButtons() {
+    var reactionBtns = document.getElementsByClassName("reaction");
+    for (var i = 0; i < reactionBtns.length; i++) {
+        reactionBtns[i].addEventListener('click', reactOnProfile, false);
+    }
 }

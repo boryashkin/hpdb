@@ -6,7 +6,7 @@ namespace App\Web\Api\V1\Profile\Responses;
 
 class WebsiteLightResponse
 {
-    public $profile_id;
+    public $id;
 
     public $homepage;
 

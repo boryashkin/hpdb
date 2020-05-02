@@ -119,9 +119,11 @@
                                     </div>
                                 </div>
                                 <div class="col text-right">
-                                    {% for reaction in newWebsite.reactions %}
-                                    <button type="button" class="my-1 btn btn-light reaction" data-reaction="{{ reaction._id.reaction }}" data-profile="{{ newWebsite.profile_id }}">
-                                        <span class="count">{{ reaction.count }}</span><i class="emoji {{ reaction._id.reaction }} small"></i>
+                                    {% for reaction, count in newWebsite.reactions %}
+                                    <button type="button" class="my-1 btn btn-light reaction"
+                                            data-reaction="{{ reaction }}"
+                                            data-profile="{{ newWebsite.profile_id }}">
+                                        <span class="count">{{ count }}</span><i class="emoji {{ reaction }} small"></i>
                                     </button>
                                     {% endfor %}
                                 </div>
@@ -156,7 +158,7 @@
                 </div>
             </div>
             <div class="row mt-2">
-                <div class="col" id="all-profile-content">
+                <div class="col" id="all-profile-content" data-latest-id="000000000000000000000000">
                     <p><strong>Весь список:</strong></p>
                 </div>
                 <div class="container text-center" id="page-loading">
@@ -190,5 +192,5 @@
 </div>
 {% endblock %}
 {% block scriptsEnd %}
-<script src="/js/infinite-scroll.js?v=20190801_4"></script>
+<script src="/js/infinite-scroll.js?v=20200502_1"></script>
 {% endblock %}

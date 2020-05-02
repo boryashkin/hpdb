@@ -4,10 +4,11 @@ namespace App\Web\Web\Actions;
 
 use App\Common\Abstracts\BaseAction;
 use App\Common\Dto\WebFeed\WebFeedSearchQuery;
+use App\Common\Repositories\ProfileRepository;
 use App\Common\Repositories\WebFeedRepository;
+use App\Common\Services\Website\WebsiteService;
 use App\Web\Api\V1\Feed\Builders\WebFeed\WebFeedResponseBuilder;
 use Jenssegers\Mongodb\Collection;
-use MongoDB\BSON\ObjectId;
 use MongoDB\Collection as MongoCollection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,43 +21,16 @@ class Index extends BaseAction
     {
         /** @var RedisAdapter $redis */
         $redis = $this->getContainer()->get(CONTAINER_CONFIG_REDIS_CACHE);
+        $mongo = $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
         $container = $this->getContainer();
+        $websiteService = new WebsiteService(new ProfileRepository($mongo));
 
-        $reactions = $redis->get('mainTopReactions', function (ItemInterface $item) use ($container) {
+        $reactions = $redis->get('mainTopReactions', function (ItemInterface $item) use ($mongo) {
             $item->expiresAfter(60);
 
-            /**
-             * @var MongoCollection $c
-             */
-            $mongo = $container->get(CONTAINER_CONFIG_MONGO);
-            $c = $mongo->getCollection('websiteReaction');
-
-            return $this->getTopReactions($c);
+            return $this->getTopReactions($mongo->getCollection('websiteReaction'));
         });
 
-        $newWebsites = $redis->get('mainNewWebsites', function (ItemInterface $item) use ($container) {
-            $item->expiresAfter(60);
-
-            /**
-             * @var MongoCollection $c
-             */
-            $mongo = $container->get(CONTAINER_CONFIG_MONGO);
-            $wc = $mongo->getCollection('website');
-            $c = $mongo->getCollection('websiteReaction');
-
-            return $this->getNewWebsites($wc, $c);
-        });
-        $websiteGroups = $redis->get('mainWebsiteGroups', function (ItemInterface $item) use ($container) {
-            $item->expiresAfter(60);
-
-            /**
-             * @var MongoCollection $c
-             */
-            $mongo = $container->get(CONTAINER_CONFIG_MONGO);
-            $gc = $mongo->getCollection('websiteGroup');
-
-            return $this->getWebsiteGroups($gc);
-        });
         $feed = $redis->get('mainFeed', function (ItemInterface $item) use ($container) {
             $item->expiresAfter(60);
 
@@ -75,8 +49,8 @@ class Index extends BaseAction
         return $this->getView()->render($response, 'web/index.html', [
             'webFeed' => $feed,
             'reactions' => $reactions,
-            'newWebsites' => $newWebsites,
-            'websiteGroups' => $websiteGroups,
+            'newWebsites' => $this->getNewWebsites($websiteService),
+            'websiteGroups' => $this->getWebsiteGroups($mongo->getCollection('websiteGroup')),
         ]);
     }
 
@@ -119,33 +93,15 @@ class Index extends BaseAction
         return $result;
     }
 
-    private function getNewWebsites(Collection $websiteCollection, Collection $reactionCollection)
+    private function getNewWebsites(WebsiteService $service)
     {
-        /** @var MongoCollection $websiteCollection */
-        $websites = $websiteCollection->aggregate([
-            ['$sort' => ['created_at' => -1]],
-            ['$limit' => 5],
-        ]);
-
         $result = [];
-        foreach ($websites as $website) {
-            $reactions = $reactionCollection->aggregate([
-                [
-                    '$match' => ['website_id' => new ObjectId($website->_id)],
-                ],
-                [
-                    '$group' => [
-                        '_id' => ['website_id' => '$website_id', 'reaction' => '$reaction'],
-                        'count' => ['$sum' => 1],
-                    ],
-                ],
-            ]);
-
+        foreach ($service->getAllCursor(null, SORT_DESC, 5) as $website) {
             $title = $website->content->title ?: $website->content->description;
             $result[] = [
                 'profile_id' => (string)$website->_id,
                 'homepage' => $website->homepage,
-                'reactions' => $reactions,
+                'reactions' => $website->reactions ?? [],
                 'title' => $title ? \mb_substr(trim($title), 0, 50) : 'No description yet',
             ];
         }

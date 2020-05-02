@@ -1,9 +1,9 @@
 var endless = {
-    page: 1, // "current page",
+    latestId: document.getElementById("all-profile-content").getAttribute('data-latest-id'),
     hasMore: true, // not at the end, has more contents
     proceed: true, // load the next page?
 
-    load: function (page) {
+    load: function (fromId) {
         if (endless.proceed && endless.hasMore) {
             // Prvent user from loading too much contents suddenly
             // Block the loading until this one is done
@@ -11,16 +11,15 @@ var endless = {
 
             // Load the next page
             var data = new FormData(),
-                nextPg = endless.page + 1,
-                loading = document.getElementById("page-loading");
-            data.append('page', nextPg);
+                loading = document.getElementById("page-loading"),
+                container = document.getElementById("all-profile-content");
 
             // Show loading message or spinner
             loading.style.display = "block";
 
             // AJAX request
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', "/api/v1/profile/index?page=" + page, true);
+            xhr.open('GET', "/api/v1/profile/index?fromId=" + fromId, true);
             xhr.onload = function () {
                 var rsp = JSON.parse(this.response);
                 // No more contents to load
@@ -38,33 +37,56 @@ var endless = {
                         wrapper.style.overflow = "hidden";
                         var wrapperRow = document.createElement('div');
                         wrapperRow.className = "row";
-                        var wrapperCol = document.createElement('div');
-                        wrapperCol.className = "col";
+                        var wrapperLeftCol = document.createElement('div');
+                        wrapperLeftCol.className = "col";
+                        var wrapperRightCol = document.createElement('div');
+                        wrapperRightCol.className = "col text-right";
 
                         var elHp = document.createElement('div');
                         var a = document.createElement('a');
-                        var linkText = document.createTextNode(item.homepage.replace('http://', '').replace('https://', ''));
+                        var linkText = document.createTextNode(item.homepage);
                         a.appendChild(linkText);
-                        a.href = "/profile/" + item.profile_id;
+                        a.href = "/profile/" + item.id;
                         elHp.appendChild(a);
                         var elDescription = document.createElement('div');
                         var span = document.createElement('span');
                         span.className = "text-muted small";
-                        var descriptionText = document.createTextNode(item.hasOwnProperty('description') && item.description ? item.description : 'no description');
+                        var descriptionText = document.createTextNode(item.description ? item.description : (item.title ? item.title : 'no description'));
                         span.appendChild(descriptionText);
+                        var reactions = item.reactions;
+                        if (reactions) {
+                            for (let reactionName in reactions) {
+                                let elReactionBtn = document.createElement('button');
+                                elReactionBtn.setAttribute('type', 'button');
+                                elReactionBtn.classList.add('my-1', 'ml-1', 'btn', 'btn-light', 'reaction');
+                                elReactionBtn.setAttribute('data-reaction', reactionName);
+                                elReactionBtn.setAttribute('data-profile', item.id);
+                                let elSpanCount = document.createElement('span');
+                                let elIcon = document.createElement('i');
+                                elIcon.classList.add('emoji', 'small', reactionName);
+                                elSpanCount.classList.add('count');
+                                elSpanCount.append(document.createTextNode(reactions[reactionName]));
+                                elReactionBtn.appendChild(elSpanCount);
+                                elReactionBtn.appendChild(elIcon);
+                                wrapperRightCol.appendChild(elReactionBtn);
+                            }
+                        }
                         elDescription.appendChild(span);
-                        wrapperCol.appendChild(elHp);
-                        wrapperCol.appendChild(elDescription);
-                        wrapperRow.appendChild(wrapperCol);
+                        wrapperLeftCol.appendChild(elHp);
+                        wrapperLeftCol.appendChild(elDescription);
+                        wrapperRow.appendChild(wrapperLeftCol);
+                        wrapperRow.appendChild(wrapperRightCol);
                         wrapper.appendChild(wrapperRow);
 
-                        document.getElementById("all-profile-content").appendChild(wrapper);
+                        container.appendChild(wrapper);
+                        container.setAttribute('data-latest-id', item.id);
                     });
                     // hide loading message
                     loading.style.display = "none";
                     // Set the current page, unblock loading
-                    endless.page = nextPg;
+                    endless.latestId = container.getAttribute('data-latest-id');
                     endless.proceed = true;
+                    listenReactionButtons();
                 }
             };
             xhr.send(data);
@@ -83,7 +105,7 @@ var endless = {
         scrollpoint = scrollpoint == undefined ? window.document.documentElement.scrollTop : scrollpoint;
 
         if ((scrollpoint + winheight) >= docHeight) {
-            endless.load(endless.page);
+            endless.load(endless.latestId);
         }
     }
 };
@@ -93,5 +115,5 @@ window.onload = function () {
     window.addEventListener("scroll", endless.listen);
 
     // Initial load contents
-    endless.load(endless.page);
+    endless.load(endless.latestId);
 };
