@@ -32,6 +32,7 @@ use App\Common\Services\Scheduled\Base64Serializer;
 use App\Common\Services\Scheduled\ScheduledMessageService;
 use App\Common\Services\Website\WebsiteGroupService;
 use App\Common\Services\Website\WebsiteService;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -49,13 +50,15 @@ if ($argc < 2) {
 /** @var \Slim\Container $container */
 $container = require __DIR__ . '/../config/container.php';
 
+/** @var EventDispatcherInterface $dispatcher */
+$dispatcher = $container->get(EventDispatcherInterface::class);
 /** @var RedisTransport $transport */
 $connection = $container->get(CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_PERSISTORS);
 $receivers = [
     CONTAINER_CONFIG_REDIS_STREAM_TRANSPORT_PERSISTORS => new RedisReceiver(
         $connection,
         $container->get(CONTAINER_CONFIG_REDIS_STREAM_SERIALIZER)
-    )
+    ),
 ];
 /** @var \Jenssegers\Mongodb\Connection $mongo */
 $mongo = $container->get(CONTAINER_CONFIG_MONGO);
@@ -168,6 +171,6 @@ $factory->addHandler(
         ]
     )
 );
-$worker = WorkerFactory::createExceptionHandlingWorker($receivers, $factory->buildMessageBus(), $logger, $container->get(CONTAINER_CONFIG_METRICS));
+$worker = WorkerFactory::createExceptionHandlingWorker($receivers, $factory->buildMessageBus(), $logger, $container->get(CONTAINER_CONFIG_METRICS), $dispatcher);
 unset($factory);
 $worker->run();

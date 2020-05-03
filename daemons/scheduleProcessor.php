@@ -2,8 +2,11 @@
 
 use App\Cli\Schedule\ScheduledMessagesHandler;
 use App\Common\Repositories\ScheduledMessageRepository;
+use App\Common\Services\MetricsCollector;
 use App\Common\Services\Scheduled\Base64Serializer;
 use App\Common\Services\Scheduled\ScheduledMessageService;
+use Illuminate\Database\Events\QueryExecuted;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 if (PHP_SAPI !== 'cli') {
     throw new \Exception('The script is only for cli');
@@ -14,6 +17,8 @@ require_once 'vendor/autoload.php';
 /** @var \Slim\Container $container */
 $container = require __DIR__ . '/../config/container.php';
 
+/** @var EventDispatcherInterface $dispatcher */
+$dispatcher = $container->get(EventDispatcherInterface::class);
 $mongo = $container->get(CONTAINER_CONFIG_MONGO);
 $serializer = $container->get(Base64Serializer::class);
 $scheduledService = new ScheduledMessageService(new ScheduledMessageRepository($mongo), $serializer);
@@ -41,5 +46,19 @@ unset($factory);
 $loop = new React\EventLoop\StreamSelectLoop();
 $scheduledHandler = new ScheduledMessagesHandler($scheduledService, $sendersBus, $metrics, $logger);
 $loop->addPeriodicTimer(30, $scheduledHandler);
+
+$dispatcher->addListener(
+    QueryExecuted::class,
+    static function (QueryExecuted $event) use ($metrics) {
+        $query = substr($event->sql, 0, strpos($event->sql, '('));
+        $metrics
+            ->getOrRegisterHistogram(
+                MetricsCollector::NS_CLI_SCHEDULE_MONGO,
+                MetricsCollector::getNamespaceFromString($query),
+                ''
+            )
+            ->observe($event->time);
+    }
+);
 
 $loop->run();

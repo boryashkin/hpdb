@@ -15,6 +15,7 @@ use App\Common\MessageBus\Messages\Processors\WebsiteHistoryMessage;
 use App\Common\MessageBus\Messages\Processors\XmlRssContentToProcessMessage;
 use App\Common\Services\Parsers\HtmlParserService;
 use App\Common\Services\Parsers\XmlRssParserService;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -32,13 +33,15 @@ if ($argc < 2) {
 /** @var \Slim\Container $container */
 $container = require __DIR__ . '/../config/container.php';
 
+/** @var EventDispatcherInterface $dispatcher */
+$dispatcher = $container->get(EventDispatcherInterface::class);
 /** @var RedisTransport $transport */
 $connection = $container->get(CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_PROCESSORS);
 $receivers = [
     CONTAINER_CONFIG_REDIS_STREAM_TRANSPORT_PROCESSORS => new RedisReceiver(
         $connection,
         $container->get(CONTAINER_CONFIG_REDIS_STREAM_SERIALIZER)
-    )
+    ),
 ];
 /** @var \Symfony\Component\Messenger\MessageBusInterface $persistorBus */
 $persistorBus = $container->get(CONTAINER_CONFIG_REDIS_STREAM_PERSISTORS);
@@ -97,6 +100,6 @@ $factory->addHandler(
     )
 );
 
-$worker = WorkerFactory::createExceptionHandlingWorker($receivers, $factory->buildMessageBus(), $container->get(CONTAINER_CONFIG_LOGGER), $container->get(CONTAINER_CONFIG_METRICS));
+$worker = WorkerFactory::createExceptionHandlingWorker($receivers, $factory->buildMessageBus(), $container->get(CONTAINER_CONFIG_LOGGER), $container->get(CONTAINER_CONFIG_METRICS), $dispatcher);
 unset($factory);
 $worker->run();

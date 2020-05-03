@@ -15,6 +15,7 @@ use App\Common\MessageBus\Messages\Crawlers\WebFeedToCrawlMessage;
 use App\Common\Services\HttpClient;
 use App\Common\Services\Github\GithubApiFetcher;
 use App\Common\Services\Website\WebsiteFetcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -32,13 +33,15 @@ if ($argc < 2) {
 /** @var \Slim\Container $container */
 $container = require __DIR__ . '/../config/container.php';
 
+/** @var EventDispatcherInterface $dispatcher */
+$dispatcher = $container->get(EventDispatcherInterface::class);
 /** @var RedisTransport $transport */
 $connection = $container->get(CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_CRAWLERS);
 $receivers = [
     CONTAINER_CONFIG_REDIS_STREAM_TRANSPORT_CRAWLERS => new RedisReceiver(
         $connection,
         $container->get(CONTAINER_CONFIG_REDIS_STREAM_SERIALIZER)
-    )
+    ),
 ];
 $websiteFetcher = new WebsiteFetcher(new HttpClient('hpdb-bot-c/0.1 (+https://hpdb.ru/crawler)'), \getenv('DAEMONS_WEBSITE_FETCHER_MAX_SIZE_BYTES'));
 $apiFetcher = new GithubApiFetcher(new HttpClient('hpdb-bot-a/0.1 (+https://hpdb.ru/crawler)'), \getenv('GITHUB_API_AUTH'));
@@ -85,10 +88,10 @@ $factory->addHandler(
     new HandlerDescriptor(
         new GithubContributorsCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $apiFetcher, $processorsBus, $persistorBus),
         [
-            'from_transport' => GithubContributorsCrawler::TRANSPORT
+            'from_transport' => GithubContributorsCrawler::TRANSPORT,
         ]
     )
 );
-$worker = WorkerFactory::createExceptionHandlingWorker($receivers, $factory->buildMessageBus(), $container->get(CONTAINER_CONFIG_LOGGER), $container->get(CONTAINER_CONFIG_METRICS));
+$worker = WorkerFactory::createExceptionHandlingWorker($receivers, $factory->buildMessageBus(), $container->get(CONTAINER_CONFIG_LOGGER), $container->get(CONTAINER_CONFIG_METRICS), $dispatcher);
 unset($factory);
 $worker->run();

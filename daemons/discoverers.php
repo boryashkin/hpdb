@@ -3,6 +3,7 @@
 use App\Common\MessageBus\Factories\WorkerFactory;
 use App\Common\MessageBus\Handlers\Discoverers\GithubProfileDiscoverer;
 use App\Common\MessageBus\Messages\Discoverers\GithubProfileMessage;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Handler\HandlerDescriptor;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 use Symfony\Component\Messenger\Transport\RedisExt\RedisTransport;
@@ -20,13 +21,15 @@ if ($argc < 2) {
 /** @var \Slim\Container $container */
 $container = require __DIR__ . '/../config/container.php';
 
+/** @var EventDispatcherInterface $dispatcher */
+$dispatcher = $container->get(EventDispatcherInterface::class);
 /** @var RedisTransport $transport */
 $connection = $container->get(CONTAINER_CONFIG_REDIS_STREAM_CONNECTION_DISCOVERERS);
 $receivers = [
     CONTAINER_CONFIG_REDIS_STREAM_TRANSPORT_DISCOVERERS => new RedisReceiver(
         $connection,
         $container->get(CONTAINER_CONFIG_REDIS_STREAM_SERIALIZER)
-    )
+    ),
 ];
 /** @var \Symfony\Component\Messenger\MessageBusInterface $busCrawlers */
 $busCrawlers = $container->get(CONTAINER_CONFIG_REDIS_STREAM_CRAWLERS);
@@ -37,10 +40,10 @@ $factory->addHandler(
     new HandlerDescriptor(
         new GithubProfileDiscoverer(\getenv('REDIS_QUEUE_CONSUMER'), $busCrawlers),
         [
-            'from_transport' => GithubProfileDiscoverer::TRANSPORT
+            'from_transport' => GithubProfileDiscoverer::TRANSPORT,
         ]
     )
 );
-$worker = WorkerFactory::createExceptionHandlingWorker($receivers, $factory->buildMessageBus(), $container->get(CONTAINER_CONFIG_LOGGER), $container->get(CONTAINER_CONFIG_METRICS));
+$worker = WorkerFactory::createExceptionHandlingWorker($receivers, $factory->buildMessageBus(), $container->get(CONTAINER_CONFIG_LOGGER), $container->get(CONTAINER_CONFIG_METRICS), $dispatcher);
 unset($factory);
 $worker->run();

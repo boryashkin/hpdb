@@ -12,6 +12,9 @@ class MetricsCollector extends CollectorRegistry
     public const NS_WEB_PROXY = 'web_proxy';
     public const NS_WEB_ADMIN = 'web_admin';
     public const NS_CLI_BUS = 'web_cli_bus';
+    public const NS_CLI_BUS_MONGO = self::NS_CLI_BUS . '_mongo';
+    public const NS_CLI_SCHEDULE = 'web_cli_schedule';
+    public const NS_CLI_SCHEDULE_MONGO = self::NS_CLI_SCHEDULE . '_mongo';
 
     public const TICK_APP_START = 'app_start_tick';
     public const SUFFIX_TICK = '_tick';

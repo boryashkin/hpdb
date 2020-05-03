@@ -3,10 +3,11 @@
 namespace App\Common\MessageBus\Factories;
 
 use App\Common\Services\MetricsCollector;
+use Illuminate\Database\Events\QueryExecuted;
 use MongoDB\Driver\Exception\InvalidArgumentException;
 use MongoDB\Driver\Exception\UnexpectedValueException;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
@@ -19,10 +20,10 @@ class WorkerFactory
         array $receivers,
         MessageBusInterface $bus,
         LoggerInterface $logger,
-        MetricsCollector $metrics
+        MetricsCollector $metrics,
+        EventDispatcherInterface $dispatcher
     ): Worker
     {
-        $dispatcher = new EventDispatcher();
         $dispatcher->addListener(WorkerMessageFailedEvent::class, function (WorkerMessageFailedEvent $e) use ($metrics) {
             $className = \get_class($e->getEnvelope() ? $e->getEnvelope()->getMessage() : $e->getEnvelope());
             $metrics->getOrRegisterCounter(
@@ -78,7 +79,27 @@ class WorkerFactory
                 )
             );
         });
+        self::addDbQueryDispatcher($dispatcher, $metrics);
 
         return new Worker($receivers, $bus, $dispatcher);
+    }
+
+    private static function addDbQueryDispatcher(EventDispatcherInterface $dispatcher, MetricsCollector $metrics): void
+    {
+        $dispatcher->addListener(
+            QueryExecuted::class,
+            static function (QueryExecuted $event) use ($metrics) {
+                $query = substr($event->sql, 0, strpos($event->sql, '('));
+                $metrics
+                    ->getOrRegisterHistogram(
+                        MetricsCollector::NS_CLI_BUS_MONGO,
+                        MetricsCollector::getNamespaceFromString($query),
+                        ''
+                    )
+                    ->observe($event->time);
+            }
+        );
+
+        return;
     }
 }
