@@ -28,31 +28,22 @@ jQuery(document).ready(function($){
 
         $.get(
             "/api/v1/profile/index",
-            {group: groupId, limit: limit ? limit : 100},
+            {group: groupId, limit: limit ? limit : 100, sort: 'desc'},
             function (content) {
+                Array.from(groupContainer.getElementsByTagName('div')).forEach(function (item) {
+                    item.remove();
+                });
+                console.log('loading');
                 if (content) {
-                    Array.from(groupContainer.getElementsByClassName('top-group-website')).forEach(function (item) {
-                        item.remove();
-                    });
                     for (var i = 0; i < content.length; i++) {
                         let website = content[i];
                         let websiteDescription = website.description ? website.description.substr(0, 80) : 'No description yet';
-                        console.log(website);
-                        var websiteEl = "<div class=\"p-2 border border-light bg-white top-group-website\">\n" +
-                            "                            <div class=\"row\">\n" +
-                            "                                <div class=\"col\">\n" +
-                            "                                    <div>\n" +
-                            "                                        <a href=\"/profile/" + website.id + "\">" + website.homepage.replace('http://', '').replace('https://', '') + "</a>\n" +
-                            "                                    </div>\n" +
-                            "                                    <div>\n" +
-                            "                                        <span class=\"text-muted small\">" + websiteDescription + "</span>\n" +
-                            "                                    </div>\n" +
-                            "                                </div>\n" +
-                            "                            </div>\n" +
-                            "                        </div>";
-                        groupContainer.insertAdjacentHTML("beforeEnd", websiteEl);
+                        var websiteEl = createProfileRow(content[i]);
+                        groupContainer.appendChild(websiteEl);
                     }
+                    listenReactionButtons();
                 }
+                console.log('loaded');
             }
         );
     };
@@ -71,16 +62,15 @@ jQuery(document).ready(function($){
             "/api/v1/feed",
             {lang: lang, limit: limit ? limit : 100, preview: 1},
             function (content) {
+                Array.from(feedLangContainer.getElementsByClassName('feed-item')).forEach(function (item) {
+                    item.remove();
+                });
                 if (content) {
-                    Array.from(feedLangContainer.getElementsByClassName('feed-item')).forEach(function (item) {
-                        item.remove();
-                    });
                     for (var i = 0; i < content.length; i++) {
                         let feedItem = content[i];
                         if (!feedItem.description) {
                             continue;
                         }
-                        console.log(feedItem);
                         var feedItemEl = "<div class=\"p-2 border border-light bg-white feed-item\">\n" +
                             "                            <div class=\"row\">\n" +
                             "                                <div class=\"col col-9\">\n" +
@@ -250,4 +240,54 @@ function listenReactionButtons() {
     for (var i = 0; i < reactionBtns.length; i++) {
         reactionBtns[i].addEventListener('click', reactOnProfile, false);
     }
+}
+
+let createProfileRow = function (item) {
+    var wrapper = document.createElement('div');
+    wrapper.className = "p-2 border border-light bg-white";
+    wrapper.style.overflow = "hidden";
+    var wrapperRow = document.createElement('div');
+    wrapperRow.className = "row";
+    var wrapperLeftCol = document.createElement('div');
+    wrapperLeftCol.className = "col";
+    var wrapperRightCol = document.createElement('div');
+    wrapperRightCol.className = "col text-right";
+
+    var elHp = document.createElement('div');
+    var a = document.createElement('a');
+    var linkText = document.createTextNode(item.homepage);
+    a.appendChild(linkText);
+    a.href = "/profile/" + item.id;
+    elHp.appendChild(a);
+    var elDescription = document.createElement('div');
+    var span = document.createElement('span');
+    span.className = "text-muted small";
+    var descriptionText = document.createTextNode(item.description ? item.description : (item.title ? item.title : 'no description'));
+    span.appendChild(descriptionText);
+    var reactions = item.reactions;
+    if (reactions) {
+        for (let reactionName in reactions) {
+            let elReactionBtn = document.createElement('button');
+            elReactionBtn.setAttribute('type', 'button');
+            elReactionBtn.classList.add('my-1', 'ml-1', 'btn', 'btn-light', 'reaction');
+            elReactionBtn.setAttribute('data-reaction', reactionName);
+            elReactionBtn.setAttribute('data-profile', item.id);
+            let elSpanCount = document.createElement('span');
+            let elIcon = document.createElement('i');
+            elIcon.classList.add('emoji', 'small', reactionName);
+            elSpanCount.classList.add('count');
+            elSpanCount.append(document.createTextNode(reactions[reactionName]));
+            elReactionBtn.appendChild(elSpanCount);
+            elReactionBtn.appendChild(elIcon);
+            wrapperRightCol.appendChild(elReactionBtn);
+        }
+    }
+    elDescription.appendChild(span);
+    wrapperLeftCol.appendChild(elHp);
+    wrapperLeftCol.appendChild(elDescription);
+    wrapperRow.appendChild(wrapperLeftCol);
+    wrapperRow.appendChild(wrapperRightCol);
+    wrapper.appendChild(wrapperRow);
+
+    return wrapper;
 }

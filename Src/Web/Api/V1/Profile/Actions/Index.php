@@ -22,6 +22,7 @@ class Index extends BaseAction
         $query = isset($params['query']) && \is_string($params['query']) ? $params['query'] : null;
         $fromId = isset($params['fromId']) && \is_string($params['fromId']) ? (string)$params['fromId'] : 0;
         $group = isset($params['group']) && \is_string($params['group']) ? $params['group'] : null;
+        $sort = isset($params['sort']) && \is_string($params['sort']) ? $params['sort'] : null;
         $limit = isset($params['limit']) && \is_numeric($params['limit']) ? $params['limit'] : 30;
 
         try {
@@ -45,6 +46,9 @@ class Index extends BaseAction
             $filter->group = $group;
             $filter->setLimit($limit);
             $filter->fromId = $fromId;
+            if ($sort) {
+                $filter->setSortDirection($sort);
+            }
         } catch (RepositoryFilterException $exception) {
             $errors = ['error' => $exception->getMessage()];
             $response->getBody()->write(json_encode($errors));

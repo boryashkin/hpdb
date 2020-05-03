@@ -15,9 +15,21 @@
         <p class="card-text">{{ description }}</p>
     </div>
     <div class="card-footer text-muted">
-        <a href="#" class="btn btn-outline-info reaction" data-reaction="nohp" data-profile="{{ profile_id }}" title="Not a homepage"><i class="emoji nohp"></i></a>
-        <a href="#" class="btn btn-outline-info reaction" data-reaction="dislike" data-profile="{{ profile_id }}"><i class="emoji dislike"></i></a>
-        <a href="#" class="btn btn-outline-info reaction" data-reaction="like" data-profile="{{ profile_id }}"><i class="emoji like"></i></a>
+        <button type="button" class="btn btn-outline-info reaction" data-reaction="nohp" data-profile="{{ profile_id }}"
+                title="Not a homepage">
+            <span class="count">{% if reactions_nohp %}{{ reactions_nohp }}&nbsp;{% endif %}</span><i
+                class="emoji nohp small"></i>
+        </button>
+        <button type="button" class="btn btn-outline-info reaction" data-reaction="dislike"
+                data-profile="{{ profile_id }}">
+            <span class="count">{% if reactions_dislike %}{{ reactions_dislike }}&nbsp;{% endif %}</span><i
+                class="emoji dislike small"></i>
+        </button>
+        <button type="button" class="btn btn-outline-info reaction" data-reaction="like"
+                data-profile="{{ profile_id }}">
+            <span class="count">{% if reactions_like %}{{ reactions_like }}&nbsp;{% endif %}</span><i
+                class="emoji like small"></i>
+        </button>
     </div>
 </div>
 {% endblock %}

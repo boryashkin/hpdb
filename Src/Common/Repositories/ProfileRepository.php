@@ -40,10 +40,17 @@ class ProfileRepository
             $query->where('groups', 'elemmatch', ['$in' => [$websiteFilter->group]]);
         }
         if ($websiteFilter->fromId) {
-            $query->where('_id', '>', $websiteFilter->fromId);
+            if ($websiteFilter->sortDirection && $websiteFilter->sortDirection === $websiteFilter::SORT_DESC) {
+                $query->where('_id', '<', $websiteFilter->fromId);
+            } else {
+                $query->where('_id', '>', $websiteFilter->fromId);
+            }
         }
         if ($websiteFilter->getLimit()) {
             $query->limit($websiteFilter->getLimit());
+        }
+        if ($websiteFilter->sortDirection) {
+            $query->orderBy($websiteFilter->sortField, $websiteFilter->sortDirection);
         }
 
         return $query->get()->all();

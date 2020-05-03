@@ -45,6 +45,9 @@ class Profile extends BaseAction
 
         return $this->getView()->render($response, 'web/profile.html', [
             'profile_id' => (string)$profile->_id,
+            'reactions_like' => $profile->reactions['like'] ?? '',
+            'reactions_dislike' => $profile->reactions['dislike'] ?? '',
+            'reactions_nohp' => $profile->reactions['nohp'] ?? '',
             'url' => "/proxy/{$profile->_id}/",
             'sourceUrl' => $parsedUrl,
             'host' => $host,

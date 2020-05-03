@@ -32,51 +32,7 @@ var endless = {
                 else {
                     rsp.forEach(function (item, index) {
                         // Append into container
-                        var wrapper = document.createElement('div');
-                        wrapper.className = "p-2 border border-light bg-white";
-                        wrapper.style.overflow = "hidden";
-                        var wrapperRow = document.createElement('div');
-                        wrapperRow.className = "row";
-                        var wrapperLeftCol = document.createElement('div');
-                        wrapperLeftCol.className = "col";
-                        var wrapperRightCol = document.createElement('div');
-                        wrapperRightCol.className = "col text-right";
-
-                        var elHp = document.createElement('div');
-                        var a = document.createElement('a');
-                        var linkText = document.createTextNode(item.homepage);
-                        a.appendChild(linkText);
-                        a.href = "/profile/" + item.id;
-                        elHp.appendChild(a);
-                        var elDescription = document.createElement('div');
-                        var span = document.createElement('span');
-                        span.className = "text-muted small";
-                        var descriptionText = document.createTextNode(item.description ? item.description : (item.title ? item.title : 'no description'));
-                        span.appendChild(descriptionText);
-                        var reactions = item.reactions;
-                        if (reactions) {
-                            for (let reactionName in reactions) {
-                                let elReactionBtn = document.createElement('button');
-                                elReactionBtn.setAttribute('type', 'button');
-                                elReactionBtn.classList.add('my-1', 'ml-1', 'btn', 'btn-light', 'reaction');
-                                elReactionBtn.setAttribute('data-reaction', reactionName);
-                                elReactionBtn.setAttribute('data-profile', item.id);
-                                let elSpanCount = document.createElement('span');
-                                let elIcon = document.createElement('i');
-                                elIcon.classList.add('emoji', 'small', reactionName);
-                                elSpanCount.classList.add('count');
-                                elSpanCount.append(document.createTextNode(reactions[reactionName]));
-                                elReactionBtn.appendChild(elSpanCount);
-                                elReactionBtn.appendChild(elIcon);
-                                wrapperRightCol.appendChild(elReactionBtn);
-                            }
-                        }
-                        elDescription.appendChild(span);
-                        wrapperLeftCol.appendChild(elHp);
-                        wrapperLeftCol.appendChild(elDescription);
-                        wrapperRow.appendChild(wrapperLeftCol);
-                        wrapperRow.appendChild(wrapperRightCol);
-                        wrapper.appendChild(wrapperRow);
+                        let wrapper = createProfileRow(item);
 
                         container.appendChild(wrapper);
                         container.setAttribute('data-latest-id', item.id);
