@@ -97,7 +97,7 @@ class Index extends BaseAction
     {
         $result = [];
         foreach ($service->getAllCursor(null, SORT_DESC, 5) as $website) {
-            $title = $website->content->title ?: $website->content->description;
+            $title = $website->content['title'] ?: $website->content['description'];
             $result[] = [
                 'profile_id' => (string)$website->_id,
                 'homepage' => $website->homepage,
