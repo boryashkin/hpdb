@@ -6,76 +6,8 @@
     <div class="row">
         <div class="col col-12 col-lg-4"></div>
         <div class="col col-12 col-lg-4">
-            <div class="row">
-            </div>
             <div class="row mt-2">
-                <div class="col">
-                    <p><strong>Лента:</strong></p>
-                    <div class="py-2">
-                        <a href="#feed-ru" class="btn btn-outline-dark link-feed active"
-                           title="На русском"
-                           data-slug="ru" data-limit="10">
-                            🇷🇺
-                        </a>
-                        <a href="#feed-en" class="btn btn-outline-dark link-feed"
-                           title="In english"
-                           data-slug="en" data-limit="10">
-                            🇬🇧 / 🇺🇸
-                        </a>
-                        <a href="#feed-cn" class="btn btn-outline-dark link-feed"
-                           title="In chinese"
-                           data-slug="zh" data-limit="10">
-                            🇨🇳
-                        </a>
-                        <a href="#feed-fr" class="btn btn-outline-dark link-feed"
-                           title="In french"
-                           data-slug="fr" data-limit="10">
-                            🇫🇷
-                        </a>
-                        <a href="#feed-de" class="btn btn-outline-dark link-feed"
-                           title="In deutsch"
-                           data-slug="de" data-limit="10">
-                            🇩🇪
-                        </a>
-                    </div>
-                    <div class="feed-container item-box">
-                        {% for feedItem in webFeed %}
-                        <div class="p-2 border border-light bg-white feed-item">
-                            <div class="row">
-                                <div class="col col-9">
-                                    <div class="embed-responsive">
-                                        <a href="{{ feedItem.link }}" class="text-dark">{{ feedItem.title }}</a>
-                                    </div>
-                                    <div class="embed-responsive">
-                                        <span class="text-muted small">{{ feedItem.description }}</span>
-                                    </div>
-                                    <div class="text-muted small"><a href="/profile/{{ feedItem.website_id }}">{{
-                                        feedItem.host }}</a></div>
-                                </div>
-                                <div class="col col-3 text-right align-text-bottom">
-                                    <div class="text-muted small">{{ feedItem.date }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
             </div>
-        </div>
-        <div class="col col-12 col-lg-4"></div>
-    </div>
-    <div class="row">
-        <div class="col col-lg-4 col-md-12 px-3 py-1">
-            <div class="row pl-3">
-                <p>
-                    Социальная сеть из малоизвестных
-                    <mark>шедевров</mark>
-                    - персональных "домашних страниц".
-                </p>
-                <div><em>Все сайты открываются внутри этого, а не в новом окне</em></div>
-            </div>
-        </div>
-        <div class="col col-lg-4 col-md-12">
             <div class='horizontal-scroller'>
                 <div class="slider">
                     <div class="inner-box">
@@ -126,6 +58,74 @@
                                         <span class="count">{{ count }}</span><i class="emoji {{ reaction }} small"></i>
                                     </button>
                                     {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col col-12 col-lg-4"></div>
+    </div>
+    <div class="row">
+        <div class="col col-lg-4 col-md-12 px-3 py-1">
+            <div class="row pl-3">
+                <p>
+                    Социальная сеть из малоизвестных
+                    <mark>шедевров</mark>
+                    - персональных "домашних страниц".
+                </p>
+                <div><em>Все сайты открываются внутри этого, а не в новом окне</em></div>
+            </div>
+        </div>
+        <div class="col col-lg-4 col-md-12">
+            <div class="row mt-2">
+                <div class="col">
+                    <p><strong>Лента:</strong></p>
+                    <div class="py-2">
+                        <a href="#feed-ru" class="btn btn-outline-dark link-feed active"
+                           title="На русском"
+                           data-slug="ru" data-limit="10">
+                            🇷🇺
+                        </a>
+                        <a href="#feed-en" class="btn btn-outline-dark link-feed"
+                           title="In english"
+                           data-slug="en" data-limit="10">
+                            🇬🇧 / 🇺🇸
+                        </a>
+                        <a href="#feed-cn" class="btn btn-outline-dark link-feed"
+                           title="In chinese"
+                           data-slug="zh" data-limit="10">
+                            🇨🇳
+                        </a>
+                        <a href="#feed-fr" class="btn btn-outline-dark link-feed"
+                           title="In french"
+                           data-slug="fr" data-limit="10">
+                            🇫🇷
+                        </a>
+                        <a href="#feed-de" class="btn btn-outline-dark link-feed"
+                           title="In deutsch"
+                           data-slug="de" data-limit="10">
+                            🇩🇪
+                        </a>
+                    </div>
+                    <div class="feed-container item-box">
+                        {% for feedItem in webFeed %}
+                        <div class="p-2 border border-light bg-white feed-item">
+                            <div class="row">
+                                <div class="col col-9">
+                                    <div class="embed-responsive">
+                                        <a href="{{ feedItem.link }}" class="text-dark">{{ feedItem.title }}</a>
+                                    </div>
+                                    <div class="embed-responsive">
+                                        <span class="text-muted small">{{ feedItem.description }}</span>
+                                    </div>
+                                    <div class="text-muted small"><a href="/profile/{{ feedItem.website_id }}">{{
+                                        feedItem.host }}</a></div>
+                                </div>
+                                <div class="col col-3 text-right align-text-bottom">
+                                    <div class="text-muted small">{{ feedItem.date }}</div>
                                 </div>
                             </div>
                         </div>
