@@ -122,6 +122,7 @@ class ReindexHompages extends Command
         $cnt = Website::query()->count() / self::PAGINATION_CNT;
         $queued = 0;
         $yesterday = new \DateTime('yesterday');
+        $skipped = 0;
         while ($websites && $i <= $cnt) {
             $websites = Website::query()
                 ->offset($i * self::PAGINATION_CNT)
@@ -130,7 +131,8 @@ class ReindexHompages extends Command
                 ->all();
             /** @var Website $website */
             foreach ($websites as $website) {
-                if ($website->updated_at->toDateTime() > $yesterday) {
+                if ($website->updated_at->toDateTime() <= $yesterday) {
+                    $skipped++;
                     continue;
                 }
                 $this->reindex($website);
@@ -138,6 +140,7 @@ class ReindexHompages extends Command
             }
             ++$i;
         }
+        $output->writeln("{$skipped} skipped due to updated_at value");
         $output->writeln("{$queued} websites queued to crawl");
     }
 }
