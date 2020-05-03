@@ -21,7 +21,7 @@ class DbQueryMetricsMiddleware extends BaseMiddleware
                 $query = substr($event->sql, 0, strpos($event->sql, '('));
                 $metrics
                     ->getOrRegisterHistogram(
-                        MetricsCollector::NS_WEB_API,
+                        MetricsCollector::NS_WEB_API_MONGO,
                         MetricsCollector::getNamespaceFromString($query),
                         ''
                     )
