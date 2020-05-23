@@ -2,6 +2,7 @@
 
 namespace App\Cli\Commands;
 
+use App\Common\Exceptions\InvalidUrlException;
 use App\Common\MessageBus\Messages\Processors\WebsiteHistoryMessage;
 use App\Common\Models\WebsiteIndexHistory;
 use App\Common\Repositories\ProfileRepository;
@@ -111,7 +112,12 @@ class ExtractIndexedContent extends Command
             foreach ($c->find(['$or' => $lastWebsiteData]) as $website) {
                 $hist = new WebsiteIndexHistory();
                 $hist->forceFill((array)$website);
-                $message = new WebsiteHistoryMessage(new ObjectId($hist->website_id), new ObjectId($hist->_id), new Url($website->homepage), $hist->content, $hist->initial_encoding);
+                try {
+                    $message = new WebsiteHistoryMessage(new ObjectId($hist->website_id), new ObjectId($hist->_id), new Url($website->homepage), $hist->content, $hist->initial_encoding);
+                } catch (InvalidUrlException $e) {
+                    $output->writeln('InvalidUrl: ' . $website->homepage);
+                    continue;
+                }
                 $this->processorBus->dispatch($message);
             }
             $skip = $skip + $limit;

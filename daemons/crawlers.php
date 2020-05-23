@@ -64,7 +64,7 @@ $factory->addHandler(
     new HandlerDescriptor(
         new WebFeedFetcherCrawler(\getenv('REDIS_QUEUE_CONSUMER'), $websiteFetcher, $processorsBus),
         [
-            'from_transport' => PageFetcherCrawler::TRANSPORT
+            'from_transport' => WebFeedFetcherCrawler::TRANSPORT,
         ]
     )
 )->addHandler(
