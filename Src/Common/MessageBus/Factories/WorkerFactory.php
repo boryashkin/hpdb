@@ -10,6 +10,10 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
+use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
+use Symfony\Component\Messenger\Event\WorkerRunningEvent;
+use Symfony\Component\Messenger\Event\WorkerStartedEvent;
+use Symfony\Component\Messenger\Event\WorkerStoppedEvent;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Worker;
@@ -77,6 +81,36 @@ class WorkerFactory
                         \get_class($e->getEnvelope() ? $e->getEnvelope()->getMessage() : $e->getEnvelope()),
                     ]
                 )
+            );
+        });
+        $dispatcher->addListener(WorkerStartedEvent::class, function (WorkerStartedEvent $e) use ($logger) {
+            $logger->debug('WorkerStartedEvent', ['time' => date('Y-m-d H:i:s')]);
+        });
+        $dispatcher->addListener(WorkerRunningEvent::class, function (WorkerRunningEvent $e) use ($logger) {
+            $logger->debug(
+                'WorkerRunningEvent',
+                [
+                    'time' => date('Y-m-d H:i:s'),
+                    'is_idle' => $e->isWorkerIdle(),
+                ]
+            );
+        });
+        $dispatcher->addListener(WorkerStoppedEvent::class, function (WorkerStoppedEvent $e) use ($logger) {
+            $logger->debug(
+                'WorkerStoppedEvent',
+                [
+                    'time' => date('Y-m-d H:i:s'),
+                ]
+            );
+        });
+        $dispatcher->addListener(WorkerMessageReceivedEvent::class, function (WorkerMessageReceivedEvent $e) use ($logger) {
+            $logger->debug(
+                'WorkerMessageReceivedEvent',
+                [
+                    'time' => date('Y-m-d H:i:s'),
+                    'receiver_name' => $e->getReceiverName(),
+                    'should_handle' => $e->shouldHandle(),
+                ]
             );
         });
         self::addDbQueryDispatcher($dispatcher, $metrics);
