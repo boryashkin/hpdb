@@ -115,7 +115,7 @@ class WorkerFactory
         });
         self::addDbQueryDispatcher($dispatcher, $metrics);
 
-        return new Worker($receivers, $bus, $dispatcher);
+        return new Worker($receivers, $bus, $dispatcher, $logger);
     }
 
     private static function addDbQueryDispatcher(EventDispatcherInterface $dispatcher, MetricsCollector $metrics): void

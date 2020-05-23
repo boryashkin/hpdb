@@ -15,7 +15,7 @@ class StdLogger extends AbstractLogger
 
     public function log($level, $message, array $context = []): void
     {
-        \error_log("StdLogger [{$level}]: {$message}");
+        \error_log("StdLogger [{$level}]: {$message} [" . json_encode($context) . ']');
     }
 
     public function debug($message, array $context = array()): void
