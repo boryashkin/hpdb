@@ -9,7 +9,7 @@ use App\Common\Repositories\ProfileRepository;
 use App\Web\Api\V1\Rpc\Builders\RpcWebsiteResponseBuilder;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Driver\Exception\ServerException;
-use MongoDB\Exception\InvalidArgumentException;
+use MongoDB\Driver\Exception\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\SlimException;

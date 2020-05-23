@@ -5,7 +5,7 @@ namespace App\Web\Api\V1\Group\Actions;
 use App\Common\Abstracts\BaseAction;
 use App\Common\Models\WebsiteGroup;
 use MongoDB\BSON\ObjectId;
-use MongoDB\Exception\InvalidArgumentException;
+use MongoDB\Driver\Exception\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\NotFoundException;

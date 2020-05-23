@@ -14,7 +14,7 @@ use GuzzleHttp\HandlerStack;
 use function GuzzleHttp\Psr7\stream_for;
 use GuzzleHttp\RedirectMiddleware;
 use MongoDB\BSON\ObjectId;
-use MongoDB\Exception\InvalidArgumentException;
+use MongoDB\Driver\Exception\InvalidArgumentException;
 use Proxy\Adapter\Guzzle\GuzzleAdapter;
 use Proxy\Filter\RemoveEncodingFilter;
 use Proxy\Proxy;

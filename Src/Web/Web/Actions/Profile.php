@@ -7,7 +7,7 @@ use App\Common\Exceptions\InvalidUrlException;
 use App\Common\Repositories\ProfileRepository;
 use App\Common\ValueObjects\Url;
 use MongoDB\BSON\ObjectId;
-use MongoDB\Exception\InvalidArgumentException;
+use MongoDB\Driver\Exception\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\NotFoundException;
