@@ -6,9 +6,10 @@ use App\Common\Exceptions\InvalidUrlException;
 use App\Common\MessageBus\Messages\Processors\WebsiteHistoryMessage;
 use App\Common\Models\WebsiteIndexHistory;
 use App\Common\Repositories\ProfileRepository;
+use App\Common\Repositories\WebsiteIndexHistoryRepository;
+use App\Common\Repositories\WebsiteRepository;
 use App\Common\ValueObjects\Url;
 use MongoDB\BSON\ObjectId;
-use MongoDB\Collection as MongoCollection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -66,54 +67,17 @@ class ExtractIndexedContent extends Command
     /** {@inheritdoc} */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /**
-         * Not WebsiteIndexHistory::query() because of memory leaks.
-         *
-         * @var MongoCollection $c
-         */
-        $c = $this->mongo->getCollection('websiteIndexHistory');
-        $skip = 0;
-        $limit = 50;
-        $pipeline = [
-            0 => [
-                '$project' => [
-                    'website_id' => 1,
-                    'created_at' => 1,
-                    'available' => 1,
-                ],
-            ],
-            1 => [
-                '$match' => [
-                    'available' => ['$eq' => true],
-                ],
-            ],
-            2 => [
-                '$group' => [
-                    '_id' => ['website_id' => '$website_id'],
-                    'created_at' => ['$max' => '$created_at'],
-                ],
-            ],
-            3 => [
-                '$skip' => $skip,
-            ],
-            4 => [
-                '$limit' => $limit,
-            ],
-        ];
+        $repo = new WebsiteIndexHistoryRepository($this->mongo);
+        $websiteRepo = new WebsiteRepository($this->mongo);
+
+        $lastId = null;
         do {
-            $pipeline[3]['$skip'] = $skip;
-            $lastWebsiteData = [];
-            foreach ($c->aggregate($pipeline) as $website) {
-                $lastWebsiteData[] = ['$and' => [['website_id' => $website->_id->website_id], ['created_at' => $website->created_at]]];
-            }
-            if (!$lastWebsiteData) {
-                break;
-            }
-            foreach ($c->find(['$or' => $lastWebsiteData]) as $website) {
-                $hist = new WebsiteIndexHistory();
-                $hist->forceFill((array)$website);
-                if (!$website->homepage) {
-                    $output->writeln('Empty homepage: ' . $website->homepage);
+            $limit = 1000;
+            $i = 0;
+            foreach ($repo->getAllCursor($lastId, SORT_DESC, $limit) as $hist) {
+                $i++;
+                $website = $websiteRepo->getOne(new ObjectId($hist->website_id));
+                if (!$website || !$website->homepage) {
                     continue;
                 }
                 try {
@@ -123,8 +87,12 @@ class ExtractIndexedContent extends Command
                     continue;
                 }
                 $this->processorBus->dispatch($message);
+                $lastId = new ObjectId($hist->_id);
+                $output->writeln($hist->_id);
             }
-            $skip = $skip + $limit;
-        } while ($lastWebsiteData);
+            $proceed = $limit !== $i;
+        } while ($proceed);
+
+        $output->writeln('end');
     }
 }
