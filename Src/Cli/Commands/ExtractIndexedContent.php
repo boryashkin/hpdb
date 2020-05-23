@@ -112,6 +112,10 @@ class ExtractIndexedContent extends Command
             foreach ($c->find(['$or' => $lastWebsiteData]) as $website) {
                 $hist = new WebsiteIndexHistory();
                 $hist->forceFill((array)$website);
+                if (!$website->homepage) {
+                    $output->writeln('Empty homepage: ' . $website->homepage);
+                    continue;
+                }
                 try {
                     $message = new WebsiteHistoryMessage(new ObjectId($hist->website_id), new ObjectId($hist->_id), new Url($website->homepage), $hist->content, $hist->initial_encoding);
                 } catch (InvalidUrlException $e) {
