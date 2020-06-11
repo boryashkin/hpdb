@@ -85,6 +85,7 @@ class Index extends BaseAction
         $proxy = new Proxy(new GuzzleAdapter($guzzle));
         $proxy->filter(new RemoveEncodingFilter());
         $clone = clone $request;
+        $clone = $clone->withAddedHeader('User-Agent', 'hpdb-bot-p/0.1 (+https://hpdb.ru/crawler)');
         $clone = $clone->withUri($clone->getUri()->withPath($path));
 
         /**
