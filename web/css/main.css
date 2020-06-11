@@ -42,6 +42,7 @@ input[type=submit] {
     border-bottom: none;
     border-top: none;
     z-index: 99;
+    -webkit-transform: translate3d(0, 0, 0);
     /*position the autocomplete items to be the same width as the container:*/
     top: 100%;
     left: 0;
