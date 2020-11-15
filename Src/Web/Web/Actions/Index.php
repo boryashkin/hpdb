@@ -119,6 +119,7 @@ class Index extends BaseAction
             ],
             [
                 'limit' => 20,
+                'sort' => ['_id' => -1],
             ]
         )->toArray();
     }
