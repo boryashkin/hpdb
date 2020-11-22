@@ -25,9 +25,10 @@
       "endclothing/prometheus_client_php": "^1.0"
     },
     "require-dev": {
-        "roave/security-advisories": "dev-master",
-        "codeception/codeception": "^4.0",
-        "codeception/module-asserts": "^1.0.0"
+      "roave/security-advisories": "dev-master",
+      "codeception/codeception": "^4.0",
+      "codeception/module-asserts": "^1.0.0",
+      "zircote/swagger-php": "^3.1"
     },
     "autoload": {
         "psr-4": {

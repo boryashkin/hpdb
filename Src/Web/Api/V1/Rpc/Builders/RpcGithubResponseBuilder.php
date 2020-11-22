@@ -7,7 +7,7 @@ namespace App\Web\Api\V1\Rpc\Builders;
 use App\Common\Models\GithubProfile;
 use App\Common\Models\WebsiteGroup;
 use App\Common\ValueObjects\GithubRepo;
-use App\Web\Api\V1\Rpc\Responses\GithubRepoResponse;
+use App\Web\Api\V1\Rpc\Responses\ParseGithubRepoResponse;
 
 class RpcGithubResponseBuilder
 {
@@ -15,11 +15,11 @@ class RpcGithubResponseBuilder
         GithubProfile $githubProfile,
         GithubRepo $githubRepo,
         WebsiteGroup $group
-    ): GithubRepoResponse
+    ): ParseGithubRepoResponse
     {
-        $response = new GithubRepoResponse();
+        $response = new ParseGithubRepoResponse();
         $response->githubProfileId = (string)$githubProfile->_id;
-        $response->githubProfileLogin = $githubProfile->login;
+        $response->githubProfile = $githubProfile->login;
         $response->repoName = $githubRepo->getName();
         $response->groupId = (string)$group->_id;
         $response->groupName = $group->name;

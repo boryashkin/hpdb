@@ -17,6 +17,27 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\SlimException;
 use Symfony\Component\Messenger\MessageBusInterface;
 
+/**
+ * @OA\Put(
+ *     path="/api/v1/rpc/parse-github-contributors",
+ *     tags={"rpc"},
+ *     @OA\RequestBody(
+ *         description="Extract websites of github repo contributors",
+ *         required=true,
+ *         @OA\JsonContent(ref="#/components/schemas/ParseGithubRepoRequest")
+ *     ),
+ *     @OA\Response(
+ *         response="200",
+ *         description="Parsing is started",
+ *         @OA\JsonContent(ref="#/components/schemas/ParseGithubRepoResponse")
+ *     ),
+ *     @OA\Response(
+ *         response="400",
+ *         description="Validation errors",
+ *         @OA\JsonContent()
+ *     )
+ * )
+ */
 class ParseGithubContributiorsPage extends BaseAction
 {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface

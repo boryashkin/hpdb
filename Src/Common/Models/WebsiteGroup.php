@@ -24,7 +24,10 @@ class WebsiteGroup extends Model
     public function getFillable(): array
     {
         return [
+            'name',
             'show_on_main',
+            'description',
+            'logo',
         ];
     }
 }

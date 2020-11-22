@@ -27,7 +27,7 @@ jQuery(document).ready(function($){
         groupContainerWrapper.getElementsByClassName('website-group-title').item(0).textContent = groupName + ':';
 
         $.get(
-            "/api/v1/profile/index",
+            "/api/v1/profile",
             {group: groupId, limit: limit ? limit : 100, sort: 'desc'},
             function (content) {
                 Array.from(groupContainer.getElementsByTagName('div')).forEach(function (item) {
@@ -81,7 +81,7 @@ jQuery(document).ready(function($){
                             "                                        <span class=\"text-muted small\">" + feedItem.description + "</span>\n" +
                             "                                    </div>\n" +
                             "                                    <div class=\"text-muted small\">" +
-                            "<a href=\"/profile/" + feedItem.website_id + "\">" + feedItem.host + "</a></div>" +
+                            "<a href=\"/profile/" + feedItem.websiteId + "\">" + feedItem.host + "</a></div>" +
                             "                                </div>\n" +
                             "                                <div class=\"col col-3 text-right align-text-bottom\">\n" +
                             "                                    <div class=\"text-muted small\">" +
@@ -225,7 +225,7 @@ let reactOnProfile = function () {
     var cntEl = cntEls[0] ? cntEls[0] : null;
     $.post(
         "/api/v1/reaction",
-        {profile_id: profileId, reaction: reaction},
+        {websiteId: profileId, reaction: reaction},
         function () {
             if (cntEl) {
                 console.log(cntEl);

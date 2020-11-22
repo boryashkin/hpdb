@@ -11,27 +11,52 @@ use App\Common\Models\Website;
 use App\Common\Repositories\ProfileRepository;
 use App\Common\ValueObjects\Url;
 use App\Web\Api\V1\Profile\Builders\WebsiteResponseBuilder;
+use App\Web\Api\V1\Profile\Requests\WebsiteCreateRequest;
 use Jenssegers\Mongodb\Connection;
+use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\SlimException;
 
+/**
+ * @OA\Post(
+ *     path="/api/v1/profile",
+ *     tags={"profile"},
+ *     @OA\RequestBody(
+ *         description="Profile creation",
+ *         required=true,
+ *         @OA\JsonContent(ref="#/components/schemas/ProfileCreateRequest")
+ *     ),
+ *     @OA\Response(
+ *         response="200",
+ *         description="Profile created",
+ *         @OA\JsonContent(ref="#/components/schemas/ProfileResponse")
+ *     ),
+ *     @OA\Response(
+ *         response="400",
+ *         description="Validation errors",
+ *         @OA\JsonContent()
+ *     )
+ * )
+ */
 class Create extends BaseAction
 {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $params = $request->getParsedBody();
+        $profileCreate = new WebsiteCreateRequest();
         if (!isset($params['website']) || !is_string($params['website'])) {
             $response = $response->withStatus(400, 'Bad Request');
             $response->getBody()->write('website is required and must be a string');
 
             throw new SlimException($request, $response);
         }
+        $profileCreate->website = $params['website'];
 
         $responseBuilder = new WebsiteResponseBuilder();
 
         try {
-            $parsedUrl = new Url($params['website']);
+            $parsedUrl = new Url($profileCreate->website);
         } catch (InvalidUrlException $e) {
             $response = $response->withStatus(400, 'Bad Request');
             $response->getBody()->write($e->getMessage());
