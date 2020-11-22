@@ -6,7 +6,7 @@ use App\Common\Dto\Parsers\XmlRssChannelDto;
 use App\Common\Dto\Parsers\XmlRssItemDto;
 use App\Common\Services\Parsers\XmlRssParserService;
 
-class HtmlParserServiceTest extends \Codeception\Test\Unit
+class XmlRssParserServiceTest extends \Codeception\Test\Unit
 {
     /**
      * @var \UnitTester
@@ -75,12 +75,14 @@ class HtmlParserServiceTest extends \Codeception\Test\Unit
             ],
         ]);
         $description = <<<HTML
-<b>FeedForAll </b>helps Restaurant's communicate with customers. Let your customers know the latest specials or events.<br>
+<b>FeedForAll </b>helps Restaurant's communicate with customers. Let your
+                customers know the latest specials or events.<br>
                 <br>
                 RSS feed uses include:<br>
                 <i><font color="#FF0000">Daily Specials <br>
                 Entertainment <br>
                 Calendar of Events </i></font>
+            
 HTML;
 
         $expectedItem = new XmlRssItemDto([

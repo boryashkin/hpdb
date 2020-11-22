@@ -6,7 +6,7 @@ use App\Common\Dto\Parsers\XmlAtomEntryDto;
 use App\Common\Dto\Parsers\XmlAtomFeedDto;
 use App\Common\Services\Parsers\XmlAtomParserService;
 
-class HtmlParserServiceTest extends \Codeception\Test\Unit
+class XmlAtomParserServiceTest extends \Codeception\Test\Unit
 {
     /**
      * @var \UnitTester

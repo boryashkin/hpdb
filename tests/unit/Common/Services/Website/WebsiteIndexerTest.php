@@ -67,7 +67,8 @@ class WebsiteIndexerTest extends \Codeception\Test\Unit
         $indexer = new WebsiteIndexer($extractor);
         $website = new Website();
         $website->_id = new ObjectId('5cc98b3bc58e40004f051854');
-        $website->homepage = 'http://localhost.test';
+        $website->scheme = 'http';
+        $website->homepage = 'localhost.test';
         $result = $indexer->reindex($website);
 
         $this->assertNotEmpty($result);
@@ -85,6 +86,7 @@ class WebsiteIndexerTest extends \Codeception\Test\Unit
         $indexer = new WebsiteIndexer($extractor);
         $website = new Website();
         $website->_id = new ObjectId('5cc98b3bc58e40004f051854');
+        $website->scheme = '';
         $website->homepage = '';
         $indexer->reindex($website);
     }
