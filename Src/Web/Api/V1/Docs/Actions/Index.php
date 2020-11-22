@@ -15,7 +15,7 @@ class Index extends BaseAction
     {
         $response->getBody()->write(file_get_contents(__DIR__ . '/../../../../../../docs/api.yml'));
 
-        return $response;
+        return $response->withAddedHeader('Content-Type', 'text/yaml; charset=utf-8');
     }
 
 }

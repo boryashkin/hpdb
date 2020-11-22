@@ -12,7 +12,7 @@ $app->group('', function () use ($app) {
     $app->get('/crawler', \App\Web\Web\Actions\Crawler::class);
 })->add(\App\Web\Web\Middlewares\WebMetricsMiddleware::class);
 $app->group('/api/v1', function () use ($app) {
-    $app->get('/docs', \App\Web\Api\V1\Docs\Actions\Index::class);
+    $app->get('/docs.yml', \App\Web\Api\V1\Docs\Actions\Index::class);
     $app->get('/profile', \App\Web\Api\V1\Profile\Actions\Index::class);
     $app->get('/profile/index-light', \App\Web\Api\V1\Profile\Actions\Index::class);
     $app->post('/profile', \App\Web\Api\V1\Profile\Actions\Create::class);
