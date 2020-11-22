@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Web\Api\V1\Profile\Actions;
 
 use App\Common\Abstracts\BaseAction;
@@ -10,10 +12,79 @@ use App\Web\Api\V1\Profile\Builders\WebsiteLightResponseBuilder;
 use App\Web\Api\V1\Profile\Builders\WebsiteResponseBuilder;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Driver\Exception\InvalidArgumentException;
+use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\SlimException;
 
+/**
+ * @OA\Get(
+ *     path="/api/v1/profile",
+ *     tags={"profile"},
+ *     @OA\Parameter(
+ *         name="query",
+ *         in="query",
+ *         description="URL part to find",
+ *         required=false,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Parameter(
+ *         name="fromId",
+ *         in="query",
+ *         description="Skip profiles before fromID",
+ *         required=false,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Parameter(
+ *         name="group",
+ *         in="query",
+ *         description="GroupID to get profiles in the group",
+ *         required=false,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Parameter(
+ *         name="sort",
+ *         in="query",
+ *         description="Sort direction",
+ *         required=false,
+ *         @OA\Schema(
+ *             type="string",
+ *             enum={"asc", "desc"}
+ *         )
+ *     ),
+ *     @OA\Parameter(
+ *         name="limit",
+ *         in="query",
+ *         description="Limit amount of items",
+ *         required=false,
+ *         @OA\Schema(
+ *             type="integer",
+ *             format="int64",
+ *             minimum=1,
+ *             maximum=100
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response="200",
+ *         description="Profile items",
+ *         @OA\JsonContent(
+ *             type="array",
+ *             @OA\Items(ref="#/components/schemas/ProfileResponse")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response="400",
+ *         description="Validation errors",
+ *         @OA\JsonContent()
+ *     )
+ * )
+ */
 class Index extends BaseAction
 {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface

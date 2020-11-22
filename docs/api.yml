@@ -1,0 +1,529 @@
+openapi: 3.0.0
+info:
+  title: 'HPDB api'
+  contact:
+    url: 'https://borisd.ru'
+    email: hpdb@borisd.ru
+  version: '1.0'
+paths:
+  /api/v1/feed:
+    get:
+      tags:
+        - feed
+      parameters:
+        - name: page
+          in: query
+          description: 'Page number: 30 items per page'
+          required: false
+          schema:
+            type: integer
+            format: int64
+            maximum: 100
+            minimum: 1
+        - name: lang
+          in: query
+          description: 'Language of items'
+          required: false
+          schema:
+            type: string
+            enum:
+              - en
+              - ru
+              - cn
+              - fr
+        - name: preview
+          in: query
+          description: 'Get short descriptions'
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+            maximum: 1
+            minimum: 0
+      responses:
+        '200':
+          description: 'News feed'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WebFeedResponseItem'
+  /api/v1/group:
+    get:
+      tags:
+        - group
+      parameters:
+        - name: name
+          in: query
+          description: 'Name part to find'
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: 'Page number: 30 items per page'
+          required: false
+          schema:
+            type: integer
+            format: int64
+            maximum: 100
+            minimum: 1
+      responses:
+        '200':
+          description: 'Groups list'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupResponse'
+    post:
+      tags:
+        - group
+      requestBody:
+        description: 'Group creation'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupCreateRequest'
+      responses:
+        '200':
+          description: 'Group created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupResponse'
+        '400':
+          description: 'Validation errors'
+          content:
+            application/json:
+              schema: { }
+  '/api/v1/group/{id}':
+    delete:
+      tags:
+        - group
+      parameters:
+        - name: id
+          in: path
+          description: 'Group ID'
+          required: true
+          schema:
+            type: string
+            example: 5fa81efe60343c42e80b467f
+      responses:
+        '200':
+          description: 'Group deleted'
+          content:
+            application/json:
+              schema:
+                type: object
+    patch:
+      tags:
+        - group
+      parameters:
+        - name: id
+          in: path
+          description: 'Group ID'
+          required: true
+          schema:
+            type: string
+            example: 5fa81efe60343c42e80b467f
+      requestBody:
+        description: 'Group editing'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupMutationRequest'
+      responses:
+        '200':
+          description: 'Group updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupResponse'
+        '400':
+          description: 'Validation errors'
+          content:
+            application/json:
+              schema: { }
+  /api/v1/profile:
+    get:
+      tags:
+        - profile
+      parameters:
+        - name: query
+          in: query
+          description: 'URL part to find'
+          required: false
+          schema:
+            type: string
+        - name: fromId
+          in: query
+          description: 'Skip profiles before fromID'
+          required: false
+          schema:
+            type: string
+        - name: group
+          in: query
+          description: 'GroupID to get profiles in the group'
+          required: false
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: 'Sort direction'
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: limit
+          in: query
+          description: 'Limit amount of items'
+          required: false
+          schema:
+            type: integer
+            format: int64
+            maximum: 100
+            minimum: 1
+      responses:
+        '200':
+          description: 'Profile items'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfileResponse'
+        '400':
+          description: 'Validation errors'
+          content:
+            application/json:
+              schema: { }
+    post:
+      tags:
+        - profile
+      requestBody:
+        description: 'Profile creation'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileCreateRequest'
+      responses:
+        '200':
+          description: 'Profile created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '400':
+          description: 'Validation errors'
+          content:
+            application/json:
+              schema: { }
+  /api/v1/reaction:
+    post:
+      tags:
+        - reaction
+      requestBody:
+        description: 'Profile creation'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReactionCreateRequest'
+      responses:
+        '200':
+          description: 'Profile created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReactionResponse'
+        '404':
+          description: 'Website/reaction not found'
+          content:
+            application/json:
+              schema: { }
+  /api/v1/rpc/add-website-to-group:
+    put:
+      tags:
+        - rpc
+      requestBody:
+        description: 'Add website to group'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddWebsiteToGroupRequest'
+      responses:
+        '200':
+          description: 'Profile added into the group'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebsiteGroupsResponse'
+        '400':
+          description: 'Validation errors'
+          content:
+            application/json:
+              schema: { }
+  /api/v1/rpc/parse-github-contributors:
+    put:
+      tags:
+        - rpc
+      requestBody:
+        description: 'Extract websites of github repo contributors'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParseGithubRepoRequest'
+      responses:
+        '200':
+          description: 'Parsing is started'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParseGithubRepoResponse'
+        '400':
+          description: 'Validation errors'
+          content:
+            application/json:
+              schema: { }
+components:
+  schemas:
+    WebFeedResponseItem:
+      title: 'Feed response item'
+      description: 'Extracted rss feed item'
+      properties:
+        title:
+          title: Title
+          type: string
+        description:
+          title: Description
+          type: string
+        website_id:
+          title: 'Website ID'
+          type: string
+          example: 5fa81efe60343c42e80b467f
+        language:
+          title: Language
+          type: string
+          example: en
+        link:
+          title: Link
+          type: string
+        host:
+          title: Host
+          type: string
+        date:
+          title: Date
+          type: string
+          example: '2030-06-01 13:00:00'
+      type: object
+    GroupCreateRequest:
+      title: 'Group creation request'
+      properties:
+        name:
+          title: Name
+          type: string
+        slug:
+          title: Slug
+          type: string
+        logo:
+          title: 'Logo URL'
+          type: string
+        description:
+          title: Description
+          type: string
+        showOnMain:
+          title: 'Show the group on main page'
+          type: boolean
+      type: object
+    GroupMutationRequest:
+      allOf:
+        - $ref: '#/components/schemas/GroupCreateRequest'
+        - title: 'Group mutation request'
+          properties:
+            id:
+              title: ID
+              type: string
+              format: string
+              example: 5fa81efe60343c42e80b467f
+            slug:
+              title: Slug
+              description: 'Not editable yet'
+              type: string
+          type: object
+    GroupResponse:
+      title: 'Group item'
+      properties:
+        id:
+          title: ID
+          type: string
+          example: 5fa81efe60343c42e80b467f
+        updatedAt:
+          title: 'Updated At'
+          type: string
+          example: '2020-11-22 08:26:01'
+        showOnMain:
+          title: 'Show On Main'
+          type: boolean
+        name:
+          title: Name
+          type: string
+        slug:
+          title: Slug
+          type: string
+        description:
+          title: Description
+          type: string
+        logo:
+          title: 'Logo URL'
+          type: string
+      type: object
+    ProfileCreateRequest:
+      title: 'Profile creation request'
+      properties:
+        website:
+          title: 'Website URL'
+          type: string
+      type: object
+    ProfileReactionsResponse:
+      title: 'Profile reactions'
+      properties:
+        nohp:
+          title: 'Not a homepage'
+          type: integer
+        like:
+          title: Like
+          type: integer
+        dislike:
+          title: Dislike
+          type: integer
+      type: object
+    ProfileResponse:
+      title: 'Profile item'
+      properties:
+        id:
+          title: ID
+          type: string
+          example: 5fa81efe60343c42e80b467f
+        homepage:
+          title: 'Homepage URL'
+          type: string
+        title:
+          title: 'Title of a homepage'
+          type: string
+        description:
+          title: 'Meta description of a homepage'
+          type: string
+        updatedAt:
+          title: 'Updated At'
+          type: string
+          example: '2020-11-22 08:26:01'
+        reactions:
+          $ref: '#/components/schemas/ProfileReactionsResponse'
+      type: object
+    ReactionCreateRequest:
+      title: 'Reaction creation request'
+      properties:
+        websiteId:
+          title: 'Profile ID'
+          type: string
+          example: 5fa81efe60343c42e80b467f
+        reaction:
+          title: 'Reaction name'
+          type: string
+          enum:
+            - nohp
+            - like
+            - dislike
+      type: object
+    ReactionResponse:
+      title: 'Reaction response'
+      properties:
+        websiteId:
+          title: 'Profile ID'
+          type: string
+          example: 5fa81efe60343c42e80b467f
+        reaction:
+          title: Reaction
+          type: string
+          example: Like
+        createdAt:
+          title: 'Created At'
+          type: string
+          example: '2020-11-22 08:26:01'
+      type: object
+    AddWebsiteToGroupRequest:
+      title: 'Add website to group request'
+      properties:
+        websiteId:
+          title: 'Profile ID'
+          type: string
+          example: 5fa81efe60343c42e80b467f
+        groupId:
+          title: 'Group ID'
+          type: string
+          example: 5fa81efe60343c42e80b467f
+      type: object
+    ParseGithubRepoRequest:
+      title: 'Github repo contributors parsing request'
+      properties:
+        profile:
+          title: 'Github Profile'
+          type: string
+          example: apple
+        repo:
+          title: Repo
+          type: string
+          example: swift
+      type: object
+    ParseGithubRepoResponse:
+      title: 'Github Repo Parsing Response'
+      properties:
+        repoName:
+          title: 'Repo Name'
+          type: string
+        githubProfileId:
+          title: 'Github Profile ID'
+          type: string
+        githubProfile:
+          title: 'Github Profile'
+          type: string
+        groupId:
+          title: 'Group ID'
+          description: 'ID of a Group, created for contributors'
+          type: string
+        groupName:
+          title: 'Group Name'
+          description: 'Name of a Group'
+          type: string
+      type: object
+    WebsiteGroupsResponse:
+      title: 'Website Group'
+      properties:
+        id:
+          title: 'Profile ID'
+          type: string
+          example: 5fa81efe60343c42e80b467f
+        groups:
+          title: 'Profile Group IDs'
+          description: 'List of groups of a profile '
+          type: array
+          items:
+            type: string
+      type: object
+tags:
+  - name: feed
+  - name: group
+  - name: profile
+  - name: reaction
+  - name: rpc

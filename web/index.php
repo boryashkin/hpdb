@@ -12,11 +12,10 @@ $app->group('', function () use ($app) {
     $app->get('/crawler', \App\Web\Web\Actions\Crawler::class);
 })->add(\App\Web\Web\Middlewares\WebMetricsMiddleware::class);
 $app->group('', function () use ($app) {
-    $app->get('/api/v1/profile/index', \App\Web\Api\V1\Profile\Actions\Index::class);
+    $app->get('/api/v1/profile', \App\Web\Api\V1\Profile\Actions\Index::class);
     $app->get('/api/v1/profile/index-light', \App\Web\Api\V1\Profile\Actions\Index::class);
-    $app->post('/api/v1/profile/create', \App\Web\Api\V1\Profile\Actions\Create::class);
+    $app->post('/api/v1/profile', \App\Web\Api\V1\Profile\Actions\Create::class);
     $app->post('/api/v1/reaction', \App\Web\Api\V1\Reaction\Actions\Create::class);
-    $app->get('/api/v1/reaction', \App\Web\Api\V1\Reaction\Actions\Index::class);
     $app->get('/api/v1/group', \App\Web\Api\V1\Group\Actions\Index::class);
     $app->post('/api/v1/group', \App\Web\Api\V1\Group\Actions\Create::class);
     $app->delete('/api/v1/group/{id}', \App\Web\Api\V1\Group\Actions\Delete::class);

@@ -21,7 +21,7 @@ class WebsiteResponseBuilder
         $response->updatedAt = $website->updated_at ?
             $website->updated_at->toDateTime()->format(self::DATE_FORMAT)
             : null;
-        $response->reactions = $website->reactions ?? [];
+        $response->reactions = $website->reactions ? $website->reactions : new \stdClass();
 
         return $response;
     }
