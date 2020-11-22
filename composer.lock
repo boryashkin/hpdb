@@ -1,20 +1,20 @@
 {
-    "_readme": [
-        "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-        "This file is @generated automatically"
-    ],
-    "content-hash": "0105c5708d994607d9afa2b22e940926",
-    "packages": [
-        {
-            "name": "dg/rss-php",
-            "version": "v1.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/dg/rss-php.git",
-                "reference": "4d018b27b0a4d7b13dde34a402f0efe90024c40a"
-            },
-            "dist": {
+  "_readme": [
+    "This file locks the dependencies of your project to a known state",
+    "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+    "This file is @generated automatically"
+  ],
+  "content-hash": "540a9e9b4624a4cdeffd0aeb8c98a116",
+  "packages": [
+    {
+      "name": "dg/rss-php",
+      "version": "v1.4",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/dg/rss-php.git",
+        "reference": "4d018b27b0a4d7b13dde34a402f0efe90024c40a"
+      },
+      "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/dg/rss-php/zipball/4d018b27b0a4d7b13dde34a402f0efe90024c40a",
                 "reference": "4d018b27b0a4d7b13dde34a402f0efe90024c40a",
@@ -2094,26 +2094,74 @@
             "description": "A set of abstractions extracted out of the Symfony components",
             "homepage": "https://symfony.com",
             "keywords": [
-                "abstractions",
-                "contracts",
-                "decoupling",
-                "interfaces",
-                "interoperability",
-                "standards"
+              "abstractions",
+              "contracts",
+              "decoupling",
+              "interfaces",
+              "interoperability",
+              "standards"
             ],
-            "time": "2019-11-07T12:44:51+00:00"
+          "time": "2019-11-07T12:44:51+00:00"
+        },
+    {
+      "name": "symfony/css-selector",
+      "version": "v5.1.8",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/symfony/css-selector.git",
+        "reference": "6cbebda22ffc0d4bb8fea0c1311c2ca54c4c8fa0"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/symfony/css-selector/zipball/6cbebda22ffc0d4bb8fea0c1311c2ca54c4c8fa0",
+        "reference": "6cbebda22ffc0d4bb8fea0c1311c2ca54c4c8fa0",
+        "shasum": ""
+      },
+      "require": {
+        "php": ">=7.2.5"
+      },
+      "type": "library",
+      "autoload": {
+        "psr-4": {
+          "Symfony\\Component\\CssSelector\\": ""
+        },
+        "exclude-from-classmap": [
+          "/Tests/"
+        ]
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Fabien Potencier",
+          "email": "fabien@symfony.com"
         },
         {
-            "name": "symfony/dom-crawler",
-            "version": "v4.4.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "36bbcab9369fc2f583220890efd43bf262d563fd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/36bbcab9369fc2f583220890efd43bf262d563fd",
+          "name": "Jean-François Simon",
+          "email": "jeanfrancois.simon@sensiolabs.com"
+        },
+        {
+          "name": "Symfony Community",
+          "homepage": "https://symfony.com/contributors"
+        }
+      ],
+      "description": "Symfony CssSelector Component",
+      "homepage": "https://symfony.com",
+      "time": "2020-10-24T12:01:57+00:00"
+    },
+    {
+      "name": "symfony/dom-crawler",
+      "version": "v4.4.2",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/symfony/dom-crawler.git",
+        "reference": "36bbcab9369fc2f583220890efd43bf262d563fd"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/36bbcab9369fc2f583220890efd43bf262d563fd",
                 "reference": "36bbcab9369fc2f583220890efd43bf262d563fd",
                 "shasum": ""
             },
@@ -4839,59 +4887,6 @@
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
             "time": "2016-10-03T07:35:21+00:00"
-        },
-        {
-            "name": "symfony/css-selector",
-            "version": "v5.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/css-selector.git",
-                "reference": "19d29e7098b7b2c3313cb03902ca30f100dcb837"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/19d29e7098b7b2c3313cb03902ca30f100dcb837",
-                "reference": "19d29e7098b7b2c3313cb03902ca30f100dcb837",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.2.5"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\CssSelector\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Jean-François Simon",
-                    "email": "jeanfrancois.simon@sensiolabs.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony CssSelector Component",
-            "homepage": "https://symfony.com",
-            "time": "2019-11-18T17:27:11+00:00"
         },
         {
             "name": "symfony/finder",
