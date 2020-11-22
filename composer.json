@@ -22,7 +22,8 @@
       "dg/rss-php": "^1.4",
       "ext-SimpleXML": "^7.3",
       "elasticsearch/elasticsearch": "^7.5",
-      "endclothing/prometheus_client_php": "^1.0"
+      "endclothing/prometheus_client_php": "^1.0",
+      "symfony/event-dispatcher": "^4.4"
     },
     "require-dev": {
       "roave/security-advisories": "dev-master",
