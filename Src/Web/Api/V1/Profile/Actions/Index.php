@@ -94,7 +94,7 @@ class Index extends BaseAction
         $fromId = isset($params['fromId']) && \is_string($params['fromId']) ? (string)$params['fromId'] : 0;
         $group = isset($params['group']) && \is_string($params['group']) ? $params['group'] : null;
         $sort = isset($params['sort']) && \is_string($params['sort']) ? $params['sort'] : null;
-        $limit = isset($params['limit']) && \is_numeric($params['limit']) ? $params['limit'] : 30;
+        $limit = isset($params['limit']) && \is_numeric($params['limit']) ? (int)$params['limit'] : 30;
 
         try {
             if ($group) {

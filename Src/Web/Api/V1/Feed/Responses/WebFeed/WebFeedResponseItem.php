@@ -41,7 +41,7 @@ class WebFeedResponseItem
      *
      * @var string
      */
-    public $website_id;
+    public $websiteId;
 
     /**
      * @OA\Property(

@@ -19,7 +19,7 @@ var endless = {
 
             // AJAX request
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', "/api/v1/profile/index?fromId=" + fromId, true);
+            xhr.open('GET', "/api/v1/profile?fromId=" + fromId, true);
             xhr.onload = function () {
                 var rsp = JSON.parse(this.response);
                 // No more contents to load

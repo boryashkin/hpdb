@@ -308,7 +308,7 @@ components:
         description:
           title: Description
           type: string
-        website_id:
+        websiteId:
           title: 'Website ID'
           type: string
           example: 5fa81efe60343c42e80b467f
