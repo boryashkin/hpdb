@@ -11,19 +11,20 @@ $app->group('', function () use ($app) {
     $app->get('/article/create-website', \App\Web\Web\Actions\Article::class);
     $app->get('/crawler', \App\Web\Web\Actions\Crawler::class);
 })->add(\App\Web\Web\Middlewares\WebMetricsMiddleware::class);
-$app->group('', function () use ($app) {
-    $app->get('/api/v1/profile', \App\Web\Api\V1\Profile\Actions\Index::class);
-    $app->get('/api/v1/profile/index-light', \App\Web\Api\V1\Profile\Actions\Index::class);
-    $app->post('/api/v1/profile', \App\Web\Api\V1\Profile\Actions\Create::class);
-    $app->post('/api/v1/reaction', \App\Web\Api\V1\Reaction\Actions\Create::class);
-    $app->get('/api/v1/group', \App\Web\Api\V1\Group\Actions\Index::class);
-    $app->post('/api/v1/group', \App\Web\Api\V1\Group\Actions\Create::class);
-    $app->delete('/api/v1/group/{id}', \App\Web\Api\V1\Group\Actions\Delete::class);
-    $app->patch('/api/v1/group/{id}', \App\Web\Api\V1\Group\Actions\Update::class);
-    $app->get('/api/v1/feed', \App\Web\Api\V1\Feed\Actions\Index::class);
+$app->group('/api/v1', function () use ($app) {
+    $app->get('/docs', \App\Web\Api\V1\Docs\Actions\Index::class);
+    $app->get('/profile', \App\Web\Api\V1\Profile\Actions\Index::class);
+    $app->get('/profile/index-light', \App\Web\Api\V1\Profile\Actions\Index::class);
+    $app->post('/profile', \App\Web\Api\V1\Profile\Actions\Create::class);
+    $app->post('/reaction', \App\Web\Api\V1\Reaction\Actions\Create::class);
+    $app->get('/group', \App\Web\Api\V1\Group\Actions\Index::class);
+    $app->post('/group', \App\Web\Api\V1\Group\Actions\Create::class);
+    $app->delete('/group/{id}', \App\Web\Api\V1\Group\Actions\Delete::class);
+    $app->patch('/group/{id}', \App\Web\Api\V1\Group\Actions\Update::class);
+    $app->get('/feed', \App\Web\Api\V1\Feed\Actions\Index::class);
 
-    $app->put('/api/v1/rpc/add-website-to-group', \App\Web\Api\V1\Rpc\Actions\AddWebsiteToGroup::class);
-    $app->put('/api/v1/rpc/parse-github-contributors', \App\Web\Api\V1\Rpc\Actions\ParseGithubContributiorsPage::class);
+    $app->put('/rpc/add-website-to-group', \App\Web\Api\V1\Rpc\Actions\AddWebsiteToGroup::class);
+    $app->put('/rpc/parse-github-contributors', \App\Web\Api\V1\Rpc\Actions\ParseGithubContributiorsPage::class);
 })
     ->add(\App\Web\Api\V1\Middlewares\DbQueryMetricsMiddleware::class)
     ->add(\App\Web\Api\V1\Middlewares\ApiMetricsMiddleware::class);
