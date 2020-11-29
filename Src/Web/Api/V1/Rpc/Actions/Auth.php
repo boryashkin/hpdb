@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Web\Api\V1\Rpc\Actions;
 
 use App\Common\Abstracts\BaseAction;
-use App\Common\Repositories\UserRepository;
-use App\Common\Services\UserService;
+use App\Common\CommonProvider;
 use App\Web\Api\V1\Rpc\Requests\AuthUserRequest;
 use App\Web\Api\V1\Rpc\Responses\AuthUserResponse;
-use Jenssegers\Mongodb\Connection;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -53,8 +51,7 @@ class Auth extends BaseAction
             throw new SlimException($request, $response);
         }
 
-        $userRepo = new UserRepository($this->getMongo());
-        $userService = new UserService($userRepo);
+        $userService = CommonProvider::getUserService($this->getContainer());
 
         $user = $userService->getOneByEmail($authRequest->email);
         if (!$user || !$userService->isPasswordValid($authRequest->password, $user)) {
@@ -73,11 +70,5 @@ class Auth extends BaseAction
         $response->getBody()->write(\json_encode($authResponse));
 
         return $response;
-    }
-
-    /** @return Connection */
-    private function getMongo()
-    {
-        return $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
     }
 }

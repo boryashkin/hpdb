@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace App\Web\Api\V1\User\Actions;
 
 use App\Common\Abstracts\BaseAction;
+use App\Common\CommonProvider;
 use App\Common\Models\User;
-use App\Common\Repositories\UserRepository;
-use App\Common\Services\UserService;
 use App\Web\Api\V1\User\Requests\UserCreateRequest;
 use App\Web\Api\V1\User\Responses\UserResponse;
-use Jenssegers\Mongodb\Connection;
 use OpenApi\Annotations as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -48,8 +46,7 @@ class Create extends BaseAction
 
         $this->validateRequest($userCreate, $request, $response);
 
-        $userRepo = new UserRepository($this->getMongo());
-        $userService = new UserService($userRepo);
+        $userService = CommonProvider::getUserService($this->getContainer());
 
         $user = $userService->getOneByEmail($userCreate->email);
         if ($user) {
@@ -73,12 +70,6 @@ class Create extends BaseAction
         $response->getBody()->write(\json_encode(UserResponse::createFromUser($user)));
 
         return $response;
-    }
-
-    /** @return Connection */
-    private function getMongo()
-    {
-        return $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
     }
 
     /**

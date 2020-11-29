@@ -34,7 +34,7 @@ define('ENV_PROD', \getenv('ENV_PROD', true) === 'true');
 
 $messageBus = require 'message-bus.array.php';
 
-return new \Slim\Container(array_merge([
+$container = new \Slim\Container(array_merge([
     CONTAINER_CONFIG_SETTINGS => [
         'displayErrorDetails' => !ENV_PROD,
         'routerCacheFile' => __DIR__ . '/../data/slim/routes.cache.php',
@@ -133,7 +133,9 @@ return new \Slim\Container(array_merge([
 
         return $dispatcher;
     },
-    LocalSessionCache::class => static function (Slim\Container $c) {
-        return new LocalSessionCache(new \Symfony\Component\Cache\Adapter\ArrayAdapter());
-    },
 ], $messageBus));
+
+$container->register(new \App\Common\Repositories\DbProviderProvider());
+$container->register(new \App\Common\CommonProvider());
+
+return $container;
