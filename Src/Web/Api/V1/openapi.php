@@ -11,6 +11,13 @@ use OpenApi\Annotations as OA;
  *         email="hpdb@borisd.ru"
  *     )
  * ),
+ * @OA\SecurityScheme(
+ *     type="apiKey",
+ *     in="header",
+ *     securityScheme="apiKey",
+ *     name="Authorization",
+ *     description="Generate a token in /api/v1/rpc/auth"
+ * ),
  * @OA\Tag(
  *     name="feed"
  * ),

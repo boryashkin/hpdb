@@ -22,11 +22,16 @@ $app->group('/api/v1', function () use ($app) {
     $app->delete('/group/{id}', \App\Web\Api\V1\Group\Actions\Delete::class);
     $app->patch('/group/{id}', \App\Web\Api\V1\Group\Actions\Update::class);
     $app->get('/feed', \App\Web\Api\V1\Feed\Actions\Index::class);
+    $app->post('/user', \App\Web\Api\V1\User\Actions\Create::class);
 
     $app->put('/rpc/add-website-to-group', \App\Web\Api\V1\Rpc\Actions\AddWebsiteToGroup::class);
     $app->put('/rpc/parse-github-contributors', \App\Web\Api\V1\Rpc\Actions\ParseGithubContributiorsPage::class);
+    $app->put('/rpc/auth', \App\Web\Api\V1\Rpc\Actions\Auth::class);
+    $app->get('/rpc/current-user', \App\Web\Api\V1\User\Actions\CurrentUser::class)
+        ->add(\App\Web\Api\V1\Middlewares\AuthRequiredMiddleware::class);
 })
     ->add(\App\Web\Api\V1\Middlewares\DbQueryMetricsMiddleware::class)
+    ->add(\App\Web\Api\V1\Middlewares\AuthenticationMiddleware::class)
     ->add(\App\Web\Api\V1\Middlewares\ApiMetricsMiddleware::class);
 $app->group('', function () use ($app) {
     $app->get('/proxy/{id}/', \App\Web\Proxy\Actions\Index::class);

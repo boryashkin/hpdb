@@ -15,6 +15,7 @@ use MongoDB\BSON\UTCDateTime;
  * @property string $description
  * @property string $logo
  * @property string $is_deleted
+ * @property string $owner_id     @idx
  */
 class WebsiteGroup extends Model
 {

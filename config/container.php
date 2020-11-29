@@ -1,6 +1,7 @@
 <?php
 
 use App\Common\Adapters\IlluminateDispatcherAdapter;
+use App\Common\Services\LocalSessionCache;
 use Illuminate\Container\Container;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -131,5 +132,8 @@ return new \Slim\Container(array_merge([
         $dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
 
         return $dispatcher;
+    },
+    LocalSessionCache::class => static function (Slim\Container $c) {
+        return new LocalSessionCache(new \Symfony\Component\Cache\Adapter\ArrayAdapter());
     },
 ], $messageBus));

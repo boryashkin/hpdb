@@ -1,20 +1,77 @@
 {
-  "_readme": [
-    "This file locks the dependencies of your project to a known state",
-    "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-    "This file is @generated automatically"
-  ],
-  "content-hash": "540a9e9b4624a4cdeffd0aeb8c98a116",
-  "packages": [
-    {
-      "name": "dg/rss-php",
-      "version": "v1.4",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/dg/rss-php.git",
-        "reference": "4d018b27b0a4d7b13dde34a402f0efe90024c40a"
-      },
-      "dist": {
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "de1f70a4db28402ff57b69e7051d0830",
+    "packages": [
+        {
+            "name": "adhocore/jwt",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/adhocore/php-jwt.git",
+                "reference": "424a1d66b729a316dd074e6382167765b810cd3d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/adhocore/php-jwt/zipball/424a1d66b729a316dd074e6382167765b810cd3d",
+                "reference": "424a1d66b729a316dd074e6382167765b810cd3d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.5 || ^7.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ahc\\Jwt\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jitendra Adhikari",
+                    "email": "jiten.adhikary@gmail.com"
+                }
+            ],
+            "description": "Ultra lightweight JSON web token (JWT) library for PHP5.5+.",
+            "keywords": [
+                "auth",
+                "json-web-token",
+                "jwt",
+                "jwt-auth",
+                "jwt-php",
+                "token"
+            ],
+            "support": {
+                "issues": "https://github.com/adhocore/php-jwt/issues",
+                "source": "https://github.com/adhocore/php-jwt/tree/1.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/ji10",
+                    "type": "custom"
+                }
+            ],
+            "time": "2020-10-09T00:34:35+00:00"
+        },
+        {
+            "name": "dg/rss-php",
+            "version": "v1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dg/rss-php.git",
+                "reference": "4d018b27b0a4d7b13dde34a402f0efe90024c40a"
+            },
+            "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/dg/rss-php/zipball/4d018b27b0a4d7b13dde34a402f0efe90024c40a",
                 "reference": "4d018b27b0a4d7b13dde34a402f0efe90024c40a",
@@ -2094,74 +2151,74 @@
             "description": "A set of abstractions extracted out of the Symfony components",
             "homepage": "https://symfony.com",
             "keywords": [
-              "abstractions",
-              "contracts",
-              "decoupling",
-              "interfaces",
-              "interoperability",
-              "standards"
+                "abstractions",
+                "contracts",
+                "decoupling",
+                "interfaces",
+                "interoperability",
+                "standards"
             ],
-          "time": "2019-11-07T12:44:51+00:00"
-        },
-    {
-      "name": "symfony/css-selector",
-      "version": "v5.1.8",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/symfony/css-selector.git",
-        "reference": "6cbebda22ffc0d4bb8fea0c1311c2ca54c4c8fa0"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/symfony/css-selector/zipball/6cbebda22ffc0d4bb8fea0c1311c2ca54c4c8fa0",
-        "reference": "6cbebda22ffc0d4bb8fea0c1311c2ca54c4c8fa0",
-        "shasum": ""
-      },
-      "require": {
-        "php": ">=7.2.5"
-      },
-      "type": "library",
-      "autoload": {
-        "psr-4": {
-          "Symfony\\Component\\CssSelector\\": ""
-        },
-        "exclude-from-classmap": [
-          "/Tests/"
-        ]
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
-        {
-          "name": "Fabien Potencier",
-          "email": "fabien@symfony.com"
+            "time": "2019-11-07T12:44:51+00:00"
         },
         {
-          "name": "Jean-François Simon",
-          "email": "jeanfrancois.simon@sensiolabs.com"
+            "name": "symfony/css-selector",
+            "version": "v5.1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/css-selector.git",
+                "reference": "6cbebda22ffc0d4bb8fea0c1311c2ca54c4c8fa0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/6cbebda22ffc0d4bb8fea0c1311c2ca54c4c8fa0",
+                "reference": "6cbebda22ffc0d4bb8fea0c1311c2ca54c4c8fa0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\CssSelector\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Jean-François Simon",
+                    "email": "jeanfrancois.simon@sensiolabs.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony CssSelector Component",
+            "homepage": "https://symfony.com",
+            "time": "2020-10-24T12:01:57+00:00"
         },
         {
-          "name": "Symfony Community",
-          "homepage": "https://symfony.com/contributors"
-        }
-      ],
-      "description": "Symfony CssSelector Component",
-      "homepage": "https://symfony.com",
-      "time": "2020-10-24T12:01:57+00:00"
-    },
-    {
-      "name": "symfony/dom-crawler",
-      "version": "v4.4.2",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/symfony/dom-crawler.git",
-        "reference": "36bbcab9369fc2f583220890efd43bf262d563fd"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/36bbcab9369fc2f583220890efd43bf262d563fd",
+            "name": "symfony/dom-crawler",
+            "version": "v4.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/dom-crawler.git",
+                "reference": "36bbcab9369fc2f583220890efd43bf262d563fd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/36bbcab9369fc2f583220890efd43bf262d563fd",
                 "reference": "36bbcab9369fc2f583220890efd43bf262d563fd",
                 "shasum": ""
             },
@@ -5167,5 +5224,6 @@
         "ext-libxml": "^7.3",
         "ext-simplexml": "^7.3"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

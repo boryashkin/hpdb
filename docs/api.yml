@@ -273,6 +273,29 @@ paths:
           content:
             application/json:
               schema: { }
+  /api/v1/rpc/auth:
+    put:
+      tags:
+        - rpc
+      requestBody:
+        description: 'Auth for user'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthUserRequest'
+      responses:
+        '200':
+          description: 'Pfofile is authorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserResponse'
+        '400':
+          description: 'Validation errors'
+          content:
+            application/json:
+              schema: { }
   /api/v1/rpc/parse-github-contributors:
     put:
       tags:
@@ -296,6 +319,47 @@ paths:
           content:
             application/json:
               schema: { }
+  /api/v1/user:
+    post:
+      tags:
+        - user
+      requestBody:
+        description: 'User creation'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+      responses:
+        '200':
+          description: 'User created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: 'Validation errors'
+          content:
+            application/json:
+              schema: { }
+  /api/v1/rpc/current-user:
+    get:
+      tags:
+        - user
+      responses:
+        '200':
+          description: 'Current user'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: { }
+      security:
+        - apiKey: [ ]
 components:
   schemas:
     WebFeedResponseItem:
@@ -474,6 +538,17 @@ components:
           type: string
           example: 5fa81efe60343c42e80b467f
       type: object
+    AuthUserRequest:
+      title: 'Auth user request'
+      properties:
+        email:
+          title: email
+          type: string
+          example: borisd@hpdb.ru
+        password:
+          title: Password
+          type: string
+      type: object
     ParseGithubRepoRequest:
       title: 'Github repo contributors parsing request'
       properties:
@@ -485,6 +560,15 @@ components:
           title: Repo
           type: string
           example: swift
+      type: object
+    AuthUserResponse:
+      title: 'Auth User Response'
+      properties:
+        token:
+          title: 'Bearer token'
+          description: 'Use in Authorization header with Bearer prefix'
+          type: string
+          example: uasd7ayosdihuasd69a87soh
       type: object
     ParseGithubRepoResponse:
       title: 'Github Repo Parsing Response'
@@ -521,6 +605,35 @@ components:
           items:
             type: string
       type: object
+    UserCreateRequest:
+      title: 'User creation request'
+      properties:
+        email:
+          title: Email
+          type: string
+        password:
+          title: Password
+          type: string
+      type: object
+    UserResponse:
+      title: 'User response'
+      properties:
+        email:
+          title: email
+          type: string
+          example: borisd@hpdb.ru
+        createdAt:
+          title: 'Created At'
+          type: string
+          example: '2020-11-22 08:26:01'
+          nullable: true
+      type: object
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: 'Generate a token in /api/v1/rpc/auth'
+      name: Authorization
+      in: header
 tags:
   - name: feed
   - name: group

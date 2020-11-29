@@ -24,7 +24,8 @@
       "elasticsearch/elasticsearch": "^7.5",
       "endclothing/prometheus_client_php": "^1.0",
       "symfony/event-dispatcher": "^4.4",
-      "symfony/css-selector": "^5.1"
+      "symfony/css-selector": "^5.1",
+      "adhocore/jwt": "^1.1"
     },
     "require-dev": {
       "roave/security-advisories": "dev-master",

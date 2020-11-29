@@ -6,3 +6,7 @@
 
 - docker-compose up -d
 - systemctl start hpdb.processors.service && systemctl start hpdb.persistors && systemctl start hpdb.crawlers
+
+### Development
+
+- swagger doc generation: `vendor/bin/openapi -o docs/api.yml Src/Web/Api/V1/`
