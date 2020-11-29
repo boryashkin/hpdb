@@ -18,6 +18,7 @@ use MongoDB\BSON\UTCDateTime;
  * @property string[] $tags
  * @property int[] $reactions ['reactionName' => count]
  * @property ObjectId $github_profile_id
+ * @property ObjectId $added_by_user_id
  * @property WebsiteWebFeedEmbedded[] $web_feeds
  */
 class Website extends Model

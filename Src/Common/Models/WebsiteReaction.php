@@ -12,6 +12,7 @@ use MongoDB\BSON\UTCDateTime;
  * @property string $reaction
  * @property string $ip
  * @property string $user_agent
+ * @property ObjectId $user_id
  * @property UTCDateTime $created_at
  */
 class WebsiteReaction extends Model

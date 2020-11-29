@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Web\Api\V1\Profile\Actions;
 
 use App\Common\Abstracts\BaseAction;
+use App\Common\CommonProvider;
 use App\Common\Exceptions\InvalidUrlException;
 use App\Common\MessageBus\Messages\Persistors\NewWebsiteToPersistMessage;
 use App\Common\Models\Website;
@@ -73,6 +74,10 @@ class Create extends BaseAction
         $website = new Website();
         $website->homepage = $parsedUrl->getNormalized();
         $website->scheme = $parsedUrl->getScheme();
+        $userId = CommonProvider::getAuthService($this->getContainer())->getCurrentUserId();
+        if ($userId) {
+            $website->added_by_user_id = $userId;
+        }
         if (!$profile->save($website)) {
             $response = $response->withStatus(512);
             $response->getBody()->write('Unable to save a website');

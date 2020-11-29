@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Web\Api\V1\Reaction\Actions;
 
 use App\Common\Abstracts\BaseAction;
+use App\Common\CommonProvider;
 use App\Common\Dto\Website\WebsiteReactionDto;
 use App\Common\Repositories\ProfileRepository;
 use App\Common\Repositories\ReactionRepository;
@@ -80,6 +81,10 @@ class Create extends BaseAction
         $reactionDto->websiteId = $website->_id;
         $reactionDto->ip = $request->getServerParams()['REMOTE_ADDR'];
         $reactionDto->userAgent = $userAgent;
+        $userId = CommonProvider::getAuthService($this->getContainer())->getCurrentUserId();
+        if ($userId) {
+            $reactionDto->user_id = $userId;
+        }
         $reaction = $reactionService->addReaction($website, $reactionDto);
 
 

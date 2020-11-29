@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Web\Api\V1\Group\Actions;
 
 use App\Common\Abstracts\BaseAction;
+use App\Common\CommonProvider;
 use App\Common\Models\WebsiteGroup;
 use App\Web\Api\V1\Group\Builders\GroupResponseBuilder;
 use App\Web\Api\V1\Group\Requests\GroupCreateRequest;
@@ -67,6 +68,11 @@ class Create extends BaseAction
         $websiteGroup->logo = $groupCreate->logo;
         $websiteGroup->show_on_main = $groupCreate->showOnMain;
         $websiteGroup->is_deleted = false;
+        $authService = CommonProvider::getAuthService($this->getContainer());
+        $userId = $authService->getCurrentUserId();
+        if ($userId) {
+            $websiteGroup->owner_id = $userId;
+        }
 
         $this->getContainer()->get(CONTAINER_CONFIG_MONGO);
 

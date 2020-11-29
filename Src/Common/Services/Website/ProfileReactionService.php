@@ -29,6 +29,9 @@ class ProfileReactionService
         $reaction->reaction = $dto->reaction;
         $reaction->ip = $dto->ip;
         $reaction->user_agent = $dto->userAgent;
+        if ($dto->user_id) {
+            $reaction->user_id = $dto->user_id;
+        }
 
         $this->reactionRepository->save($reaction);
 

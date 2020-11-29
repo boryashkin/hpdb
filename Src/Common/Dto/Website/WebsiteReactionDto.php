@@ -19,4 +19,7 @@ class WebsiteReactionDto
 
     /** @var string */
     public $userAgent;
+
+    /** @var ObjectId|null */
+    public $user_id;
 }

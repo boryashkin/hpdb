@@ -27,7 +27,10 @@ $app->group('/api/v1', function () use ($app) {
     $app->put('/rpc/add-website-to-group', \App\Web\Api\V1\Rpc\Actions\AddWebsiteToGroup::class);
     $app->put('/rpc/parse-github-contributors', \App\Web\Api\V1\Rpc\Actions\ParseGithubContributiorsPage::class);
     $app->put('/rpc/auth', \App\Web\Api\V1\Rpc\Actions\Auth::class);
-    $app->get('/rpc/current-user', \App\Web\Api\V1\User\Actions\CurrentUser::class)
+    $app->group('/rpc', function () use ($app) {
+        $app->get('/current-user', \App\Web\Api\V1\User\Actions\CurrentUser::class);
+        $app->get('/my-groups', \App\Web\Api\V1\Group\Actions\MyGroups::class);
+    })
         ->add(\App\Web\Api\V1\Middlewares\AuthRequiredMiddleware::class);
 })
     ->add(\App\Web\Api\V1\Middlewares\DbQueryMetricsMiddleware::class)
