@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Web\Api\V1\Rpc\Actions;
 
 use App\Common\Abstracts\BaseAction;
+use App\Common\CommonProvider;
 use App\Common\Models\WebsiteGroup;
 use App\Common\Repositories\ProfileRepository;
 use App\Common\Repositories\WebsiteRepository;
@@ -63,6 +64,7 @@ class AddWebsiteToGroup extends BaseAction
 
         $repo = new ProfileRepository($this->getContainer()->get(CONTAINER_CONFIG_MONGO));
         $profile = $repo->getOneById($websiteId);
+        /** @var WebsiteGroup $group */
         $group = WebsiteGroup::query()->where('_id', '=', $groupId)->first();
         if (!$profile || !$group) {
             $response = $response->withStatus(400);
@@ -71,6 +73,15 @@ class AddWebsiteToGroup extends BaseAction
             throw new SlimException($request, $response);
         }
 
+        if ($group->owner_id) {
+            $userId = CommonProvider::getAuthService($this->getContainer())->getCurrentUserId();
+            if ((string)$group->owner_id !== (string)$userId) {
+                $response = $response->withStatus(403);
+                $response->getBody()->write(json_encode(['errors' => ['Not authorized']]));
+
+                throw new SlimException($request, $response);
+            }
+        }
         try {
             WebsiteRepository::addGroupIdAndSave($profile, $groupId);
         } catch (ServerException $e) {
