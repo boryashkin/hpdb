@@ -100,7 +100,7 @@ class Index extends BaseAction
             $title = $website->content['title'] ?: $website->content['description'];
             $result[] = [
                 'profile_id' => (string)$website->_id,
-                'homepage' => $website->homepage,
+                'homepage' => urldecode($website->homepage),
                 'reactions' => $website->reactions ?? [],
                 'title' => $title ? \mb_substr(trim($title), 0, 50) : 'No description yet',
             ];

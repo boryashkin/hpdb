@@ -255,7 +255,7 @@ let createProfileRow = function (item) {
 
     var elHp = document.createElement('div');
     var a = document.createElement('a');
-    var linkText = document.createTextNode(item.homepage);
+    var linkText = document.createTextNode(decodeURI(item.homepage));
     a.appendChild(linkText);
     a.href = "/profile/" + item.id;
     elHp.appendChild(a);
