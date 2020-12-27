@@ -19,19 +19,26 @@ $app->group('/api/v1', function () use ($app) {
     $app->post('/reaction', \App\Web\Api\V1\Reaction\Actions\Create::class);
     $app->get('/group', \App\Web\Api\V1\Group\Actions\Index::class);
     $app->post('/group', \App\Web\Api\V1\Group\Actions\Create::class);
-    $app->delete('/group/{id}', \App\Web\Api\V1\Group\Actions\Delete::class);
-    $app->patch('/group/{id}', \App\Web\Api\V1\Group\Actions\Update::class);
+    $app->delete('/group/{id}', \App\Web\Api\V1\Group\Actions\Delete::class)
+        ->add(\App\Web\Api\V1\Middlewares\CorsMiddleware::class);
+    $app->patch('/group/{id}', \App\Web\Api\V1\Group\Actions\Update::class)
+        ->add(\App\Web\Api\V1\Middlewares\CorsMiddleware::class);
     $app->get('/feed', \App\Web\Api\V1\Feed\Actions\Index::class);
     $app->post('/user', \App\Web\Api\V1\User\Actions\Create::class);
 
-    $app->put('/rpc/add-website-to-group', \App\Web\Api\V1\Rpc\Actions\AddWebsiteToGroup::class);
-    $app->put('/rpc/parse-github-contributors', \App\Web\Api\V1\Rpc\Actions\ParseGithubContributiorsPage::class);
-    $app->put('/rpc/auth', \App\Web\Api\V1\Rpc\Actions\Auth::class);
+    $app->group('/rpc', function () use ($app) {
+        $app->put('/add-website-to-group', \App\Web\Api\V1\Rpc\Actions\AddWebsiteToGroup::class);
+        $app->put('/parse-github-contributors', \App\Web\Api\V1\Rpc\Actions\ParseGithubContributiorsPage::class);
+        $app->put('/auth', \App\Web\Api\V1\Rpc\Actions\Auth::class);
+    })
+        ->add(\App\Web\Api\V1\Middlewares\CorsMiddleware::class);
+
     $app->group('/rpc', function () use ($app) {
         $app->get('/current-user', \App\Web\Api\V1\User\Actions\CurrentUser::class);
         $app->get('/my-groups', \App\Web\Api\V1\Group\Actions\MyGroups::class);
     })
-        ->add(\App\Web\Api\V1\Middlewares\AuthRequiredMiddleware::class);
+        ->add(\App\Web\Api\V1\Middlewares\AuthRequiredMiddleware::class)
+        ->add(\App\Web\Api\V1\Middlewares\CorsMiddleware::class);
 })
     ->add(\App\Web\Api\V1\Middlewares\DbQueryMetricsMiddleware::class)
     ->add(\App\Web\Api\V1\Middlewares\AuthenticationMiddleware::class)
