@@ -150,6 +150,56 @@ paths:
           content:
             application/json:
               schema: { }
+  /api/v1/rpc/my-groups:
+    get:
+      tags:
+        - group
+      parameters:
+        - name: name
+          in: query
+          description: 'Name part to find'
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: 'Page number: 30 items per page'
+          required: false
+          schema:
+            type: integer
+            format: int64
+            maximum: 100
+            minimum: 1
+      responses:
+        '200':
+          description: 'Groups list'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupResponse'
+      security:
+        - apiKey: [ ]
+  '/api/v1/group/{slug}':
+    get:
+      tags:
+        - group
+      parameters:
+        - name: slug
+          in: path
+          description: 'Group''s slug'
+          required: true
+          schema:
+            type: string
+            example: AIUyda8sdogaidAsiuhas7d6as9diu
+      responses:
+        '200':
+          description: 'Group created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupResponse'
   /api/v1/profile:
     get:
       tags:
